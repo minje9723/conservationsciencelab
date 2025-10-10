@@ -1,7 +1,37 @@
 // Common functionality for all pages
 
+// IP 기반 국가 감지 및 자동 언어 설정
+async function detectCountryAndSetLanguage() {
+  // 이미 사용자가 언어를 선택한 적이 있는지 확인
+  const userSelectedLanguage = localStorage.getItem('user-selected-language');
+  
+  if (userSelectedLanguage) {
+    // 사용자가 직접 선택한 언어가 있으면 그것을 사용
+    return userSelectedLanguage;
+  }
+  
+  try {
+    // IP 기반 지리적 위치 감지 (ipapi.co 무료 API 사용)
+    const response = await fetch('https://ipapi.co/json/');
+    const data = await response.json();
+    
+    // 한국(KR)에서 접속한 경우 한국어로 설정
+    if (data.country_code === 'KR') {
+      console.log('한국 IP 감지: 한국어로 자동 설정');
+      return 'ko';
+    } else {
+      console.log(`${data.country_code} IP 감지: 영어로 설정`);
+      return 'en';
+    }
+  } catch (error) {
+    console.log('IP 감지 실패, 기본 언어(영어) 사용:', error);
+    // API 호출 실패 시 기본 언어(영어) 사용
+    return 'en';
+  }
+}
+
 // Language switching functionality
-function setLang(lang) {
+function setLang(lang, userSelected = false) {
   // 텍스트 다국어 처리
   document.querySelectorAll('.lang').forEach(el => {
     if (el.classList.contains('lang-' + lang)) {
@@ -16,6 +46,11 @@ function setLang(lang) {
   
   // Save language preference
   localStorage.setItem('preferred-language', lang);
+  
+  // 사용자가 직접 선택한 경우 기록
+  if (userSelected) {
+    localStorage.setItem('user-selected-language', lang);
+  }
 }
 
 // Update navigation tooltips based on language
@@ -178,8 +213,8 @@ function initCommon() {
         const currentLanguage = localStorage.getItem('preferred-language') || 'en';
         const newLanguage = currentLanguage === 'en' ? 'ko' : 'en';
         
-        // 언어 변경
-        setLang(newLanguage);
+        // 언어 변경 (사용자가 직접 선택)
+        setLang(newLanguage, true);
         
         // 활성 버튼 업데이트
         document.querySelectorAll('.lang-option').forEach(btn => {
@@ -205,7 +240,8 @@ function initCommon() {
         btn.classList.add('active');
         currentLang.textContent = btn.querySelector('.lang-code').textContent;
         langDropdown.classList.remove('show');
-        setLang(lang);
+        // 언어 변경 (사용자가 직접 선택)
+        setLang(lang, true);
       });
     });
 
@@ -296,17 +332,34 @@ function initCommon() {
     }
   });
 
-  // Load saved language preference
-  const savedLang = localStorage.getItem('preferred-language') || 'en';
-  const savedLangBtn = document.getElementById(`lang-${savedLang}`);
-  if (savedLangBtn) {
-    savedLangBtn.click();
-  } else {
-    setLang('en');
-  }
-  
-  // Initialize tooltips
-  updateNavTooltips(savedLang);
+  // IP 기반 자동 언어 감지 및 설정
+  detectCountryAndSetLanguage().then(detectedLang => {
+    const savedLang = localStorage.getItem('preferred-language') || detectedLang;
+    const finalLang = savedLang;
+    
+    // UI 업데이트
+    const langBtn = document.getElementById(`lang-${finalLang}`);
+    if (langBtn) {
+      langBtn.classList.add('active');
+      const langCode = langBtn.querySelector('.lang-code').textContent;
+      if (currentLang) {
+        currentLang.textContent = langCode;
+      }
+    }
+    
+    // 다른 버튼 비활성화
+    document.querySelectorAll('.lang-option').forEach(btn => {
+      if (btn.getAttribute('data-lang') !== finalLang) {
+        btn.classList.remove('active');
+      }
+    });
+    
+    // 언어 적용
+    setLang(finalLang, false);
+    
+    // Initialize tooltips
+    updateNavTooltips(finalLang);
+  });
 
   // Contact Modal functionality (for home page)
   const contactBtn = document.getElementById('contactBtn');
