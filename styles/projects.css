@@ -127,12 +127,9 @@ main .page-banner.scrolled {
 
 /* Projects Section Container */
 .projects-section {
-  max-width: none;
-  margin: 0;
-  padding: 2rem;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
+  max-width: 1300px;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
 }
 
 /* Projects Filters */
@@ -988,7 +985,8 @@ main .page-banner.scrolled {
 
 @media (max-width: 768px) {
   .projects-section {
-    padding: 1rem;
+    padding: 1.5rem;
+    margin: 1rem auto;
   }
   
   .projects-title {
@@ -1361,6 +1359,11 @@ main .page-banner.scrolled {
 
 /* 모바???�로?�트 ?�이지 최적??*/
 @media screen and (max-width: 428px) {
+  .projects-section {
+    padding: 1rem;
+    margin: 0.5rem auto;
+  }
+  
   .projects-filters {
     gap: 1rem;
     margin-bottom: 2rem;
