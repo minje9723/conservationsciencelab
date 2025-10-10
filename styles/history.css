@@ -1,6 +1,34 @@
 /* History Journey Styles - Unified Timeline Design */
 
-/* Page Banner Styles */
+/* Page Banner Height Override */
+.page-banner {
+  height: clamp(200px, 25vh, 400px) !important;
+}
+
+.page-banner.scrolled {
+  height: clamp(120px, 15vh, 250px) !important;
+}
+
+/* Page Banner Styles with Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-banner-title {
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.page-banner-subtitle {
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
 .page-title {
   color: #ffffff !important;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);

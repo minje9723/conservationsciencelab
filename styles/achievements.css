@@ -1,5 +1,14 @@
 /* Achievements page specific styles */
 
+/* Page Banner Height Override */
+.page-banner {
+  height: clamp(200px, 25vh, 400px) !important;
+}
+
+.page-banner.scrolled {
+  height: clamp(120px, 15vh, 250px) !important;
+}
+
 /* Animation Classes - Members Page Style */
 @keyframes fadeInUp {
   from {
