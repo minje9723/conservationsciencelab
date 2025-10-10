@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History | Conservation Science Lab | Korea National University of Heritage</title>
+  <link rel="stylesheet" href="styles/common.css">
+  <link rel="stylesheet" href="styles/history.css">
+</head>
+<body>
+  <header class="transparent-header">
+    <nav class="navbar">
+      <div class="logo" style="display:flex;align-items:center;gap:12px;">
+        <img src="assets/CSL Banner Logo.png" alt="CSL Banner Logo" style="height:48px;width:auto;display:block;" />
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          <span class="nav-text lang lang-en">HOME</span>
+          <span class="nav-text lang lang-ko" style="display:none;">홈</span>
+        </a></li>
+        <li><a href="history.html" class="active">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span class="nav-text lang lang-en">HISTORY</span>
+          <span class="nav-text lang lang-ko" style="display:none;">연혁</span>
+        </a></li>
+        <li class="nav-dropdown">
+          <a href="members.html">
+            <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span class="nav-text lang lang-en">MEMBERS</span>
+            <span class="nav-text lang lang-ko" style="display:none;">연구진</span>
+          </a>
+          <div class="nav-dropdown-content">
+            <a href="members.html#researchers" class="nav-member-filter">
+              <span class="lang lang-en">Researchers</span>
+              <span class="lang lang-ko" style="display:none;">연구원</span>
+            </a>
+            <a href="members.html#alumni" class="nav-member-filter">
+              <span class="lang lang-en">Alumni</span>
+              <span class="lang lang-ko" style="display:none;">보존과학연구소 식구들</span>
+            </a>
+          </div>
+        </li>
+        <li class="nav-dropdown">
+          <a href="projects.html">
+            <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <span class="nav-text lang lang-en">PROJECTS</span>
+            <span class="nav-text lang lang-ko" style="display:none;">프로젝트</span>
+          </a>
+          <div class="nav-dropdown-content">
+            <a href="projects.html?category=excavated-conservation" class="nav-project-filter" data-category="excavated-conservation">
+              <span class="lang lang-en">Excavated Artifact Conservation</span>
+              <span class="lang lang-ko" style="display:none;">출토 유물 보존처리</span>
+            </a>
+            <a href="projects.html?category=site-investigation" class="nav-project-filter" data-category="site-investigation">
+              <span class="lang lang-en">Site Survey & Manufacturing Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 현장 조사 및 제작기법 분석</span>
+            </a>
+            <a href="projects.html?category=designation-research" class="nav-project-filter" data-category="designation-research">
+              <span class="lang lang-en">Heritage Designation Research</span>
+              <span class="lang lang-ko" style="display:none;">국가유산 지정 및 승격 연구</span>
+            </a>
+            <a href="projects.html?category=preservation-research" class="nav-project-filter" data-category="preservation-research">
+              <span class="lang lang-en">Preservation Strategy Research</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 보존 방안 연구</span>
+            </a>
+          </div>
+        </li>
+        <li class="nav-dropdown">
+          <a href="achievements.html">
+            <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+            <span class="nav-text lang lang-en">ACHIEVEMENTS</span>
+            <span class="nav-text lang lang-ko" style="display:none;">연구성과</span>
+          </a>
+          <div class="nav-dropdown-content">
+            <a href="achievements.html?filter=publication" class="nav-achievement-filter" data-filter="publication">
+              <span class="lang lang-en">Publications</span>
+              <span class="lang lang-ko" style="display:none;">논문</span>
+            </a>
+            <a href="achievements.html?filter=conference" class="nav-achievement-filter" data-filter="conference">
+              <span class="lang lang-en">Conferences</span>
+              <span class="lang lang-ko" style="display:none;">학술발표</span>
+            </a>
+            <a href="achievements.html?filter=patent" class="nav-achievement-filter" data-filter="patent">
+              <span class="lang lang-en">Patents</span>
+              <span class="lang lang-ko" style="display:none;">특허</span>
+            </a>
+            <a href="achievements.html?filter=award" class="nav-achievement-filter" data-filter="award">
+              <span class="lang lang-en">Awards</span>
+              <span class="lang lang-ko" style="display:none;">수상</span>
+            </a>
+          </div>
+        </li>
+        <li><a href="facilities.html">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          <span class="nav-text lang lang-en">FACILITIES</span>
+          <span class="nav-text lang lang-ko" style="display:none;">시설장비</span>
+        </a></li>
+        <li><a href="gallery.html">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span class="nav-text lang lang-en">GALLERY</span>
+          <span class="nav-text lang lang-ko" style="display:none;">갤러리</span>
+        </a></li>
+      </ul>
+      <div class="lang-switcher">
+        <button id="langToggle" class="lang-globe-btn" aria-label="Change Language">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="lang-text current-lang">EN</span>
+        </button>
+        <div id="langDropdown" class="lang-dropdown">
+          <button id="lang-en" class="lang-option active" data-lang="en">
+            <span class="lang-name">English</span>
+            <span class="lang-code">EN</span>
+          </button>
+          <button id="lang-ko" class="lang-option" data-lang="ko">
+            <span class="lang-name">한국어</span>
+            <span class="lang-code">KR</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main style="padding-top: 100px;">
+    <section class="section page-banner">
+      <div class="page-banner-background">
+        <img src="assets/banners/history-banner.jpg" alt="History Banner" class="page-banner-image">
+        <div class="page-banner-overlay"></div>
+      </div>
+      <div class="page-banner-content">
+        <h1 class="page-title">
+          <span class="lang lang-en">Laboratory History</span>
+          <span class="lang lang-ko" style="display:none;">연구실 연혁</span>
+        </h1>
+        <p class="page-subtitle">
+          <span class="lang lang-en">Discover the journey and milestones of Conservation Science Lab since 2005.</span>
+          <span class="lang lang-ko" style="display:none;">2005년부터 현재까지 보존과학연구소의 여정과 주요 성과를 확인해보세요.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- History Journey Section -->
+    <section class="section innovation-journey">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="lang lang-en">Our Journey</span>
+            <span class="lang lang-ko" style="display:none;">우리의 여정</span>
+          </h2>
+          <p class="section-subtitle">
+            <span class="lang lang-en">Two decades of groundbreaking conservation science research</span>
+            <span class="lang lang-ko" style="display:none;">20년간의 획기적인 보존과학 연구 여정</span>
+          </p>
+        </div>
+
+        <div class="innovation-timeline">
+          <div class="innovation-track">
+            <div class="innovation-progress"></div>
+            
+            <!-- History Items -->
+            <div class="innovation-item" data-year="2025">
+              <div class="innovation-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-year">2025</div>
+              </div>
+              <div class="innovation-card">
+                <div class="card-badge breakthrough">
+                  <span class="lang lang-en">🚀 Current</span>
+                  <span class="lang lang-ko" style="display:none;">🚀 현재</span>
+                </div>
+                <h3>
+                  <span class="lang lang-en">AI-Powered Innovation</span>
+                  <span class="lang lang-ko" style="display:none;">AI 기반 혁신</span>
+                </h3>
+                <p>
+                  <span class="lang lang-en">Currently expanding research horizons with AI-assisted heritage analysis and sustainable conservation methodologies, leading the future of cultural preservation.</span>
+                  <span class="lang lang-ko" style="display:none;">현재 AI 기반 문화재 분석과 지속 가능한 보존 방법론으로 연구 영역을 확장하며 문화 보존의 미래를 선도하고 있습니다.</span>
+                </p>
+                <div class="card-metrics">
+                  <div class="metric">
+                    <span class="metric-value">20</span>
+                    <span class="metric-label">
+                      <span class="lang lang-en">Years</span>
+                      <span class="lang lang-ko" style="display:none;">년</span>
+                    </span>
+                  </div>
+                  <div class="metric">
+                    <span class="metric-value">150+</span>
+                    <span class="metric-label">
+                      <span class="lang lang-en">Publications</span>
+                      <span class="lang lang-ko" style="display:none;">논문</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="innovation-item" data-year="2024">
+              <div class="innovation-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-year">2024</div>
+              </div>
+              <div class="innovation-card">
+                <div class="card-badge innovation">
+                  <span class="lang lang-en">🔧 Technology</span>
+                  <span class="lang lang-ko" style="display:none;">🔧 기술</span>
+                </div>
+                <h3>
+                  <span class="lang lang-en">3D Printing Technology Breakthrough</span>
+                  <span class="lang lang-ko" style="display:none;">3D 프린팅 기술 혁신</span>
+                </h3>
+                <p>
+                  <span class="lang lang-en">Achieved breakthrough in metal PLA 3D printing for heritage restoration, opening new possibilities for cultural asset reconstruction.</span>
+                  <span class="lang lang-ko" style="display:none;">문화재 복원을 위한 금속 PLA 3D 프린팅 기술에서 혁신적 성과를 달성하여 문화재 복원의 새로운 가능성을 열었습니다.</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="innovation-item" data-year="2022">
+              <div class="innovation-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-year">2022</div>
+              </div>
+              <div class="innovation-card">
+                <div class="card-badge achievement">
+                  <span class="lang lang-en">🏆 Recognition</span>
+                  <span class="lang lang-ko" style="display:none;">🏆 인정</span>
+                </div>
+                <h3>
+                  <span class="lang lang-en">National Heritage Conservation Award</span>
+                  <span class="lang lang-ko" style="display:none;">국가유산 보존기술상</span>
+                </h3>
+                <p>
+                  <span class="lang lang-en">Received National Heritage Conservation Technology Award from the Ministry of Culture, Sports and Tourism for outstanding contributions to the field.</span>
+                  <span class="lang lang-ko" style="display:none;">문화체육관광부로부터 국가유산 보존기술상을 수상하여 해당 분야에 대한 뛰어난 기여를 인정받았습니다.</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="innovation-item" data-year="2020">
+              <div class="innovation-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-year">2020</div>
+              </div>
+              <div class="innovation-card">
+                <div class="card-badge innovation">
+                  <span class="lang lang-en">💻 Digital</span>
+                  <span class="lang lang-ko" style="display:none;">💻 디지털</span>
+                </div>
+                <h3>
+                  <span class="lang lang-en">Digital Heritage Initiative</span>
+                  <span class="lang lang-ko" style="display:none;">디지털 문화유산 이니셔티브</span>
+                </h3>
+                <p>
+                  <span class="lang lang-en">Launched comprehensive digital documentation and 3D reconstruction projects for cultural heritage preservation using cutting-edge technology.</span>
+                  <span class="lang lang-ko" style="display:none;">최첨단 기술을 활용한 문화유산 보존을 위한 포괄적인 디지털 문서화 및 3D 복원 프로젝트를 시작하였습니다.</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="innovation-item" data-year="2018">
+              <div class="innovation-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-year">2018</div>
+              </div>
+              <div class="innovation-card">
+                <div class="card-badge achievement">
+                  <span class="lang lang-en">📋 Patent</span>
+                  <span class="lang lang-ko" style="display:none;">📋 특허</span>
+                </div>
+                <h3>
+                  <span class="lang lang-en">Innovation Patent Achievement</span>
+                  <span class="lang lang-ko" style="display:none;">혁신 특허 성과</span>
+                </h3>
+                <p>
+                  <span class="lang lang-en">Successfully obtained multiple patents for innovative conservation technologies, establishing our position as a leader in heritage science.</span>
+                  <span class="lang lang-ko" style="display:none;">혁신적인 보존 기술에 대한 다수의 특허를 성공적으로 취득하여 문화재과학 분야의 선도적 지위를 확립하였습니다.</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="innovation-item" data-year="2015">
+              <div class="innovation-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-year">2015</div>
+              </div>
+              <div class="innovation-card">
+                <div class="card-badge breakthrough">
+                  <span class="lang lang-en">� Research</span>
+                  <span class="lang lang-ko" style="display:none;">� 연구</span>
+                </div>
+                <h3>
+                  <span class="lang lang-en">International Research Recognition</span>
+                  <span class="lang lang-ko" style="display:none;">국제 연구 성과 인정</span>
+                </h3>
+                <p>
+                  <span class="lang lang-en">Published groundbreaking research on traditional Korean metal conservation techniques in prestigious international journals.</span>
+                  <span class="lang lang-ko" style="display:none;">한국 전통 금속 보존 기법에 관한 획기적인 연구를 권위 있는 국제 학술지에 발표하여 학계의 주목을 받았습니다.</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="innovation-item" data-year="2012">
+              <div class="innovation-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-year">2012</div>
+              </div>
+              <div class="innovation-card">
+                <div class="card-badge innovation">
+                  <span class="lang lang-en">🌍 Global</span>
+                  <span class="lang lang-ko" style="display:none;">🌍 글로벌</span>
+                </div>
+                <h3>
+                  <span class="lang lang-en">Global Collaboration Network</span>
+                  <span class="lang lang-ko" style="display:none;">글로벌 협력 네트워크</span>
+                </h3>
+                <p>
+                  <span class="lang lang-en">Established international collaboration programs with leading conservation institutes in Europe and Asia for knowledge exchange.</span>
+                  <span class="lang lang-ko" style="display:none;">유럽과 아시아의 주요 보존과학 연구기관과 국제 협력 프로그램을 구축하여 지식 교류를 확대하였습니다.</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="innovation-item" data-year="2008">
+              <div class="innovation-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-year">2008</div>
+              </div>
+              <div class="innovation-card">
+                <div class="card-badge achievement">
+                  <span class="lang lang-en">🔬 Equipment</span>
+                  <span class="lang lang-ko" style="display:none;">🔬 장비</span>
+                </div>
+                <h3>
+                  <span class="lang lang-en">Advanced Equipment Installation</span>
+                  <span class="lang lang-ko" style="display:none;">첨단 장비 도입</span>
+                </h3>
+                <p>
+                  <span class="lang lang-en">Acquired state-of-the-art analytical equipment including X-ray fluorescence spectrometer and advanced microscopy systems.</span>
+                  <span class="lang lang-ko" style="display:none;">X선 형광 분석기 및 첨단 현미경 시스템을 포함한 최첨단 분석 장비를 도입하여 연구 역량을 크게 강화하였습니다.</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="innovation-item featured" data-year="2005">
+              <div class="innovation-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-year">2005</div>
+              </div>
+              <div class="innovation-card">
+                <div class="card-badge breakthrough">
+                  <span class="lang lang-en">�️ Foundation</span>
+                  <span class="lang lang-ko" style="display:none;">�️ 설립</span>
+                </div>
+                <h3>
+                  <span class="lang lang-en">Laboratory Foundation</span>
+                  <span class="lang lang-ko" style="display:none;">연구소 설립</span>
+                </h3>
+                <p>
+                  <span class="lang lang-en">Conservation Science Lab was established at Korea National University of Heritage, beginning our mission to preserve cultural heritage through scientific innovation.</span>
+                  <span class="lang lang-ko" style="display:none;">한국전통문화대학교에 보존과학연구소가 설립되어 과학적 혁신을 통한 문화유산 보존의 사명을 시작하게 되었습니다.</span>
+                </p>
+                <div class="card-metrics">
+                  <div class="metric">
+                    <span class="metric-value">Origin</span>
+                    <span class="metric-label">
+                      <span class="lang lang-en">Our Beginning</span>
+                      <span class="lang lang-ko" style="display:none;">우리의 시작</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3 class="lang lang-en">Conservation Science Lab</h3>
+        <h3 class="lang lang-ko" style="display:none;">보존과학연구소</h3>
+        <p class="lang lang-en">We are dedicated to preserving cultural heritage through innovative scientific research and advanced technology.</p>
+        <p class="lang lang-ko" style="display:none;">혁신적인 과학 연구와 첨단 기술을 통해 문화유산 보존에 힘쓰고 있습니다.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Lab YouTube Channel"><i class="fab fa-youtube"></i></a>
+          <a href="#" aria-label="Lab Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Lab Facebook"><i class="fab fa-facebook"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h3 class="lang lang-en">Quick Links</h3>
+        <h3 class="lang lang-ko" style="display:none;">바로가기</h3>
+        <ul class="footer-links">
+          <li><a href="index.html" class="lang lang-en">Home</a><a href="index.html" class="lang lang-ko" style="display:none;">홈</a></li>
+          <li><a href="members.html" class="lang lang-en">Members</a><a href="members.html" class="lang lang-ko" style="display:none;">연구진</a></li>
+          <li><a href="projects.html" class="lang lang-en">Projects</a><a href="projects.html" class="lang lang-ko" style="display:none;">연구과제</a></li>
+          <li><a href="facilities.html" class="lang lang-en">Facilities</a><a href="facilities.html" class="lang lang-ko" style="display:none;">연구시설</a></li>
+          <li><a href="history.html" class="lang lang-en">History</a><a href="history.html" class="lang lang-ko" style="display:none;">연혁</a></li>
+          <li><a href="gallery.html" class="lang lang-en">Gallery</a><a href="gallery.html" class="lang lang-ko" style="display:none;">갤러리</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h3 class="lang lang-en">Contact</h3>
+        <h3 class="lang lang-ko" style="display:none;">연락처</h3>
+        <div class="footer-contact-info">
+          <p>
+            <i class="fas fa-map-marker-alt"></i>
+            <span class="lang lang-en">Korea National University of Cultural Heritage, Conservation Science Lab.</span>
+            <span class="lang lang-ko" style="display:none;">한국전통문화대학교 보존과학연구소</span>
+          </p>
+          <p>
+            <i class="fas fa-phone"></i>
+            <span>+82-41-830-7368</span>
+          </p>
+          <p>
+            <i class="fas fa-envelope"></i>
+            <span>conservation@csllso.co.kr</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="lang lang-en">&copy; 2025 Conservation Science Lab. All rights reserved.</p>
+      <p class="lang lang-ko" style="display:none;">&copy; 2025 보존과학연구소. 모든 권리 보유.</p>
+    </div>
+  </footer>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="common.js"></script>
+  <script src="history.js"></script>
+</body>
+</html>

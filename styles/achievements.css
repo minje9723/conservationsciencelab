@@ -1,0 +1,371 @@
+/* Achievements page specific styles */
+
+/* Animation Classes - Members Page Style */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-on-scroll {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.animate-on-scroll.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Navigation dropdown styles */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: #fff;
+  min-width: 280px;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(26,35,126,0.15);
+  border-radius: 0;
+  z-index: 1000;
+  border: 1px solid #e0e6ed;
+  overflow: hidden;
+}
+
+.nav-dropdown:hover .nav-dropdown-content {
+  display: block;
+}
+
+.nav-achievement-filter {
+  display: block;
+  padding: 0.9rem 1.2rem;
+  color: #1a237e;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  border: none;
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.nav-achievement-filter:hover {
+  background: #f5f7fa;
+  color: #3949ab;
+}
+
+.nav-achievement-filter.active {
+  background: #1a237e;
+  color: #fff;
+}
+
+.nav-project-filter {
+  display: block;
+  padding: 0.9rem 1.2rem;
+  color: #1a237e;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  border: none;
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.nav-project-filter:hover {
+  background: #f5f7fa;
+  color: #3949ab;
+}
+
+.nav-project-filter.active {
+  background: #1a237e;
+  color: #fff;
+}
+
+.nav-member-filter {
+  display: block;
+  padding: 0.9rem 1.2rem;
+  color: #1a237e;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  border: none;
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.nav-member-filter:hover {
+  background: #f5f7fa;
+  color: #3949ab;
+}
+
+.nav-member-filter.active {
+  background: #1a237e;
+  color: #fff;
+}
+
+/* Apply Libre Bodoni to navigation English text */
+.nav-links li a .lang-en,
+.nav-text.lang-en,
+.nav-project-filter .lang-en,
+.nav-achievement-filter .lang-en,
+.nav-member-filter .lang-en {
+  font-family: 'Libre Bodoni', serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-size: 0.75rem;
+}
+
+.nav-project-filter .lang-en,
+.nav-achievement-filter .lang-en,
+.nav-member-filter .lang-en {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  font-size: 0.8rem;
+}
+
+.achievement-list {
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.achievement-list li {
+  position: relative;
+  margin: 0;
+  background: #fff;
+  border-radius: 0;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(26,35,126,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  border: 1px solid #e0e6ed;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.achievement-list li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(26,35,126,0.12);
+}
+
+.achievement-list li[data-type="publication"] {
+  border-top: 4px solid #1a73e8;
+}
+
+.achievement-list li[data-type="conference"] {
+  border-top: 4px solid #34a853;
+}
+
+.achievement-list li[data-type="patent"] {
+  border-top: 4px solid #9c27b0;
+}
+
+.achievement-list li[data-type="award"] {
+  border-top: 4px solid #fbbc04;
+}
+
+.achievement-icon {
+  position: absolute;
+  top: -1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+li[data-type="publication"] .achievement-icon {
+  background: #1a73e8;
+}
+
+li[data-type="conference"] .achievement-icon {
+  background: #34a853;
+}
+
+li[data-type="patent"] .achievement-icon {
+  background: #9c27b0;
+}
+
+li[data-type="award"] .achievement-icon {
+  background: #fbbc04;
+}
+
+.achievement-title {
+  font-size: 1.13rem;
+  font-weight: bold;
+  color: #1a237e;
+  margin-bottom: 0.2rem;
+}
+
+.achievement-meta {
+  font-size: 0.98rem;
+  color: #3949ab;
+  margin-bottom: 0.2rem;
+}
+
+.achievement-year {
+  margin-left: 0.7rem;
+  color: #5c6bc0;
+  font-weight: 500;
+}
+
+.achievement-summary {
+  font-size: 0.97rem;
+  color: #333;
+  margin-bottom: 0.2rem;
+}
+
+.achievement-link {
+  display: inline-block;
+  margin-top: 0.2rem;
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #fff;
+  background: #1a237e;
+  border-radius: 0;
+  padding: 0.38rem 1.1rem;
+  text-decoration: none;
+  transition: background 0.18s;
+}
+
+.achievement-link:hover {
+  background: #3949ab;
+}
+
+.achievements-filter-container {
+  display: flex;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.achievement-filter {
+  /* Liquid Glass Base */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px 0 rgba(31, 38, 135, 0.15),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.5),
+    0 1px 0 0 rgba(255, 255, 255, 0.25);
+  
+  color: #2c3e50;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 0;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  
+  /* Smooth transitions */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  white-space: nowrap;
+  
+  /* Text styling */
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.achievement-filter::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.4), 
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.achievement-filter:hover::before {
+  left: 100%;
+}
+
+.achievement-filter:hover {
+  background: rgba(0, 210, 190, 0.15);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border-color: rgba(0, 210, 190, 0.5);
+  box-shadow: 
+    0 12px 48px 0 rgba(0, 210, 190, 0.25),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.6),
+    0 2px 4px 0 rgba(0, 210, 190, 0.2);
+  color: #00D2BE;
+  transform: translateY(-2px) scale(1.02);
+}
+
+.achievement-filter.active {
+  background: linear-gradient(135deg, 
+    rgba(0, 210, 190, 0.9) 0%, 
+    rgba(0, 170, 170, 0.9) 50%,
+    rgba(0, 130, 150, 0.9) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 210, 190, 0.4),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.3),
+    0 4px 12px 0 rgba(0, 210, 190, 0.3);
+  color: #ffffff;
+  transform: scale(1.05);
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.achievement-filter.active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, 
+    rgba(255, 255, 255, 0.3) 0%, 
+    transparent 70%
+  );
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .achievements-filter-container {
+    justify-content: flex-start;
+  }
+}

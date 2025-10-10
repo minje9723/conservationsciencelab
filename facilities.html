@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research Facilities | Conservation Science Lab | Korea National University of Heritage</title>
+  <link rel="stylesheet" href="styles/common.css">
+  <link rel="stylesheet" href="styles/facilities.css">
+</head>
+<body>
+  <header class="transparent-header">
+    <nav class="navbar">
+      <div class="logo" style="display:flex;align-items:center;gap:12px;">
+        <img src="assets/CSL Banner Logo.png" alt="CSL Banner Logo" style="height:48px;width:auto;display:block;" />
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          <span class="nav-text lang lang-en">HOME</span>
+          <span class="nav-text lang lang-ko" style="display:none;">홈</span>
+        </a></li>
+        <li><a href="history.html">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span class="nav-text lang lang-en">HISTORY</span>
+          <span class="nav-text lang lang-ko" style="display:none;">연혁</span>
+        </a></li>
+        <li class="nav-dropdown">
+          <a href="members.html">
+            <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span class="nav-text lang lang-en">MEMBERS</span>
+            <span class="nav-text lang lang-ko" style="display:none;">연구진</span>
+          </a>
+          <div class="nav-dropdown-content">
+            <a href="members.html#researchers" class="nav-member-filter">
+              <span class="lang lang-en">Researchers</span>
+              <span class="lang lang-ko" style="display:none;">연구원</span>
+            </a>
+            <a href="members.html#alumni" class="nav-member-filter">
+              <span class="lang lang-en">Alumni</span>
+              <span class="lang lang-ko" style="display:none;">보존과학연구소 식구들</span>
+            </a>
+          </div>
+        </li>
+        <li class="nav-dropdown">
+          <a href="projects.html">
+            <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <span class="nav-text lang lang-en">PROJECTS</span>
+            <span class="nav-text lang lang-ko" style="display:none;">프로젝트</span>
+          </a>
+          <div class="nav-dropdown-content">
+            <a href="projects.html?category=excavated-conservation" class="nav-project-filter" data-category="excavated-conservation">
+              <span class="lang lang-en">Excavated Artifact Conservation</span>
+              <span class="lang lang-ko" style="display:none;">출토 유물 보존처리</span>
+            </a>
+            <a href="projects.html?category=site-investigation" class="nav-project-filter" data-category="site-investigation">
+              <span class="lang lang-en">Site Survey & Manufacturing Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 현장 조사 및 제작기법 분석</span>
+            </a>
+            <a href="projects.html?category=designation-research" class="nav-project-filter" data-category="designation-research">
+              <span class="lang lang-en">Heritage Designation Research</span>
+              <span class="lang lang-ko" style="display:none;">국가유산 지정 및 승격 연구</span>
+            </a>
+            <a href="projects.html?category=preservation-research" class="nav-project-filter" data-category="preservation-research">
+              <span class="lang lang-en">Preservation Strategy Research</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 보존 방안 연구</span>
+            </a>
+          </div>
+        </li>
+        <li class="nav-dropdown">
+          <a href="achievements.html">
+            <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+            <span class="nav-text lang lang-en">ACHIEVEMENTS</span>
+            <span class="nav-text lang lang-ko" style="display:none;">연구성과</span>
+          </a>
+          <div class="nav-dropdown-content">
+            <a href="achievements.html?filter=publication" class="nav-achievement-filter" data-filter="publication">
+              <span class="lang lang-en">Publications</span>
+              <span class="lang lang-ko" style="display:none;">논문</span>
+            </a>
+            <a href="achievements.html?filter=conference" class="nav-achievement-filter" data-filter="conference">
+              <span class="lang lang-en">Conferences</span>
+              <span class="lang lang-ko" style="display:none;">학술발표</span>
+            </a>
+            <a href="achievements.html?filter=patent" class="nav-achievement-filter" data-filter="patent">
+              <span class="lang lang-en">Patents</span>
+              <span class="lang lang-ko" style="display:none;">특허</span>
+            </a>
+            <a href="achievements.html?filter=award" class="nav-achievement-filter" data-filter="award">
+              <span class="lang lang-en">Awards</span>
+              <span class="lang lang-ko" style="display:none;">수상</span>
+            </a>
+          </div>
+        </li>
+        <li><a href="facilities.html" class="active">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          <span class="nav-text lang lang-en">FACILITIES</span>
+          <span class="nav-text lang lang-ko" style="display:none;">시설장비</span>
+        </a></li>
+        <li><a href="gallery.html">
+          <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span class="nav-text lang lang-en">GALLERY</span>
+          <span class="nav-text lang lang-ko" style="display:none;">갤러리</span>
+        </a></li>
+      </ul>
+      <div class="lang-switcher">
+        <button id="langToggle" class="lang-globe-btn" aria-label="Change Language">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="lang-text current-lang">EN</span>
+        </button>
+        <div id="langDropdown" class="lang-dropdown">
+          <button id="lang-en" class="lang-option active" data-lang="en">
+            <span class="lang-name">English</span>
+            <span class="lang-code">EN</span>
+          </button>
+          <button id="lang-ko" class="lang-option" data-lang="ko">
+            <span class="lang-name">한국어</span>
+            <span class="lang-code">KR</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main style="padding-top: 100px;">
+    <section class="section page-banner">
+      <div class="page-banner-background">
+        <video class="page-banner-video" autoplay muted loop playsinline>
+          <source src="assets/banners/facilities-banner.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="page-banner-overlay"></div>
+      </div>
+      <div class="page-banner-content">
+        <h1 class="page-banner-title">
+          <span class="lang lang-en">Research Facilities & Equipment</span>
+          <span class="lang lang-ko" style="display:none;">연구 시설 및 장비</span>
+        </h1>
+        <p class="page-banner-subtitle">
+          <span class="lang lang-en">Explore our state-of-the-art facilities and cutting-edge equipment that enable groundbreaking research in conservation science.</span>
+          <span class="lang lang-ko" style="display:none;">보존과학 분야의 획기적인 연구를 가능하게 하는 최첨단 시설과 장비를 둘러보세요.</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="facility-filter-container">
+        <button class="facility-filter active" data-filter="all">
+          <span class="lang lang-en">All Equipment</span>
+          <span class="lang lang-ko" style="display:none;">전체 장비</span>
+        </button>
+        <button class="facility-filter" data-filter="treatment">
+          <span class="lang lang-en">Conservation Treatment</span>
+          <span class="lang lang-ko" style="display:none;">보존처리</span>
+        </button>
+        <button class="facility-filter" data-filter="evaluation">
+          <span class="lang lang-en">Material Evaluation</span>
+          <span class="lang lang-ko" style="display:none;">복원재료평가</span>
+        </button>
+        <button class="facility-filter" data-filter="analysis">
+          <span class="lang lang-en">Heritage Analysis</span>
+          <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+        </button>
+      </div>
+
+      <div class="facility-list">
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=200&fit=crop" alt="High-Resolution 3D Scanner" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">High-Resolution 3D Scanner</span>
+              <span class="lang lang-ko" style="display:none;">고해상도 3D 스캐너</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Advanced structured light 3D scanner capable of capturing cultural artifacts with sub-millimeter precision for detailed documentation and analysis.</span>
+              <span class="lang lang-ko" style="display:none;">문화재의 정밀한 기록과 분석을 위한 서브밀리미터 정밀도의 고급 구조광 3D 스캐너입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Accuracy</span>
+                  <span class="lang lang-ko" style="display:none;">정확도</span>
+                </span>
+                <span class="spec-value">± 0.1 mm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Resolution</span>
+                  <span class="lang lang-ko" style="display:none;">해상도</span>
+                </span>
+                <span class="spec-value">0.1 mm accuracy</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Scanning Area</span>
+                  <span class="lang lang-ko" style="display:none;">스캔 영역</span>
+                </span>
+                <span class="spec-value">90-500 mm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=200&fit=crop" alt="X-Ray Fluorescence Spectrometer" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">X-Ray Fluorescence Spectrometer</span>
+              <span class="lang lang-ko" style="display:none;">X선 형광 분석기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Portable XRF analyzer for non-destructive elemental analysis of cultural heritage materials, enabling in-situ characterization of pigments, metals, and ceramics.</span>
+              <span class="lang lang-ko" style="display:none;">문화재 재료의 비파괴 원소 분석을 위한 휴대용 XRF 분석기로, 안료, 금속, 도자기의 현장 특성화가 가능합니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Elements</span>
+                  <span class="lang lang-ko" style="display:none;">원소 범위</span>
+                </span>
+                <span class="spec-value">Mg to U</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Analysis Time</span>
+                  <span class="lang lang-ko" style="display:none;">분석 시간</span>
+                </span>
+                <span class="spec-value">10-60 s</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Detection Limits</span>
+                  <span class="lang lang-ko" style="display:none;">검출 한계</span>
+                </span>
+                <span class="spec-value">10-100 ppm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=200&fit=crop" alt="FTIR Spectrometer" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">FTIR Spectrometer</span>
+              <span class="lang lang-ko" style="display:none;">FTIR 분광기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Fourier Transform Infrared Spectrometer with ATR accessory for molecular identification of organic and inorganic materials in cultural heritage objects.</span>
+              <span class="lang lang-ko" style="display:none;">문화재 내 유기물과 무기물의 분자 식별을 위한 ATR 액세서리가 장착된 푸리에 변환 적외선 분광기입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Spectral Range</span>
+                  <span class="lang lang-ko" style="display:none;">분광 범위</span>
+                </span>
+                <span class="spec-value">4000-400 cm⁻¹</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Resolution</span>
+                  <span class="lang lang-ko" style="display:none;">해상도</span>
+                </span>
+                <span class="spec-value">0.5 cm⁻¹</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Accessory</span>
+                  <span class="lang lang-ko" style="display:none;">액세서리</span>
+                </span>
+                <span class="spec-value">ATR Diamond</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=200&fit=crop" alt="Metal 3D Printer" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Metal 3D Printer</span>
+              <span class="lang lang-ko" style="display:none;">금속 3D 프린터</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Industrial-grade metal 3D printer utilizing selective laser melting technology for creating precise replacement components for heritage restoration.</span>
+              <span class="lang lang-ko" style="display:none;">문화재 복원용 정밀 대체 부품 제작을 위한 선택적 레이저 용융 기술을 활용한 산업용 금속 3D 프린터입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Build Volume</span>
+                  <span class="lang lang-ko" style="display:none;">빌드 볼륨</span>
+                </span>
+                <span class="spec-value">250 × 250 × 325 mm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Materials</span>
+                  <span class="lang lang-ko" style="display:none;">재료</span>
+                </span>
+                <span class="spec-value">Ti, Al, Steel alloys</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Layer Thickness</span>
+                  <span class="lang lang-ko" style="display:none;">레이어 두께</span>
+                </span>
+                <span class="spec-value">20-100 μm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=200&fit=crop" alt="RTI Imaging System" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Reflectance Transformation Imaging (RTI) System</span>
+              <span class="lang lang-ko" style="display:none;">반사 변환 이미징 (RTI) 시스템</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Advanced RTI system for revealing surface details, inscriptions, and textures invisible to conventional photography, essential for cultural heritage documentation.</span>
+              <span class="lang lang-ko" style="display:none;">기존 사진으로는 보이지 않는 표면 세부사항, 비문, 질감을 드러내는 고급 RTI 시스템으로, 문화유산 문서화에 필수적입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Resolution</span>
+                  <span class="lang lang-ko" style="display:none;">해상도</span>
+                </span>
+                <span class="spec-value">50 MP</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Light Sources</span>
+                  <span class="lang lang-ko" style="display:none;">광원</span>
+                </span>
+                <span class="spec-value">64 LED array</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Capture Area</span>
+                  <span class="lang lang-ko" style="display:none;">촬영 영역</span>
+                </span>
+                <span class="spec-value">Up to 2 m²</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&h=200&fit=crop" alt="Multispectral Imaging Camera" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Multispectral Imaging Camera</span>
+              <span class="lang lang-ko" style="display:none;">다중분광 이미징 카메라</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">High-resolution multispectral camera system for revealing hidden layers, underdrawings, and material composition in paintings and manuscripts.</span>
+              <span class="lang lang-ko" style="display:none;">회화와 필사본의 숨겨진 층, 밑그림, 재료 구성을 드러내는 고해상도 다중분광 카메라 시스템입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Spectral Range</span>
+                  <span class="lang lang-ko" style="display:none;">분광 범위</span>
+                </span>
+                <span class="spec-value">365-1000 nm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Spectral Bands</span>
+                  <span class="lang lang-ko" style="display:none;">분광 대역</span>
+                </span>
+                <span class="spec-value">13 bands</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Resolution</span>
+                  <span class="lang lang-ko" style="display:none;">해상도</span>
+                </span>
+                <span class="spec-value">1600 × 1200</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 만능재료시험기 -->
+        <div class="facility-item animate-on-scroll" data-category="evaluation">
+          <img src="https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=600&h=200&fit=crop" alt="Universal Testing Machine" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Material Evaluation</span>
+              <span class="lang lang-ko" style="display:none;">복원재료평가</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Universal Testing Machine (UTM)</span>
+              <span class="lang lang-ko" style="display:none;">만능재료시험기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Advanced material testing system for measuring mechanical properties including tensile strength, compression, and flexural characteristics of conservation materials and treated heritage objects.</span>
+              <span class="lang lang-ko" style="display:none;">보존 재료 및 처리된 문화재의 인장 강도, 압축, 굽힘 특성을 포함한 기계적 특성을 측정하는 고급 재료 시험 시스템입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Max Load</span>
+                  <span class="lang lang-ko" style="display:none;">최대 하중</span>
+                </span>
+                <span class="spec-value">50 kN</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Test Speed</span>
+                  <span class="lang lang-ko" style="display:none;">시험 속도</span>
+                </span>
+                <span class="spec-value">0.001-500 mm/min</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Accuracy</span>
+                  <span class="lang lang-ko" style="display:none;">정확도</span>
+                </span>
+                <span class="spec-value">± 0.5 %</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 진공함침기 -->
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=200&fit=crop" alt="Vacuum Impregnation Chamber" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Vacuum Impregnation Chamber</span>
+              <span class="lang lang-ko" style="display:none;">진공함침기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Professional vacuum impregnation system for deep penetration of consolidants into deteriorated wood, stone, and other porous cultural heritage materials, ensuring effective preservation treatment.</span>
+              <span class="lang lang-ko" style="display:none;">열화된 목재, 석재 및 기타 다공성 문화재 재료에 강화제를 깊이 침투시키는 전문 진공 함침 시스템으로 효과적인 보존 처리를 보장합니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Chamber Size</span>
+                  <span class="lang lang-ko" style="display:none;">챔버 크기</span>
+                </span>
+                <span class="spec-value">600 × 600 × 800 mm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Vacuum Level</span>
+                  <span class="lang lang-ko" style="display:none;">진공도</span>
+                </span>
+                <span class="spec-value">0.1-100 kPa</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Temperature Range</span>
+                  <span class="lang lang-ko" style="display:none;">온도 범위</span>
+                </span>
+                <span class="spec-value">20-80 °C</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 자외선열화기 -->
+        <div class="facility-item animate-on-scroll" data-category="evaluation">
+          <img src="https://images.unsplash.com/photo-1532187643603-ba119ca4109e?w=600&h=200&fit=crop" alt="UV Weathering Chamber" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Material Evaluation</span>
+              <span class="lang lang-ko" style="display:none;">복원재료평가</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">UV Weathering Chamber</span>
+              <span class="lang lang-ko" style="display:none;">자외선열화기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Accelerated weathering testing equipment for evaluating the long-term durability and photo-degradation behavior of conservation materials and protective coatings under controlled UV exposure conditions.</span>
+              <span class="lang lang-ko" style="display:none;">제어된 자외선 노출 조건 하에서 보존 재료 및 보호 코팅의 장기 내구성과 광분해 거동을 평가하기 위한 촉진 열화 시험 장비입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">UV Wavelength</span>
+                  <span class="lang lang-ko" style="display:none;">UV 파장</span>
+                </span>
+                <span class="spec-value">290-400 nm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Irradiance</span>
+                  <span class="lang lang-ko" style="display:none;">조사 강도</span>
+                </span>
+                <span class="spec-value">0.5-1.5 W/m²</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Temperature Control</span>
+                  <span class="lang lang-ko" style="display:none;">온도 제어</span>
+                </span>
+                <span class="spec-value">40-70 °C ± 2 °C</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 초음파속도 측정기 -->
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=200&fit=crop" alt="Ultrasonic Velocity Tester" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Ultrasonic Velocity Tester</span>
+              <span class="lang lang-ko" style="display:none;">초음파속도 측정기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Non-destructive testing instrument for measuring ultrasonic pulse velocity in stone, concrete, and wood to assess internal condition, detect defects, and evaluate consolidation treatment effectiveness.</span>
+              <span class="lang lang-ko" style="display:none;">석재, 콘크리트, 목재의 초음파 펄스 속도를 측정하여 내부 상태를 평가하고 결함을 감지하며 강화 처리 효과를 평가하는 비파괴 시험 기기입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Frequency</span>
+                  <span class="lang lang-ko" style="display:none;">주파수</span>
+                </span>
+                <span class="spec-value">24-500 kHz</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Velocity Range</span>
+                  <span class="lang lang-ko" style="display:none;">속도 범위</span>
+                </span>
+                <span class="spec-value">500-9999 m/s</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Resolution</span>
+                  <span class="lang lang-ko" style="display:none;">분해능</span>
+                </span>
+                <span class="spec-value">0.1 μs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 슈미츠해머 -->
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=200&fit=crop" alt="Schmidt Hammer" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Schmidt Hammer (Rebound Tester)</span>
+              <span class="lang lang-ko" style="display:none;">슈미츠해머 (반발경도계)</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Portable rebound hardness tester for rapid, non-destructive assessment of surface hardness and compressive strength of stone monuments, concrete structures, and other solid heritage materials in the field.</span>
+              <span class="lang lang-ko" style="display:none;">현장에서 석조물, 콘크리트 구조물 및 기타 고체 문화재 재료의 표면 경도 및 압축 강도를 신속하게 비파괴로 평가하는 휴대용 반발 경도 시험기입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Type</span>
+                  <span class="lang lang-ko" style="display:none;">타입</span>
+                </span>
+                <span class="spec-value">Type N / L</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Rebound Scale</span>
+                  <span class="lang lang-ko" style="display:none;">반발 척도</span>
+                </span>
+                <span class="spec-value">10-100</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Impact Energy</span>
+                  <span class="lang lang-ko" style="display:none;">충격 에너지</span>
+                </span>
+                <span class="spec-value">2.207 N·m</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEM-EDS -->
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1581093458791-9d42e72c1e1e?w=600&h=200&fit=crop" alt="SEM-EDS" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Scanning Electron Microscope with EDS</span>
+              <span class="lang lang-ko" style="display:none;">주사전자현미경 (SEM-EDS)</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">High-resolution scanning electron microscope equipped with energy dispersive X-ray spectroscopy for detailed microstructural analysis and elemental composition mapping of cultural heritage materials at nano to micro scale.</span>
+              <span class="lang lang-ko" style="display:none;">나노에서 마이크로 스케일에서 문화재 재료의 상세한 미세구조 분석 및 원소 조성 매핑을 위한 에너지 분산형 X선 분광기가 장착된 고해상도 주사전자현미경입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Magnification</span>
+                  <span class="lang lang-ko" style="display:none;">배율</span>
+                </span>
+                <span class="spec-value">×10 - ×300,000</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Resolution</span>
+                  <span class="lang lang-ko" style="display:none;">해상도</span>
+                </span>
+                <span class="spec-value">3.0 nm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">EDS Elements</span>
+                  <span class="lang lang-ko" style="display:none;">EDS 원소 범위</span>
+                </span>
+                <span class="spec-value">B to U</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 금속현미경 -->
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=200&fit=crop" alt="Metallurgical Microscope" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Metallurgical Microscope</span>
+              <span class="lang lang-ko" style="display:none;">금속현미경</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Professional reflected light microscope for examining microstructures, grain boundaries, corrosion products, and manufacturing techniques of metal artifacts including bronze, iron, and precious metal cultural heritage objects.</span>
+              <span class="lang lang-ko" style="display:none;">청동, 철, 귀금속 문화재를 포함한 금속 유물의 미세구조, 결정립계, 부식 생성물 및 제작 기법을 검사하기 위한 전문 반사광 현미경입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Magnification</span>
+                  <span class="lang lang-ko" style="display:none;">배율</span>
+                </span>
+                <span class="spec-value">×50 - ×1000</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Illumination</span>
+                  <span class="lang lang-ko" style="display:none;">조명</span>
+                </span>
+                <span class="spec-value">Brightfield/Darkfield</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Camera</span>
+                  <span class="lang lang-ko" style="display:none;">카메라</span>
+                </span>
+                <span class="spec-value">5MP Digital</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 실체현미경 -->
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1581093804475-577d72e38aa0?w=600&h=200&fit=crop" alt="Stereoscopic Microscope" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Stereoscopic Microscope</span>
+              <span class="lang lang-ko" style="display:none;">실체현미경</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">High-performance stereo microscope with excellent depth perception for detailed surface examination, cleaning monitoring, damage assessment, and documentation of three-dimensional features in cultural heritage conservation.</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 보존에서 상세한 표면 검사, 세척 모니터링, 손상 평가 및 3차원 특징 기록을 위한 우수한 입체감을 제공하는 고성능 실체현미경입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Magnification</span>
+                  <span class="lang lang-ko" style="display:none;">배율</span>
+                </span>
+                <span class="spec-value">×7.5 - ×75</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Working Distance</span>
+                  <span class="lang lang-ko" style="display:none;">작동 거리</span>
+                </span>
+                <span class="spec-value">90-115 mm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Illumination</span>
+                  <span class="lang lang-ko" style="display:none;">조명</span>
+                </span>
+                <span class="spec-value">LED Ring Light</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 열중량분석기 -->
+        <div class="facility-item animate-on-scroll" data-category="evaluation">
+          <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=200&fit=crop" alt="Thermogravimetric Analyzer" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Material Evaluation</span>
+              <span class="lang lang-ko" style="display:none;">복원재료평가</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Thermogravimetric Analyzer (TGA)</span>
+              <span class="lang lang-ko" style="display:none;">열중량분석기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Precision thermal analysis instrument for measuring mass changes of materials as a function of temperature, used to study thermal stability, decomposition kinetics, and composition of organic conservation materials and heritage samples.</span>
+              <span class="lang lang-ko" style="display:none;">온도 함수로 재료의 질량 변화를 측정하는 정밀 열분석 기기로, 유기 보존 재료 및 문화재 시료의 열 안정성, 분해 동역학 및 조성을 연구하는 데 사용됩니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Temperature Range</span>
+                  <span class="lang lang-ko" style="display:none;">온도 범위</span>
+                </span>
+                <span class="spec-value">RT to 1000 °C</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Balance Sensitivity</span>
+                  <span class="lang lang-ko" style="display:none;">저울 감도</span>
+                </span>
+                <span class="spec-value">0.1 μg</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Sample Size</span>
+                  <span class="lang lang-ko" style="display:none;">시료 크기</span>
+                </span>
+                <span class="spec-value">Up to 1 g</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 접촉각측정기 -->
+        <div class="facility-item animate-on-scroll" data-category="evaluation">
+          <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=200&fit=crop" alt="Contact Angle Meter" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Material Evaluation</span>
+              <span class="lang lang-ko" style="display:none;">복원재료평가</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Contact Angle Meter</span>
+              <span class="lang lang-ko" style="display:none;">접촉각측정기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Advanced goniometer system for measuring surface wettability and interfacial tension, essential for evaluating the effectiveness of hydrophobic treatments, consolidants, and protective coatings applied to heritage materials.</span>
+              <span class="lang lang-ko" style="display:none;">표면 젖음성과 계면 장력을 측정하는 고급 각도계 시스템으로, 문화재 재료에 적용된 소수성 처리, 강화제 및 보호 코팅의 효과를 평가하는 데 필수적입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Angle Range</span>
+                  <span class="lang lang-ko" style="display:none;">각도 범위</span>
+                </span>
+                <span class="spec-value">0-180°</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Accuracy</span>
+                  <span class="lang lang-ko" style="display:none;">정확도</span>
+                </span>
+                <span class="spec-value">±0.1°</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Camera Resolution</span>
+                  <span class="lang lang-ko" style="display:none;">카메라 해상도</span>
+                </span>
+                <span class="spec-value">1920 × 1080</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- XRD -->
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=200&fit=crop" alt="X-Ray Diffractometer" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">X-Ray Diffractometer (XRD)</span>
+              <span class="lang lang-ko" style="display:none;">X선 회절분석기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">High-precision X-ray diffraction system for crystalline phase identification, mineral composition analysis, and structural characterization of ceramics, pigments, corrosion products, and stone materials in cultural heritage research.</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 연구에서 도자기, 안료, 부식 생성물 및 석재의 결정상 식별, 광물 조성 분석 및 구조 특성화를 위한 고정밀 X선 회절 시스템입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">2θ Range</span>
+                  <span class="lang lang-ko" style="display:none;">2θ 범위</span>
+                </span>
+                <span class="spec-value">3-145°</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Radiation Source</span>
+                  <span class="lang lang-ko" style="display:none;">방사선원</span>
+                </span>
+                <span class="spec-value">Cu Kα</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Resolution</span>
+                  <span class="lang lang-ko" style="display:none;">분해능</span>
+                </span>
+                <span class="spec-value">0.02°</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 비커스경도기 -->
+        <div class="facility-item animate-on-scroll" data-category="evaluation">
+          <img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?w=600&h=200&fit=crop" alt="Vickers Hardness Tester" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Material Evaluation</span>
+              <span class="lang lang-ko" style="display:none;">복원재료평가</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Vickers Hardness Tester</span>
+              <span class="lang lang-ko" style="display:none;">비커스경도기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Microhardness testing system with diamond pyramid indenter for precise measurement of surface hardness and mechanical properties of metal artifacts, allowing assessment of manufacturing techniques and conservation treatment effects.</span>
+              <span class="lang lang-ko" style="display:none;">다이아몬드 피라미드 압입자를 사용한 미세경도 시험 시스템으로 금속 유물의 표면 경도와 기계적 특성을 정밀 측정하여 제작 기법과 보존 처리 효과를 평가할 수 있습니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Test Force</span>
+                  <span class="lang lang-ko" style="display:none;">시험 하중</span>
+                </span>
+                <span class="spec-value">10 gf - 2 kgf</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Magnification</span>
+                  <span class="lang lang-ko" style="display:none;">배율</span>
+                </span>
+                <span class="spec-value">×100 - ×600</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Accuracy</span>
+                  <span class="lang lang-ko" style="display:none;">정확도</span>
+                </span>
+                <span class="spec-value">± 1.5 %</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CS분석기 -->
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1581093458791-9d42e72c1e1e?w=600&h=200&fit=crop" alt="Carbon Sulfur Analyzer" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Carbon/Sulfur Analyzer</span>
+              <span class="lang lang-ko" style="display:none;">탄소황 분석기 (CS분석기)</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">High-precision combustion analyzer for determining carbon and sulfur content in metal samples, crucial for identifying alloy compositions, manufacturing processes, and provenance studies of historical metal artifacts.</span>
+              <span class="lang lang-ko" style="display:none;">금속 시료의 탄소 및 황 함량을 측정하는 고정밀 연소 분석기로, 역사적 금속 유물의 합금 조성, 제조 공정 및 출처 연구를 식별하는 데 중요합니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Carbon Range</span>
+                  <span class="lang lang-ko" style="display:none;">탄소 범위</span>
+                </span>
+                <span class="spec-value">0.0001% - 6%</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Sulfur Range</span>
+                  <span class="lang lang-ko" style="display:none;">황 범위</span>
+                </span>
+                <span class="spec-value">0.0001% - 0.35%</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Analysis Time</span>
+                  <span class="lang lang-ko" style="display:none;">분석 시간</span>
+                </span>
+                <span class="spec-value">45-60 s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 전기로 -->
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=200&fit=crop" alt="Electric Furnace" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Electric Furnace</span>
+              <span class="lang lang-ko" style="display:none;">전기로</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">High-temperature electric furnace for heat treatment experiments, thermal testing of conservation materials, ceramics firing replication, and studying thermal effects on cultural heritage materials under controlled atmospheric conditions.</span>
+              <span class="lang lang-ko" style="display:none;">열처리 실험, 보존 재료의 열 시험, 도자기 소성 재현 및 제어된 대기 조건에서 문화재 재료에 대한 열 효과 연구를 위한 고온 전기로입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Max Temperature</span>
+                  <span class="lang lang-ko" style="display:none;">최고 온도</span>
+                </span>
+                <span class="spec-value">1200 °C</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Chamber Size</span>
+                  <span class="lang lang-ko" style="display:none;">챔버 크기</span>
+                </span>
+                <span class="spec-value">300 × 300 × 400 mm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Heating Rate</span>
+                  <span class="lang lang-ko" style="display:none;">승온 속도</span>
+                </span>
+                <span class="spec-value">0-10 °C/min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 글라스파우더 에어브레시브 -->
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=200&fit=crop" alt="Glass Powder Air Abrasive" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Glass Powder Air Abrasive System</span>
+              <span class="lang lang-ko" style="display:none;">글라스파우더 에어브레시브</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Micro-abrasive blasting system using fine glass powder for gentle mechanical cleaning of delicate surfaces, removing corrosion products, biological growth, and old conservation treatments from heritage objects with minimal substrate damage.</span>
+              <span class="lang lang-ko" style="display:none;">미세 유리 분말을 사용한 미세 연마 블라스팅 시스템으로, 최소한의 기질 손상으로 문화재에서 부식 생성물, 생물학적 성장 및 오래된 보존 처리를 제거하는 섬세한 표면의 부드러운 기계적 세척을 수행합니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Particle Size</span>
+                  <span class="lang lang-ko" style="display:none;">입자 크기</span>
+                </span>
+                <span class="spec-value">27-125 μm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Pressure Range</span>
+                  <span class="lang lang-ko" style="display:none;">압력 범위</span>
+                </span>
+                <span class="spec-value">0.5-6 bar</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Nozzle Diameter</span>
+                  <span class="lang lang-ko" style="display:none;">노즐 직경</span>
+                </span>
+                <span class="spec-value">0.5-3.0 mm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 파이버 레이저세척기 -->
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=200&fit=crop" alt="Fiber Laser Cleaning System" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Fiber Laser Cleaning System</span>
+              <span class="lang lang-ko" style="display:none;">파이버 레이저세척기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Advanced fiber laser technology for selective removal of corrosion, dirt, and unwanted layers from metal, stone, and painted surfaces without contact or chemicals, offering precise control for sensitive heritage conservation work.</span>
+              <span class="lang lang-ko" style="display:none;">금속, 석재 및 채색 표면에서 접촉이나 화학물질 없이 부식, 오염물 및 불필요한 층을 선택적으로 제거하는 첨단 파이버 레이저 기술로, 민감한 문화유산 보존 작업을 위한 정밀한 제어를 제공합니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Laser Power</span>
+                  <span class="lang lang-ko" style="display:none;">레이저 출력</span>
+                </span>
+                <span class="spec-value">100-200 W</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Wavelength</span>
+                  <span class="lang lang-ko" style="display:none;">파장</span>
+                </span>
+                <span class="spec-value">1064 nm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Cleaning Width</span>
+                  <span class="lang lang-ko" style="display:none;">세척 폭</span>
+                </span>
+                <span class="spec-value">10-150 mm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 스팀세척기 -->
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=200&fit=crop" alt="Steam Cleaning System" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Steam Cleaning System</span>
+              <span class="lang lang-ko" style="display:none;">스팀세척기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Professional steam cleaning equipment for eco-friendly, chemical-free surface cleaning of various heritage materials including stone, textiles, and painted surfaces, providing controlled temperature and pressure for safe conservation treatment.</span>
+              <span class="lang lang-ko" style="display:none;">석재, 섬유 및 채색 표면을 포함한 다양한 문화재 재료의 친환경 무화학 표면 세척을 위한 전문 스팀 세척 장비로, 안전한 보존 처리를 위한 제어된 온도와 압력을 제공합니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Steam Temperature</span>
+                  <span class="lang lang-ko" style="display:none;">스팀 온도</span>
+                </span>
+                <span class="spec-value">60-180 °C</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Pressure</span>
+                  <span class="lang lang-ko" style="display:none;">압력</span>
+                </span>
+                <span class="spec-value">3-10 bar</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Tank Capacity</span>
+                  <span class="lang lang-ko" style="display:none;">탱크 용량</span>
+                </span>
+                <span class="spec-value">5 L</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 항온수조 -->
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=200&fit=crop" alt="Constant Temperature Water Bath" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Constant Temperature Water Bath</span>
+              <span class="lang lang-ko" style="display:none;">항온수조</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Precision temperature-controlled water bath for conservation material preparation, accelerated aging tests, consolidant application, and various chemical processes requiring stable thermal conditions in heritage conservation research.</span>
+              <span class="lang lang-ko" style="display:none;">보존 재료 준비, 촉진 노화 시험, 강화제 적용 및 문화유산 보존 연구에서 안정적인 열 조건이 필요한 다양한 화학 공정을 위한 정밀 온도 제어 항온수조입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Temperature Range</span>
+                  <span class="lang lang-ko" style="display:none;">온도 범위</span>
+                </span>
+                <span class="spec-value">5-100 °C</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Accuracy</span>
+                  <span class="lang lang-ko" style="display:none;">정확도</span>
+                </span>
+                <span class="spec-value">± 0.1 °C</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Bath Volume</span>
+                  <span class="lang lang-ko" style="display:none;">조 용량</span>
+                </span>
+                <span class="spec-value">20 L</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 항온항습장 -->
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=200&fit=crop" alt="Climate Chamber" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Climate Control Chamber</span>
+              <span class="lang lang-ko" style="display:none;">항온항습장</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Environmental chamber with precise temperature and humidity control for accelerated aging studies, material stability testing, and evaluating the long-term durability of conservation treatments under simulated climate conditions.</span>
+              <span class="lang lang-ko" style="display:none;">시뮬레이션된 기후 조건에서 촉진 노화 연구, 재료 안정성 시험 및 보존 처리의 장기 내구성 평가를 위한 정밀한 온도 및 습도 제어가 가능한 환경 챔버입니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Temperature Range</span>
+                  <span class="lang lang-ko" style="display:none;">온도 범위</span>
+                </span>
+                <span class="spec-value">-10 to 80 °C</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Humidity Range</span>
+                  <span class="lang lang-ko" style="display:none;">습도 범위</span>
+                </span>
+                <span class="spec-value">20-95 % RH</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Chamber Size</span>
+                  <span class="lang lang-ko" style="display:none;">챔버 크기</span>
+                </span>
+                <span class="spec-value">500 × 500 × 600 mm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 유물 데시게이터 -->
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=200&fit=crop" alt="Artifact Desiccator" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Artifact Desiccator Cabinet</span>
+              <span class="lang lang-ko" style="display:none;">유물 데시게이터</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Large-capacity desiccator cabinet for moisture-sensitive artifact storage and drying, featuring controlled low-humidity environment essential for preventing corrosion and deterioration of metal, archaeological, and hygroscopic heritage materials.</span>
+              <span class="lang lang-ko" style="display:none;">습기에 민감한 유물 보관 및 건조를 위한 대용량 데시게이터 캐비닛으로, 금속, 고고학 및 흡습성 문화재 재료의 부식 및 열화 방지에 필수적인 제어된 저습도 환경을 제공합니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Humidity Control</span>
+                  <span class="lang lang-ko" style="display:none;">습도 제어</span>
+                </span>
+                <span class="spec-value">10-40 % RH</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Interior Volume</span>
+                  <span class="lang lang-ko" style="display:none;">내부 용량</span>
+                </span>
+                <span class="spec-value">300 L</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Material</span>
+                  <span class="lang lang-ko" style="display:none;">재질</span>
+                </span>
+                <span class="spec-value">Stainless Steel</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 점하중측정기 -->
+        <div class="facility-item animate-on-scroll" data-category="evaluation">
+          <img src="https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=600&h=200&fit=crop" alt="Point Load Tester" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Material Evaluation</span>
+              <span class="lang lang-ko" style="display:none;">복원재료평가</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Point Load Tester</span>
+              <span class="lang lang-ko" style="display:none;">점하중측정기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Portable strength testing device for rapid assessment of stone and rock material strength using point load test method, valuable for evaluating structural integrity and weathering condition of stone heritage monuments and archaeological samples.</span>
+              <span class="lang lang-ko" style="display:none;">점하중 시험법을 사용한 석재 및 암석 재료 강도의 신속한 평가를 위한 휴대용 강도 시험 장치로, 석조 문화재 기념물과 고고학 시료의 구조적 완전성과 풍화 상태를 평가하는 데 유용합니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Load Capacity</span>
+                  <span class="lang lang-ko" style="display:none;">하중 용량</span>
+                </span>
+                <span class="spec-value">50 kN</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Sample Size</span>
+                  <span class="lang lang-ko" style="display:none;">시료 크기</span>
+                </span>
+                <span class="spec-value">15-100 mm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Accuracy</span>
+                  <span class="lang lang-ko" style="display:none;">정확도</span>
+                </span>
+                <span class="spec-value">± 1 %</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 레이저입도분석기 -->
+        <div class="facility-item animate-on-scroll" data-category="analysis">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=200&fit=crop" alt="Laser Particle Size Analyzer" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Heritage Analysis</span>
+              <span class="lang lang-ko" style="display:none;">문화유산 분석</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">Laser Particle Size Analyzer</span>
+              <span class="lang lang-ko" style="display:none;">레이저입도분석기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Advanced laser diffraction instrument for precise particle size distribution analysis of pigments, sediments, clay materials, and conservation consolidants, providing critical data for understanding material properties and degradation mechanisms in heritage science.</span>
+              <span class="lang lang-ko" style="display:none;">안료, 침전물, 점토 재료 및 보존 강화제의 정밀한 입자 크기 분포 분석을 위한 고급 레이저 회절 기기로, 문화유산 과학에서 재료 특성과 열화 메커니즘을 이해하는 데 중요한 데이터를 제공합니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Measurement Range</span>
+                  <span class="lang lang-ko" style="display:none;">측정 범위</span>
+                </span>
+                <span class="spec-value">0.01-3000 μm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Repeatability</span>
+                  <span class="lang lang-ko" style="display:none;">재현성</span>
+                </span>
+                <span class="spec-value">< 1 %</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Laser Source</span>
+                  <span class="lang lang-ko" style="display:none;">레이저원</span>
+                </span>
+                <span class="spec-value">He-Ne, 633 nm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 엑스레이 촬영기 -->
+        <div class="facility-item animate-on-scroll" data-category="treatment">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=200&fit=crop" alt="X-Ray Radiography System" class="facility-image">
+          <div class="facility-content">
+            <span class="facility-type">
+              <span class="lang lang-en">Conservation Treatment</span>
+              <span class="lang lang-ko" style="display:none;">보존처리</span>
+            </span>
+            <h3>
+              <span class="lang lang-en">X-Ray Radiography System</span>
+              <span class="lang lang-ko" style="display:none;">엑스레이 촬영기</span>
+            </h3>
+            <p>
+              <span class="lang lang-en">Digital X-ray imaging system for non-invasive internal structure examination of cultural heritage objects, revealing hidden construction details, repairs, degradation patterns, and material composition without physical sampling or damage.</span>
+              <span class="lang lang-ko" style="display:none;">문화재 내부 구조의 비침습적 검사를 위한 디지털 X선 이미징 시스템으로, 물리적 샘플링이나 손상 없이 숨겨진 제작 세부사항, 수리 흔적, 열화 패턴 및 재료 조성을 드러냅니다.</span>
+            </p>
+            
+            <div class="facility-specs">
+              <h4>
+                <span class="lang lang-en">Key Specifications</span>
+                <span class="lang lang-ko" style="display:none;">주요 사양</span>
+              </h4>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Voltage Range</span>
+                  <span class="lang lang-ko" style="display:none;">전압 범위</span>
+                </span>
+                <span class="spec-value">20-160 kV</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Current</span>
+                  <span class="lang lang-ko" style="display:none;">전류</span>
+                </span>
+                <span class="spec-value">0-5 mA</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">
+                  <span class="lang lang-en">Detector Resolution</span>
+                  <span class="lang lang-ko" style="display:none;">검출기 해상도</span>
+                </span>
+                <span class="spec-value">2048 × 2048 pixels</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3 class="lang lang-en">Conservation Science Lab</h3>
+        <h3 class="lang lang-ko" style="display:none;">보존과학연구소</h3>
+        <p class="lang lang-en">We are dedicated to preserving cultural heritage through innovative scientific research and advanced technology.</p>
+        <p class="lang lang-ko" style="display:none;">혁신적인 과학 연구와 첨단 기술을 통해 문화유산 보존에 힘쓰고 있습니다.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Lab YouTube Channel"><i class="fab fa-youtube"></i></a>
+          <a href="#" aria-label="Lab Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Lab Facebook"><i class="fab fa-facebook"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h3 class="lang lang-en">Quick Links</h3>
+        <h3 class="lang lang-ko" style="display:none;">바로가기</h3>
+        <ul class="footer-links">
+          <li><a href="index.html" class="lang lang-en">Home</a><a href="index.html" class="lang lang-ko" style="display:none;">홈</a></li>
+          <li><a href="members.html" class="lang lang-en">Members</a><a href="members.html" class="lang lang-ko" style="display:none;">연구진</a></li>
+          <li><a href="projects.html" class="lang lang-en">Projects</a><a href="projects.html" class="lang lang-ko" style="display:none;">연구과제</a></li>
+          <li><a href="facilities.html" class="lang lang-en">Facilities</a><a href="facilities.html" class="lang lang-ko" style="display:none;">연구시설</a></li>
+          <li><a href="gallery.html" class="lang lang-en">Gallery</a><a href="gallery.html" class="lang lang-ko" style="display:none;">갤러리</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h3 class="lang lang-en">Contact</h3>
+        <h3 class="lang lang-ko" style="display:none;">연락처</h3>
+        <div class="footer-contact-info">
+          <p>
+            <i class="fas fa-map-marker-alt"></i>
+            <span class="lang lang-en">Korea National University of Cultural Heritage, Conservation Science Lab.</span>
+            <span class="lang lang-ko" style="display:none;">한국전통문화대학교 보존과학연구소</span>
+          </p>
+          <p>
+            <i class="fas fa-phone"></i>
+            <span>+82-41-830-7368</span>
+          </p>
+          <p>
+            <i class="fas fa-envelope"></i>
+            <span>conservation@csllso.co.kr</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="lang lang-en">&copy; 2025 Conservation Science Lab. All rights reserved.</p>
+      <p class="lang lang-ko" style="display:none;">&copy; 2025 보존과학연구소. 모든 권리 보유.</p>
+    </div>
+  </footer>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="common.js"></script>
+  <script src="facilities.js"></script>
+</body>
+</html>
