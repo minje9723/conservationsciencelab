@@ -265,6 +265,38 @@ function loadGalleryPreview() {
   });
 }
 
+// Handle Home Contact Form Submission
+function handleHomeContactForm() {
+  const form = document.getElementById('homeContactForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      subject: formData.get('subject'),
+      message: formData.get('message')
+    };
+
+    // Here you would typically send the data to a server
+    console.log('Contact form submitted:', data);
+    
+    // Show success message
+    const currentLang = document.documentElement.lang || 'ko';
+    const successMessage = currentLang === 'ko' 
+      ? '메시지가 성공적으로 전송되었습니다! 빠른 시일 내에 답변드리겠습니다.' 
+      : 'Message sent successfully! We will get back to you soon.';
+    
+    alert(successMessage);
+    
+    // Reset form
+    form.reset();
+  });
+}
+
 // Initialize all home page features
 function initHomePage() {
   // Wait for DOM to be fully loaded
@@ -276,6 +308,7 @@ function initHomePage() {
       loadFeaturedProjects();
       loadLatestAchievements();
       loadGalleryPreview();
+      handleHomeContactForm();
     });
   } else {
     animateCounters();
@@ -284,6 +317,7 @@ function initHomePage() {
     loadFeaturedProjects();
     loadLatestAchievements();
     loadGalleryPreview();
+    handleHomeContactForm();
   }
 }
 
@@ -297,5 +331,6 @@ window.homePageFunctions = {
   initParallaxEffects,
   loadFeaturedProjects,
   loadLatestAchievements,
-  loadGalleryPreview
+  loadGalleryPreview,
+  handleHomeContactForm
 };
