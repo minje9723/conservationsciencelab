@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://csllso.co.kr/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 10
