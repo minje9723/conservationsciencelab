@@ -84,6 +84,7 @@ const achievements = [
     summary_en: "Recognition for outstanding contributions to the development of innovative conservation technologies for Korean cultural heritage.",
     summary_ko: "한국 문화유산을 위한 혁신적인 보존 기술 개발에 대한 뛰어난 기여를 인정받은 상.",
     link: "",
+    award_image: "", // 상장 이미지 경로를 여기에 추가하세요 (예: "assets/awards/award-2023.jpg")
     category: "Technology Innovation",
     category_ko: "기술 혁신",
     keywords: ["Technology Award", "Heritage Conservation", "Innovation"],
@@ -191,6 +192,40 @@ function createAchievementCard(achievement, lang) {
       break;
   }
 
+  // Special layout for awards with images
+  if (achievement.type === 'award' && achievement.award_image) {
+    return `
+      <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll has-image">
+        <div class="achievement-icon">
+          ${getTypeIcon(achievement.type)}
+        </div>
+        <div class="award-image-container">
+          <img src="${achievement.award_image}" alt="${lang === 'ko' ? achievement.title_ko : achievement.title_en}" class="award-image" loading="lazy">
+        </div>
+        <div class="award-content">
+          <div class="achievement-title">
+            <span class="lang lang-en"><b>${achievement.title_en}</b></span>
+            <span class="lang lang-ko" style="display:none;"><b>${achievement.title_ko}</b></span>
+          </div>
+          <div class="achievement-meta">
+            ${metaInfo}
+          </div>
+          <div class="achievement-summary">
+            <span class="lang lang-en">${achievement.summary_en}</span>
+            <span class="lang lang-ko" style="display:none;">${achievement.summary_ko}</span>
+          </div>
+          ${achievement.link ? `
+            <a class="achievement-link" href="${achievement.link}" target="_blank">
+              <span class="lang lang-en">${linkText}</span>
+              <span class="lang lang-ko" style="display:none;">${linkText}</span>
+            </a>
+          ` : ''}
+        </div>
+      </li>
+    `;
+  }
+
+  // Default layout for other types
   return `
     <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll">
       <div class="achievement-icon">

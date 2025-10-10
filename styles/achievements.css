@@ -196,6 +196,61 @@
 
 .achievement-list li[data-type="award"] {
   border-top: 4px solid #fbbc04;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* Award Card with Image Layout */
+.achievement-list li[data-type="award"].has-image {
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.award-image-container {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.award-image-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.award-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.award-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* Responsive award card */
+@media (max-width: 1024px) {
+  .achievement-list li[data-type="award"].has-image {
+    grid-template-columns: 250px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .achievement-list li[data-type="award"].has-image {
+    grid-template-columns: 1fr;
+  }
+  
+  .award-image-container {
+    max-width: 100%;
+  }
 }
 
 .achievement-icon {
