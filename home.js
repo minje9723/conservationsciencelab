@@ -40,23 +40,58 @@ function animateCounters() {
 }
 
 // Scroll-triggered animations
-function initScrollAnimations() {
-  const animatedElements = document.querySelectorAll('.impact-card, .timeline-card, .spotlight-item');
+function initScrollAnimations(selector = null) {
+  // If specific selector provided, only observe those elements
+  // Otherwise observe static elements
+  const staticSelectors = '.hero-impact-card, .impact-card, .timeline-card, .spotlight-item, .contact-info-item, .contact-form-card';
+  const targetSelector = selector || staticSelectors;
+  
+  const animatedElements = document.querySelectorAll(targetSelector);
+  
+  if (animatedElements.length === 0) return;
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        // Get the stagger index from the element's data attribute
+        const staggerIndex = parseInt(entry.target.dataset.staggerIndex) || 0;
+        // Add staggered delay for grid items
+        setTimeout(() => {
+          entry.target.classList.add('animate-in');
+        }, staggerIndex * 150); // 150ms delay between each item for clearer cascade effect
+      }
+    });
+  }, { 
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px' // Trigger slightly before element enters viewport
+  });
+  
+  // Add stagger index to each element and observe
+  animatedElements.forEach((element, index) => {
+    element.classList.add('animate-on-scroll');
+    element.dataset.staggerIndex = index;
+    observer.observe(element);
+  });
+}
+
+// Add staggered animation for section headers
+function animateSectionHeaders() {
+  const sectionHeaders = document.querySelectorAll('.section-header');
   
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
+        entry.target.classList.add('animate-in');
       }
     });
-  }, { threshold: 0.1 });
+  }, { 
+    threshold: 0.2,
+    rootMargin: '0px 0px -30px 0px'
+  });
   
-  animatedElements.forEach(element => {
-    element.style.opacity = '0';
-    element.style.transform = 'translateY(30px)';
-    element.style.transition = 'all 0.6s ease-out';
-    observer.observe(element);
+  sectionHeaders.forEach(header => {
+    header.classList.add('animate-on-scroll');
+    observer.observe(header);
   });
 }
 
@@ -149,6 +184,9 @@ function loadFeaturedProjects() {
       window.location.href = 'projects.html';
     });
   });
+  
+  // Initialize animations for the newly added project cards
+  initScrollAnimations('.project-card');
 }
 
 // Load Latest Achievements
@@ -199,6 +237,9 @@ function loadLatestAchievements() {
       window.location.href = 'achievements.html';
     });
   });
+  
+  // Initialize animations for the newly added achievement cards
+  initScrollAnimations('.achievement-card');
 }
 
 // Load Gallery Preview
@@ -263,6 +304,9 @@ function loadGalleryPreview() {
       window.location.href = 'gallery.html';
     });
   });
+  
+  // Initialize animations for the newly added gallery items
+  initScrollAnimations('.gallery-item');
 }
 
 // Handle Home Contact Form Submission
@@ -304,6 +348,7 @@ function initHomePage() {
     document.addEventListener('DOMContentLoaded', () => {
       animateCounters();
       initScrollAnimations();
+      animateSectionHeaders();
       initParallaxEffects();
       loadFeaturedProjects();
       loadLatestAchievements();
@@ -313,6 +358,7 @@ function initHomePage() {
   } else {
     animateCounters();
     initScrollAnimations();
+    animateSectionHeaders();
     initParallaxEffects();
     loadFeaturedProjects();
     loadLatestAchievements();
@@ -328,6 +374,7 @@ initHomePage();
 window.homePageFunctions = {
   animateCounters,
   initScrollAnimations,
+  animateSectionHeaders,
   initParallaxEffects,
   loadFeaturedProjects,
   loadLatestAchievements,
