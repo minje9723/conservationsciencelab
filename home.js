@@ -2,13 +2,19 @@
 
 // Counter Animation for Impact Metrics
 function animateCounters() {
-  const counters = document.querySelectorAll('.metric-number[data-target]');
+  const counters = document.querySelectorAll('.metric-number[data-target], .hero-metric-number[data-target]');
   
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const counter = entry.target;
         const target = parseInt(counter.getAttribute('data-target'));
+        
+        // Skip if already animated
+        if (counter.getAttribute('data-animated') === 'true') {
+          return;
+        }
+        
         const duration = 2000; // 2 seconds
         const increment = target / (duration / 16); // 60 FPS
         let current = 0;

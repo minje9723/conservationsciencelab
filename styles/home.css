@@ -338,6 +338,98 @@
     0 0 40px rgba(0, 210, 190, 0.3);
 }
 
+/* Hero Impact Showcase */
+.hero-impact-showcase {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+  animation: fadeInUp 1s ease-out 0.8s both;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-impact-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 
+    0 8px 32px 0 rgba(31, 38, 135, 0.15),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-impact-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.hero-impact-card:hover::before {
+  left: 100%;
+}
+
+.hero-impact-card:hover {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(25px) saturate(200%);
+  -webkit-backdrop-filter: blur(25px) saturate(200%);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 
+    0 16px 48px 0 rgba(31, 38, 135, 0.25),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.4),
+    0 4px 16px 0 rgba(255, 255, 255, 0.2);
+}
+
+.hero-metric-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.hero-metric-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.hero-metric-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1;
+}
+
+.hero-metric-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 /* Scroll Indicator */
 .scroll-indicator {
   position: absolute;
@@ -882,6 +974,32 @@
     font-size: 0.85rem;
   }
   
+  /* Hero Impact Showcase - 모바일 2x2 그리드 */
+  .hero-impact-showcase {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .hero-impact-card {
+    padding: 1.2rem 0.8rem;
+    border-radius: 12px;
+  }
+  
+  .hero-metric-icon {
+    font-size: 2rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .hero-metric-number {
+    font-size: 2rem;
+  }
+  
+  .hero-metric-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.3px;
+  }
+  
   .hero-title {
     font-size: clamp(2.2rem, 5.5vw, 2.8rem);
   }
@@ -1275,6 +1393,37 @@
   
   .impact-card {
     padding: 1.25rem;
+  }
+  
+  /* Hero Impact Showcase - 작은 모바일 */
+  .hero-impact-showcase {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+  
+  .hero-impact-card {
+    padding: 1rem 0.6rem;
+    border-radius: 10px;
+  }
+  
+  .hero-metric-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .hero-metric-number {
+    font-size: 1.8rem;
+  }
+  
+  .hero-metric-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2px;
+  }
+  
+  .hero-description {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
   }
 }
 
