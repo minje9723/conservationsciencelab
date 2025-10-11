@@ -486,32 +486,40 @@ function createAchievementCard(achievement, lang) {
   // Special layout for awards with images
   if (achievement.type === 'award' && achievement.award_image) {
     return `
-      <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll has-image">
+      <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll award-with-image">
         <div class="achievement-icon">
           ${getTypeIcon(achievement.type)}
         </div>
-        <div class="award-image-container" onclick="openAwardModal('${achievement.award_image}', '${(lang === 'ko' ? achievement.title_ko : achievement.title_en).replace(/'/g, "\\'")}')">
-          <img src="${achievement.award_image}" alt="${lang === 'ko' ? achievement.title_ko : achievement.title_en}" class="award-image" loading="lazy">
+        <div class="achievement-title">
+          <span class="lang lang-en"><b>${achievement.title_en}</b></span>
+          <span class="lang lang-ko" style="display:none;"><b>${achievement.title_ko}</b></span>
         </div>
-        <div class="award-content">
-          <div class="achievement-title">
-            <span class="lang lang-en"><b>${achievement.title_en}</b></span>
-            <span class="lang lang-ko" style="display:none;"><b>${achievement.title_ko}</b></span>
-          </div>
-          <div class="achievement-meta">
-            ${metaInfo}
-          </div>
-          <div class="achievement-summary">
-            <span class="lang lang-en">${achievement.summary_en}</span>
-            <span class="lang lang-ko" style="display:none;">${achievement.summary_ko}</span>
-          </div>
-          ${achievement.link ? `
-            <a class="achievement-link" href="${achievement.link}" target="_blank">
-              <span class="lang lang-en">${linkText}</span>
-              <span class="lang lang-ko" style="display:none;">${linkText}</span>
-            </a>
-          ` : ''}
+        <div class="achievement-meta">
+          ${metaInfo}
         </div>
+        <div class="award-image-preview" onclick="openAwardModal('${achievement.award_image}', '${(lang === 'ko' ? achievement.title_ko : achievement.title_en).replace(/'/g, "\\'")}')">
+          <img src="${achievement.award_image}" alt="${lang === 'ko' ? achievement.title_ko : achievement.title_en}" loading="lazy">
+          <div class="award-image-overlay">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+            <span class="lang lang-en">Click to enlarge</span>
+            <span class="lang lang-ko" style="display:none;">클릭하여 확대</span>
+          </div>
+        </div>
+        <div class="achievement-summary">
+          <span class="lang lang-en">${achievement.summary_en}</span>
+          <span class="lang lang-ko" style="display:none;">${achievement.summary_ko}</span>
+        </div>
+        ${achievement.link ? `
+          <a class="achievement-link" href="${achievement.link}" target="_blank">
+            <span class="lang lang-en">${linkText}</span>
+            <span class="lang lang-ko" style="display:none;">${linkText}</span>
+          </a>
+        ` : ''}
       </li>
     `;
   }
