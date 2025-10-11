@@ -111,20 +111,21 @@ function initParallaxEffects() {
 // Load Featured Projects
 function loadFeaturedProjects() {
   const projectsGrid = document.getElementById('featuredProjectsGrid');
-  if (!projectsGrid || typeof projects === 'undefined') return;
+  const desktopLayout = document.getElementById('projectsDesktopLayout');
+  if ((!projectsGrid && !desktopLayout) || typeof projects === 'undefined') return;
 
   // Featured Project IDs - Update these to change which projects are featured
   // You can change these IDs to feature different projects
   const featuredProjectIds = [1, 3, 4, 5]; // Change these numbers to feature different projects
   
-  // Get featured projects by IDs, or fall back to first 3 if IDs not found
+  // Get featured projects by IDs, or fall back to first 4 if IDs not found
   let featuredProjects = featuredProjectIds
     .map(id => projects.find(p => p.id === id))
     .filter(p => p !== undefined);
   
   // If not enough projects found, fill with first available projects
-  if (featuredProjects.length < 3) {
-    featuredProjects = projects.slice(0, 3);
+  if (featuredProjects.length < 4) {
+    featuredProjects = projects.slice(0, 4);
   }
   const currentLang = document.documentElement.lang || 'ko';
 
@@ -178,21 +179,90 @@ function loadFeaturedProjects() {
     `;
   }).join('');
 
-  // Add click handlers
-  projectsGrid.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('click', () => {
-      window.location.href = 'projects.html';
+  // Mobile/Tablet Grid Layout
+  if (projectsGrid) {
+    // Add click handlers
+    projectsGrid.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('click', () => {
+        window.location.href = 'projects.html';
+      });
     });
-  });
-  
-  // Initialize animations for the newly added project cards
-  initScrollAnimations('.project-card');
+    
+    // Initialize animations for the newly added project cards
+    initScrollAnimations('.project-card');
+  }
+
+  // Desktop Column Layout (1~4번: 프로젝트, 5번: 타이틀)
+  if (desktopLayout) {
+    // 기존 프로젝트 컬럼들만 제거 (헤더 컬럼은 유지)
+    const existingProjectColumns = desktopLayout.querySelectorAll('.project-image-column');
+    existingProjectColumns.forEach(col => col.remove());
+
+    const categoryNames = {
+      'excavated-conservation': currentLang === 'ko' ? '문화유산 보존처리' : 'Heritage Conservation',
+      'site-investigation': currentLang === 'ko' ? '현장 조사 및 분석' : 'Site Survey',
+      'designation-research': currentLang === 'ko' ? '지정 연구' : 'Designation Research',
+      'preservation-research': currentLang === 'ko' ? '보존 연구' : 'Preservation Research'
+    };
+
+    const categoryGradients = {
+      'excavated-conservation': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      'site-investigation': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      'designation-research': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      'preservation-research': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+    };
+
+    const categoryIcons = {
+      'excavated-conservation': '🏺',
+      'site-investigation': '🔍',
+      'designation-research': '📋',
+      'preservation-research': '🛡️'
+    };
+
+    // 타이틀 박스를 마지막에 추가하기 위해 headerColumn 참조 저장
+    const headerColumn = desktopLayout.querySelector('.project-header-column');
+    
+    featuredProjects.forEach((project, index) => {
+      const title = currentLang === 'ko' ? project.title_ko : project.title_en;
+      const description = currentLang === 'ko' ? project.description_ko : project.description_en;
+      const categoryName = categoryNames[project.category] || project.category;
+      
+      // Use project image if available, otherwise use gradient placeholder
+      const backgroundStyle = project.images && project.images.length > 0
+        ? `background-image: url('${project.images[0]}'); background-size: cover; background-position: center;`
+        : `background: ${categoryGradients[project.category] || categoryGradients['excavated-conservation']}; display: flex; align-items: center; justify-content: center; font-size: 8rem; color: rgba(255,255,255,0.3);`;
+
+      const iconHtml = (project.images && project.images.length > 0) ? '' : categoryIcons[project.category];
+
+      const column = document.createElement('div');
+      column.className = 'project-column project-image-column';
+      column.setAttribute('data-category', project.category);
+      column.innerHTML = `
+        <div class="project-column-background" style="${backgroundStyle}">${iconHtml}</div>
+        <div class="project-column-overlay"></div>
+        <div class="project-column-content">
+          <div class="project-category-badge">${categoryName}</div>
+          <h3 class="project-column-title">${title}</h3>
+          <p class="project-column-description">${description}</p>
+          <p class="project-column-duration">${project.duration}</p>
+        </div>
+      `;
+
+      column.addEventListener('click', () => {
+        window.location.href = 'projects.html';
+      });
+
+      // 타이틀 박스(5번) 앞에 삽입
+      desktopLayout.insertBefore(column, headerColumn);
+    });
+  }
 }
 
 // Load Latest Achievements
 function loadLatestAchievements() {
   const achievementsGrid = document.getElementById('latestAchievementsGrid');
-  if (!achievementsGrid || typeof achievements === 'undefined') return;
+  const desktopLayout = document.getElementById('achievementsDesktopLayout');
+  if ((!achievementsGrid && !desktopLayout) || typeof achievements === 'undefined') return;
 
   // Automatically get the top 4 most recent achievements from ALL types
   // Sort by year (newest first), then take the first 4
@@ -209,49 +279,100 @@ function loadLatestAchievements() {
     'patent': '⚡'
   };
 
-  achievementsGrid.innerHTML = latestAchievements.map(achievement => {
-    const title = currentLang === 'ko' ? achievement.title_ko : achievement.title_en;
-    const authors = currentLang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
-    const journal = currentLang === 'ko' ? (achievement.journal_ko || achievement.journal || achievement.event_ko || achievement.event) : (achievement.journal || achievement.event);
-    const keywords = currentLang === 'ko' ? (achievement.keywords_ko || achievement.keywords) : achievement.keywords;
+  const typeNames = {
+    'publication': { en: 'Publication', ko: '논문' },
+    'conference': { en: 'Conference', ko: '학회' },
+    'award': { en: 'Award', ko: '수상' },
+    'patent': { en: 'Patent', ko: '특허' }
+  };
 
-    // Category-specific gradients for placeholders
-    const typeGradients = {
-      'publication': 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-      'conference': 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-      'award': 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-      'patent': 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-    };
+  // Category-specific gradients for placeholders
+  const typeGradients = {
+    'publication': 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+    'conference': 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+    'award': 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+    'patent': 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+  };
 
-    // Use image if available, otherwise use gradient placeholder with icon
-    const imageHtml = achievement.image 
-      ? `<img src="${achievement.image}" alt="${title}" loading="lazy">`
-      : `<div class="achievement-card-placeholder" style="background:${typeGradients[achievement.type] || typeGradients['publication']};display:flex;align-items:center;justify-content:center;color:white;font-size:4rem;">${typeIcons[achievement.type] || '📋'}</div>`;
+  // Mobile/Tablet Grid Layout
+  if (achievementsGrid) {
+    achievementsGrid.innerHTML = latestAchievements.map(achievement => {
+      const title = currentLang === 'ko' ? achievement.title_ko : achievement.title_en;
+      const authors = currentLang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
+      const journal = currentLang === 'ko' ? (achievement.journal_ko || achievement.journal || achievement.event_ko || achievement.event) : (achievement.journal || achievement.event);
 
-    return `
-      <div class="achievement-card" data-type="${achievement.type}" data-achievement-id="${achievement.id}">
-        <div class="achievement-card-image">
-          ${imageHtml}
+      // Use image if available, otherwise use gradient placeholder with icon
+      const imageHtml = achievement.image 
+        ? `<img src="${achievement.image}" alt="${title}" loading="lazy">`
+        : `<div class="achievement-card-placeholder" style="background:${typeGradients[achievement.type] || typeGradients['publication']};display:flex;align-items:center;justify-content:center;color:white;font-size:4rem;">${typeIcons[achievement.type] || '📋'}</div>`;
+
+      return `
+        <div class="achievement-card" data-type="${achievement.type}" data-achievement-id="${achievement.id}">
+          <div class="achievement-card-image">
+            ${imageHtml}
+          </div>
+          <div class="achievement-card-content">
+            <h3 class="achievement-card-title">${title}</h3>
+            <p class="achievement-card-authors">${authors}</p>
+            <p class="achievement-card-year">${achievement.year}</p>
+            ${journal ? `<p class="achievement-card-journal">${journal}</p>` : ''}
+          </div>
         </div>
-        <div class="achievement-card-content">
-          <h3 class="achievement-card-title">${title}</h3>
-          <p class="achievement-card-authors">${authors}</p>
-          <p class="achievement-card-year">${achievement.year}</p>
-          ${journal ? `<p class="achievement-card-journal">${journal}</p>` : ''}
-        </div>
-      </div>
-    `;
-  }).join('');
+      `;
+    }).join('');
 
-  // Add click handlers
-  achievementsGrid.querySelectorAll('.achievement-card').forEach(card => {
-    card.addEventListener('click', () => {
-      window.location.href = 'achievements.html';
+    // Add click handlers
+    achievementsGrid.querySelectorAll('.achievement-card').forEach(card => {
+      card.addEventListener('click', () => {
+        window.location.href = 'achievements.html';
+      });
     });
-  });
-  
-  // Initialize animations for the newly added achievement cards
-  initScrollAnimations('.achievement-card');
+    
+    // Initialize animations for the newly added achievement cards
+    initScrollAnimations('.achievement-card');
+  }
+
+  // Desktop Column Layout
+  if (desktopLayout) {
+    // 기존 이미지 컬럼들만 제거 (헤더 컬럼은 유지)
+    const existingImageColumns = desktopLayout.querySelectorAll('.achievement-image-column');
+    existingImageColumns.forEach(col => col.remove());
+
+    latestAchievements.forEach(achievement => {
+      const title = currentLang === 'ko' ? achievement.title_ko : achievement.title_en;
+      const authors = currentLang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
+      const journal = currentLang === 'ko' ? (achievement.journal_ko || achievement.journal || achievement.event_ko || achievement.event) : (achievement.journal || achievement.event);
+      const typeName = typeNames[achievement.type][currentLang];
+      
+      // Use achievement image if available, otherwise use gradient placeholder
+      const backgroundStyle = achievement.image 
+        ? `background-image: url('${achievement.image}'); background-size: cover; background-position: center;`
+        : `background: ${typeGradients[achievement.type] || typeGradients['publication']}; display: flex; align-items: center; justify-content: center; font-size: 8rem; color: rgba(255,255,255,0.3);`;
+
+      const iconHtml = achievement.image ? '' : typeIcons[achievement.type];
+
+      const column = document.createElement('div');
+      column.className = 'achievement-column achievement-image-column';
+      column.setAttribute('data-type', achievement.type);
+      column.innerHTML = `
+        <div class="achievement-column-background" style="${backgroundStyle}">${iconHtml}</div>
+        <div class="achievement-column-overlay"></div>
+        <div class="achievement-column-content">
+          <div class="achievement-type-badge">${typeIcons[achievement.type]} ${typeName}</div>
+          <h3 class="achievement-column-title">${title}</h3>
+          ${authors ? `<p class="achievement-column-authors">${authors}</p>` : ''}
+          <p class="achievement-column-year">${achievement.year}</p>
+          ${journal ? `<p class="achievement-column-journal">${journal}</p>` : ''}
+        </div>
+      `;
+
+      column.addEventListener('click', () => {
+        window.location.href = 'achievements.html';
+      });
+
+      desktopLayout.appendChild(column);
+    });
+  }
 }
 
 // Load Gallery Preview

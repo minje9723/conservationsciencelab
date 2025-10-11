@@ -260,7 +260,8 @@
 
     <!-- Featured Projects Section -->
     <section class="featured-projects-section">
-      <div class="section-container">
+      <!-- Mobile/Tablet Layout (기존 그리드) -->
+      <div class="section-container projects-mobile-layout">
         <div class="section-header">
           <h2 class="section-title">
             <span class="lang lang-en">Featured Projects</span>
@@ -287,11 +288,31 @@
           </a>
         </div>
       </div>
+
+      <!-- Desktop Layout (새로운 세로 5분할 - 1~4번: 프로젝트, 5번: 타이틀) -->
+      <div class="projects-desktop-layout" id="projectsDesktopLayout">
+        <!-- 1~4번 박스: 프로젝트 이미지 (JavaScript로 생성) -->
+        <!-- 5번 박스: 제목 + View More 버튼 (마지막) -->
+        <div class="project-column project-header-column">
+          <h2 class="project-section-title">
+            <span class="lang lang-en">Featured<br>Projects</span>
+            <span class="lang lang-ko" style="display:none;">주요<br>연구 프로젝트</span>
+          </h2>
+          <a href="projects.html" class="project-view-more-btn">
+            <span class="lang lang-en">View All</span>
+            <span class="lang lang-ko" style="display:none;">모든 프로젝트 보기</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
     </section>
 
     <!-- Latest Achievements Section -->
     <section class="latest-achievements-section">
-      <div class="section-container">
+      <!-- Mobile/Tablet Layout (기존 그리드) -->
+      <div class="section-container achievements-mobile-layout">
         <div class="section-header">
           <h2 class="section-title">
             <span class="lang lang-en">Latest Achievements</span>
@@ -317,6 +338,25 @@
             </svg>
           </a>
         </div>
+      </div>
+
+      <!-- Desktop Layout (새로운 세로 5분할) -->
+      <div class="achievements-desktop-layout" id="achievementsDesktopLayout">
+        <!-- 1번 박스: 제목 + View More 버튼 -->
+        <div class="achievement-column achievement-header-column">
+          <h2 class="achievement-section-title">
+            <span class="lang lang-en">Latest<br>Achievements</span>
+            <span class="lang lang-ko" style="display:none;">최신<br>연구 성과</span>
+          </h2>
+          <a href="achievements.html" class="achievement-view-more-btn">
+            <span class="lang lang-en">View All</span>
+            <span class="lang lang-ko" style="display:none;">모든 성과 보기</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+        <!-- 2~5번 박스: 이미지 + 호버 정보 (JavaScript로 생성) -->
       </div>
     </section>
 
