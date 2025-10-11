@@ -293,7 +293,7 @@ const achievements = [
     summary_en: "Award for outstanding research contributions by early-career professionals in conservation science.",
     summary_ko: "보존과학 분야 초기 경력 전문가의 뛰어난 연구 기여에 대한 상.",
     link: "",
-    award_image: "",
+    award_image: "assets/awards/3d-printing-bizcon-2023.jpg",
     category: "Research Excellence",
     category_ko: "연구 우수성",
     keywords: ["Young Researcher", "Conservation Science", "Research Award"],
