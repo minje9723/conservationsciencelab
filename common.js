@@ -32,6 +32,9 @@ async function detectCountryAndSetLanguage() {
 
 // Language switching functionality
 function setLang(lang, userSelected = false) {
+  // Set document language
+  document.documentElement.lang = lang;
+  
   // 텍스트 다국어 처리
   document.querySelectorAll('.lang').forEach(el => {
     if (el.classList.contains('lang-' + lang)) {
@@ -50,6 +53,19 @@ function setLang(lang, userSelected = false) {
   // 사용자가 직접 선택한 경우 기록
   if (userSelected) {
     localStorage.setItem('user-selected-language', lang);
+  }
+  
+  // Reload homepage dynamic content if on homepage
+  if (typeof window.homePageFunctions !== 'undefined') {
+    if (window.homePageFunctions.loadFeaturedProjects) {
+      window.homePageFunctions.loadFeaturedProjects();
+    }
+    if (window.homePageFunctions.loadLatestAchievements) {
+      window.homePageFunctions.loadLatestAchievements();
+    }
+    if (window.homePageFunctions.loadGalleryPreview) {
+      window.homePageFunctions.loadGalleryPreview();
+    }
   }
 }
 

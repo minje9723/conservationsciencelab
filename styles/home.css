@@ -1350,7 +1350,7 @@
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  height: 300px;
+  height: 330px;
 }
 
 .achievement-card:hover {
@@ -1381,7 +1381,7 @@
 
 .achievement-card-content {
   flex: 1;
-  padding: 1.5rem;
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1446,11 +1446,11 @@
   font-size: 1rem;
   font-weight: 700;
   color: #1e293b;
-  margin-bottom: 0.75rem;
+  margin-bottom: auto;
   line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1458,7 +1458,8 @@
 .achievement-card-authors {
   color: #64748b;
   font-size: 0.85rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
+  margin-top: 0.5rem;
   font-style: italic;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1471,7 +1472,7 @@
   font-size: 0.85rem;
   color: #3b82f6;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .achievement-card-journal {
