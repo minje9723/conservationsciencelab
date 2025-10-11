@@ -115,7 +115,7 @@ function loadFeaturedProjects() {
 
   // Featured Project IDs - Update these to change which projects are featured
   // You can change these IDs to feature different projects
-  const featuredProjectIds = [1, 3, 5]; // Change these numbers to feature different projects
+  const featuredProjectIds = [1, 3, 4, 5]; // Change these numbers to feature different projects
   
   // Get featured projects by IDs, or fall back to first 3 if IDs not found
   let featuredProjects = featuredProjectIds
@@ -194,10 +194,23 @@ function loadLatestAchievements() {
   const achievementsGrid = document.getElementById('latestAchievementsGrid');
   if (!achievementsGrid || typeof achievements === 'undefined') return;
 
-  // Get the 3 most recent achievements
+  // Featured achievement IDs with links - Update these to change which achievements are featured
+  const featuredAchievementIds = [1, 2]; // IDs of achievements with links
+  
+  // Get featured achievements by IDs, sorted by year
   const latestAchievements = achievements
-    .sort((a, b) => b.year - a.year)
-    .slice(0, 3);
+    .filter(achievement => featuredAchievementIds.includes(achievement.id))
+    .sort((a, b) => b.year - a.year);
+  
+  // If we don't have enough featured ones, fill with most recent
+  if (latestAchievements.length < 4) {
+    const additionalAchievements = achievements
+      .filter(achievement => !featuredAchievementIds.includes(achievement.id))
+      .sort((a, b) => b.year - a.year)
+      .slice(0, 4 - latestAchievements.length);
+    latestAchievements.push(...additionalAchievements);
+  }
+  
   const currentLang = document.documentElement.lang || 'ko';
 
   const typeIcons = {
@@ -213,20 +226,30 @@ function loadLatestAchievements() {
     const journal = currentLang === 'ko' ? (achievement.journal_ko || achievement.journal || achievement.event_ko || achievement.event) : (achievement.journal || achievement.event);
     const keywords = currentLang === 'ko' ? (achievement.keywords_ko || achievement.keywords) : achievement.keywords;
 
+    // Category-specific gradients for placeholders
+    const typeGradients = {
+      'publication': 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+      'conference': 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+      'award': 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+      'patent': 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+    };
+
+    // Use image if available, otherwise use gradient placeholder with icon
+    const imageHtml = achievement.image 
+      ? `<img src="${achievement.image}" alt="${title}" loading="lazy">`
+      : `<div class="achievement-card-placeholder" style="background:${typeGradients[achievement.type] || typeGradients['publication']};display:flex;align-items:center;justify-content:center;color:white;font-size:4rem;">${typeIcons[achievement.type] || '📋'}</div>`;
+
     return `
       <div class="achievement-card" data-type="${achievement.type}" data-achievement-id="${achievement.id}">
-        <div class="achievement-card-header">
-          <div class="achievement-card-icon">${typeIcons[achievement.type] || '📋'}</div>
-          <span class="achievement-card-year">${achievement.year}</span>
+        <div class="achievement-card-image">
+          ${imageHtml}
         </div>
-        <h3 class="achievement-card-title">${title}</h3>
-        <p class="achievement-card-authors">${authors}</p>
-        ${journal ? `<p class="achievement-card-journal">${journal}</p>` : ''}
-        ${keywords && keywords.length > 0 ? `
-          <div class="achievement-card-keywords">
-            ${keywords.slice(0, 3).map(keyword => `<span class="keyword-tag">${keyword}</span>`).join('')}
-          </div>
-        ` : ''}
+        <div class="achievement-card-content">
+          <h3 class="achievement-card-title">${title}</h3>
+          <p class="achievement-card-authors">${authors}</p>
+          <p class="achievement-card-year">${achievement.year}</p>
+          ${journal ? `<p class="achievement-card-journal">${journal}</p>` : ''}
+        </div>
       </div>
     `;
   }).join('');
