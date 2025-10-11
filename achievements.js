@@ -79,6 +79,24 @@ const achievements = [
     keywords_ko: ["광택 유물", "3D 레이저 스캐닝", "정반사", "소멸형 스캔 스프레이", "재료 안전성"]
   },
   {
+    id: 18,
+    type: "publication",
+    title_en: "Photogrammetry-Based Monitoring for the Continuous Management of Cultural Heritage: A Case Study of the Petroglyphs of Cheonjeon-ri, Ulju",
+    title_ko: "문화유산의 지속적 관리를 위한 사진측량 기반 모니터링: 울주 천전리 암각화 사례 연구",
+    authors: "Hae Jun Park, Gyu Ri Choi, Jeong Yeon Kim, Sang Ok Lee",
+    authors_ko: "박해준, 최규리, 김정연, 이상옥",
+    journal: "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
+    journal_ko: "ISPRS 사진측량 및 원격탐사 공간정보과학 연보",
+    journal_abbr: "ISPRS Ann. Photogramm. Remote Sens. Spatial Inf. Sci.",
+    year: 2025,
+    summary_en: "Applied photogrammetry for digital documentation and damage detection monitoring of outdoor cultural heritage sites.",
+    summary_ko: "야외 문화유산의 디지털 기록 및 손상 감지 모니터링을 위한 사진측량 기법 적용 연구.",
+    link: "https://isprs-annals.copernicus.org/articles/X-M-2-2025/275/2025/",
+    doi: "10.5194/isprs-annals-X-M-2-2025-275-2025",
+    keywords: ["Photogrammetry", "Digital Documentation", "Monitoring", "Damage Detection", "Cultural Heritage Management"],
+    keywords_ko: ["사진측량", "디지털 기록", "모니터링", "손상 감지", "문화유산 관리"]
+  },
+  {
     id: 2,
     type: "publication",
     title_en: "A Study on the Classification System and Preservation Management of Catholic Moveable Cultural Heritage",

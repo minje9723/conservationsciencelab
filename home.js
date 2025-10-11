@@ -194,22 +194,11 @@ function loadLatestAchievements() {
   const achievementsGrid = document.getElementById('latestAchievementsGrid');
   if (!achievementsGrid || typeof achievements === 'undefined') return;
 
-  // Featured achievement IDs with links - Update these to change which achievements are featured
-  const featuredAchievementIds = [1, 2]; // IDs of achievements with links
-  
-  // Get featured achievements by IDs, sorted by year
+  // Automatically get the top 4 most recent achievements from ALL types
+  // Sort by year (newest first), then take the first 4
   const latestAchievements = achievements
-    .filter(achievement => featuredAchievementIds.includes(achievement.id))
-    .sort((a, b) => b.year - a.year);
-  
-  // If we don't have enough featured ones, fill with most recent
-  if (latestAchievements.length < 4) {
-    const additionalAchievements = achievements
-      .filter(achievement => !featuredAchievementIds.includes(achievement.id))
-      .sort((a, b) => b.year - a.year)
-      .slice(0, 4 - latestAchievements.length);
-    latestAchievements.push(...additionalAchievements);
-  }
+    .sort((a, b) => b.year - a.year)
+    .slice(0, 4);
   
   const currentLang = document.documentElement.lang || 'ko';
 
