@@ -284,6 +284,11 @@ li[data-type="award"] .achievement-icon {
   background: #fbbc04;
 }
 
+/* Hide icons when filtered (only show in 'All' tab) */
+body.filtered .achievement-icon {
+  display: none;
+}
+
 .achievement-title {
   font-size: 1.13rem;
   font-weight: bold;

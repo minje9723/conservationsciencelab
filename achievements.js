@@ -320,6 +320,10 @@ function addAchievement(achievementData) {
   achievementData.id = newId;
   achievements.push(achievementData);
   renderAchievements();
+  
+  // Update counts after adding
+  const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
+  updateActiveFilterCount(currentFilter);
 }
 
 // Update achievement function
@@ -328,6 +332,10 @@ function updateAchievement(id, achievementData) {
   if (index !== -1) {
     achievements[index] = { ...achievements[index], ...achievementData };
     renderAchievements();
+    
+    // Update counts after updating
+    const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
+    updateActiveFilterCount(currentFilter);
   }
 }
 
@@ -337,6 +345,10 @@ function removeAchievement(id) {
   if (index !== -1) {
     achievements.splice(index, 1);
     renderAchievements();
+    
+    // Update counts after removing
+    const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
+    updateActiveFilterCount(currentFilter);
   }
 }
 
@@ -464,6 +476,13 @@ function filterAchievements(type = 'all') {
   
   const achievementItems = Array.from(document.querySelectorAll('.achievement-list li'));
   
+  // Add or remove filtered class from body
+  if (type === 'all') {
+    document.body.classList.remove('filtered');
+  } else {
+    document.body.classList.add('filtered');
+  }
+  
   // Filter and sort by year (newest first)
   const visibleItems = achievementItems.filter(item => {
     const itemType = item.getAttribute('data-type');
@@ -485,6 +504,9 @@ function filterAchievements(type = 'all') {
     achievementsList.appendChild(item); // Move to end (reorder in DOM)
   });
   
+  // Update button counts to show only for active filter
+  updateActiveFilterCount(type);
+  
   // Re-trigger animation for visible items
   setTimeout(() => {
     initAnimations();
@@ -498,6 +520,10 @@ function renderAchievements() {
 
   const lang = getCurrentLanguage();
   achievementsList.innerHTML = achievements.map(achievement => createAchievementCard(achievement, lang)).join('');
+  
+  // Update filter counts after rendering
+  const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
+  updateActiveFilterCount(currentFilter);
   
   // Re-initialize animations after rendering
   setTimeout(() => {
@@ -645,6 +671,49 @@ function initAchievements() {
       }
     });
   }, 200);
+}
+
+// Update filter button counts - only show count for active filter
+function updateActiveFilterCount(activeFilterType) {
+  const achievementItems = document.querySelectorAll('.achievement-list li');
+  const counts = {
+    publication: 0,
+    conference: 0,
+    patent: 0,
+    award: 0
+  };
+  
+  achievementItems.forEach(item => {
+    const type = item.getAttribute('data-type');
+    if (counts[type] !== undefined) {
+      counts[type]++;
+    }
+  });
+  
+  // Update all filter buttons
+  const achievementFilters = document.querySelectorAll('.achievement-filter');
+  achievementFilters.forEach(button => {
+    const filterType = button.getAttribute('data-filter');
+    
+    // Skip 'all' button
+    if (filterType === 'all') {
+      return;
+    }
+    
+    const langSpans = button.querySelectorAll('.lang');
+    langSpans.forEach(span => {
+      // Get original text without count
+      const originalText = span.textContent.replace(/\s*\(\d+\)/, '');
+      
+      // Only show count if this filter is active
+      if (filterType === activeFilterType) {
+        const count = counts[filterType];
+        span.textContent = `${originalText} (${count})`;
+      } else {
+        span.textContent = originalText;
+      }
+    });
+  });
 }
 
 // Make functions available globally
