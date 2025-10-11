@@ -1,60 +1,103 @@
 // Achievements page specific functionality
 
 // Achievements data
+// Publications are sorted by year (newest first)
 const achievements = [
   {
     id: 1,
     type: "publication",
     title_en: "Applicability Research Restoration Material of Metal PLA Sintering for Contemporary Metal Cultural Heritage",
     title_ko: "금속 PLA 소결을 활용한 근현대 금속 문화유산의 복원 재료 적용성 연구",
-    authors: "Min Je Kim, Sin Gi Kim, Sang Ok Lee",
-    authors_ko: "김민제, 김신기, 이상옥",
+    authors: "Min Je Kim, Go Woon Bae, Sang Ok Lee",
+    authors_ko: "김민제, 배고운, 이상옥",
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
     year: 2025,
-    summary_en: "Herein, sintered metal PLA samples were scientifically analyzed to evaluate their suitability for restoring metal cultural heritage. After sintering, sample shrinkage was 10∼26%, with up to 25% weight reduction. In addition, microstructure analysis revealed reduced particle boundaries, increased particle density, and new microstructures. Furthermore, surface hardness and density increased; however, the sample density remained lower than those of standard metals. Compared to standard metals, the metal PLA samples showed comparable or higher hardness and lightweightness. These results highlight the potential of metal PLA for restoring and replicating modern metal heritage, particularly for their functional restoration and exhibition.",
-    summary_ko: "금속 PLA 3D 프린팅 소결 기법을 이용한 근현대 금속 문화유산의 복원 재료 특성을 파악하고자 소결 금속 PLA 시편에 관한 과학적 분석 및 비교를 진행하였다. 금속 PLA의 소결 전⋅후를 기준으로 형태를 비교한 결과, 소재에 따라 약 10∼26% 범위 내 수축이 발생하였고, 중량은 최대 25% 감소하였다. 소결 후 미세조직 및 물성 평가 수치를 종합한 결과, 금속 입자 경계 면적이 감소하여 단위 면적당 금속분말의 밀도가 증가하였고, 미상의 미세조직이 발생하여 소결 전과 비교되는 미세조직 형태가 관찰되었다. 또한, 소결 후 금속 PLA의 표면 경도 및 비중이 증가하였다. 이를 표준 금속 측정값과 비교한 결과, 표면 경도는 유사하거나 높았으며, 작은 비중값이 확인되었다. 이러한 금속 PLA의 소결 특징을 통해 경량화가 이루어진 재료임을 확인하였으며, 근현대 금속 문화유산의 부분복원 및 복제, 기능 복원 및 전시⋅활용에 적합할 것으로 판단된다.",
+    summary_en: "Scientific analysis of sintered metal PLA samples to evaluate their suitability for restoring metal cultural heritage.",
+    summary_ko: "금속 PLA 소결 시편의 근현대 금속 문화유산 복원 재료 적합성 평가를 위한 과학적 분석 연구.",
     link: "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003220725",
     doi: "",
     keywords: ["Metal PLA", "3D Printing", "Sintering", "Contemporary Metal Cultural Heritage", "Restoration Material"],
-    keywords_ko: ["금속 PLA", "3D 프린팅", "소결", "근현대 금속 문화유산", "복원재료"]
+    keywords_ko: ["금속 PLA", "3D 프린팅", "소결", "근현대 금속 문화유산", "복원 재료"]
+  },
+  {
+    id: 3,
   },
   {
     id: 2,
+    type: "publication",
+    title_en: "A Study on the Classification System and Preservation Management of Catholic Moveable Cultural Heritage",
+    title_ko: "천주교 동산문화유산 분류체계 및 보존관리 방안",
+    authors: "Gyu Ri Choi, Sang Ok Lee",
+    authors_ko: "최규리, 이상옥",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2023,
+    summary_en: "Proposed a new classification system and management guidelines for Catholic moveable cultural heritage preservation.",
+    summary_ko: "천주교 동산문화유산의 새로운 분류체계 및 보존관리 지침 제안.",
+    link: "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003050054",
+    doi: "",
+    keywords: ["Catholic", "Religious cultural heritage", "Listing", "Classification system", "Preservation management"],
+    keywords_ko: ["천주교", "종교문화유산", "목록화", "분류체계", "보존관리"]
+  },
+  {
+    id: 3,
     type: "publication",
     title_en: "Reverse Casting Using Metal PLA 3D Printing: A Study Based on Digital Data of Royal Seals from the National Palace Museum, Korea",
     title_ko: "국립고궁박물관 소장 어보의 디지털 데이터를 활용한 금속 PLA 3D 프린팅 기반 역주조 공법 기초 연구",
     authors: "Sangok Lee, Minje Kim, Singi Kim",
     authors_ko: "김민제, 김신기, 이상옥",
-    journal: "Korea National University of Heritage",
-    journal_ko: "한국전통문화대학교",
+    journal: "Korean Journal of Palace Museum",
+    journal_ko: "고궁문화",
+    journal_abbr: "Korean J. Palace Mus.",
     year: 2025,
-    summary_en: "This study investigates the feasibility of using metal PLA-based 3D printing and reverse casting for the restoration of metal cultural heritage, utilizing 3D scan data of royal seals from the National Palace Museum of Korea.",
-    summary_ko: "본 연구는 국립고궁박물관 소장 어보의 3D 스캔 데이터를 활용하여 금속 PLA 3D 프린팅 기반 역주조 공법의 금속 문화유산 복원 적용 가능성을 평가하였습니다.",
+    summary_en: "Feasibility study of metal PLA 3D printing and reverse casting for heritage restoration using royal seal data.",
+    summary_ko: "어보 데이터를 활용한 금속 PLA 3D 프린팅 기반 역주조 공법의 문화유산 복원 적용 가능성 연구.",
     link: "https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART003218035",
     doi: "",
     keywords: ["3D Printing", "Heritage Restoration", "Metal Casting"],
     keywords_ko: ["3D 프린팅", "문화재 복원", "금속 주조"]
   },
   {
-    id: 3,
+    id: 5,
     type: "publication",
-    title_en: "Innovative Approaches to Metal Conservation",
-    title_ko: "금속 보존의 혁신적 접근",
-    authors: "Conservation Science Lab Team",
-    authors_ko: "보존과학연구소 연구팀",
-    journal: "Journal of Heritage Science",
-    journal_ko: "문화재 과학 저널",
-    year: 2024,
-    summary_en: "A comprehensive review of modern techniques and methodologies for metal conservation in cultural heritage contexts.",
-    summary_ko: "문화유산 맥락에서 금속 보존을 위한 현대적 기술과 방법론의 종합적 검토.",
-    link: "",
-    doi: "10.1186/s40494-024-01234-x",
-    keywords: ["Metal Conservation", "Heritage Science", "Conservation Methods"],
-    keywords_ko: ["금속 보존", "문화재 과학", "보존 방법"]
+    title_en: "A Study on the Prevention of Specular Reflections in 3D Scanning of Glossy Artifacts",
+    title_ko: "광택 유물의 3D 스캐닝에서 정반사 방지에 관한 연구",
+    authors: "Hyo Jeong Kim, Min Je Kim, So Yeon Choi, Jeong Eun Oh, Sang Ok Lee",
+    authors_ko: "김효정, 김민제, 최소연, 오정은, 이상옥",
+    journal: "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
+    journal_ko: "ISPRS 사진측량 및 원격탐사 공간정보과학 연보",
+    journal_abbr: "ISPRS Ann. Photogramm. Remote Sens. Spatial Inf. Sci.",
+    year: 2025,
+    summary_en: "Evaluated material safety and applicability of vanishing scanning sprays for 3D scanning of glossy artifacts.",
+    summary_ko: "광택 유물의 3D 스캐닝을 위한 자연 소멸형 스캔 스프레이의 재료 안전성 및 적용성 평가.",
+    link: "https://isprs-annals.copernicus.org/articles/X-M-2-2025/157/2025/isprs-annals-X-M-2-2025-157-2025.html",
+    doi: "10.5194/isprs-annals-X-M-2-2025-157-2025",
+    keywords: ["Glossy Artifacts", "3D Laser Scanning", "Specular Reflections", "Vanishing Scanning Sprays", "Material Safety"],
+    keywords_ko: ["광택 유물", "3D 레이저 스캐닝", "정반사", "소멸형 스캔 스프레이", "재료 안전성"]
   },
   {
-    id: 4,
+    id: 2,
+    type: "publication",
+    title_en: "A Study on the Classification System and Preservation Management of Catholic Moveable Cultural Heritage",
+    title_ko: "천주교 동산문화유산 분류체계 및 보존관리 방안",
+    authors: "Gyu Ri Choi, Sang Ok Lee",
+    authors_ko: "최규리, 이상옥",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2023,
+    summary_en: "Proposed a new classification system and management guidelines for Catholic moveable cultural heritage preservation.",
+    summary_ko: "천주교 동산문화유산의 새로운 분류체계 및 보존관리 지침 제안.",
+    link: "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003050054",
+    doi: "",
+    keywords: ["Catholic", "Religious cultural heritage", "Listing", "Classification system", "Preservation management"],
+    keywords_ko: ["천주교", "종교문화유산", "목록화", "분류체계", "보존관리"]
+  },
+  {
+    id: 6,
     type: "conference",
     title_en: "Digital Heritage Documentation and 3D Reconstruction",
     title_ko: "디지털 유산 문서화 및 3D 복원",
@@ -72,7 +115,7 @@ const achievements = [
     keywords_ko: ["3D 스캐닝", "디지털 문서화", "문화유산 보존"]
   },
   {
-    id: 5,
+    id: 7,
     type: "award",
     title_en: "National Heritage Conservation Technology Award",
     title_ko: "국가유산 보존기술상",
@@ -91,7 +134,7 @@ const achievements = [
     keywords_ko: ["기술상", "문화재 보존", "혁신"]
   },
   {
-    id: 6,
+    id: 8,
     type: "patent",
     title_en: "Method for 3D Printing-based Heritage Restoration",
     title_ko: "3D 프린팅 기반 문화재 복원 방법",
@@ -254,16 +297,30 @@ function createAchievementCard(achievement, lang) {
 
 // Filter achievements
 function filterAchievements(type = 'all') {
-  const achievementItems = document.querySelectorAll('.achievement-list li');
+  const achievementsList = document.querySelector('.achievement-list');
+  if (!achievementsList) return;
   
-  achievementItems.forEach(item => {
+  const achievementItems = Array.from(document.querySelectorAll('.achievement-list li'));
+  
+  // Filter and sort by year (newest first)
+  const visibleItems = achievementItems.filter(item => {
     const itemType = item.getAttribute('data-type');
-    
-    if (type === 'all' || itemType === type) {
-      item.style.display = '';
-    } else {
-      item.style.display = 'none';
-    }
+    return type === 'all' || itemType === type;
+  }).sort((a, b) => {
+    const yearA = parseInt(a.querySelector('.achievement-year')?.textContent) || 0;
+    const yearB = parseInt(b.querySelector('.achievement-year')?.textContent) || 0;
+    return yearB - yearA; // Descending order (newest first)
+  });
+  
+  // Hide all items first
+  achievementItems.forEach(item => {
+    item.style.display = 'none';
+  });
+  
+  // Show and reorder visible items
+  visibleItems.forEach(item => {
+    item.style.display = '';
+    achievementsList.appendChild(item); // Move to end (reorder in DOM)
   });
   
   // Re-trigger animation for visible items
