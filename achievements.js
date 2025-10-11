@@ -471,7 +471,7 @@ function createAchievementCard(achievement, lang) {
         <div class="achievement-icon">
           ${getTypeIcon(achievement.type)}
         </div>
-        <div class="award-image-container">
+        <div class="award-image-container" onclick="openAwardModal('${achievement.award_image}', '${(lang === 'ko' ? achievement.title_ko : achievement.title_en).replace(/'/g, "\\'")}')">
           <img src="${achievement.award_image}" alt="${lang === 'ko' ? achievement.title_ko : achievement.title_en}" class="award-image" loading="lazy">
         </div>
         <div class="award-content">
@@ -830,6 +830,55 @@ function initBannerAnimation() {
   `;
   document.head.appendChild(style);
 }
+
+// Award Image Modal Functions
+function openAwardModal(imageSrc, altText) {
+  // Create modal if it doesn't exist
+  let modal = document.getElementById('awardModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'awardModal';
+    modal.className = 'award-modal';
+    modal.innerHTML = `
+      <span class="award-modal-close" onclick="closeAwardModal()">&times;</span>
+      <img class="award-modal-content" id="awardModalImg" alt="">
+    `;
+    document.body.appendChild(modal);
+    
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeAwardModal();
+      }
+    });
+    
+    // Close on ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeAwardModal();
+      }
+    });
+  }
+  
+  // Set image and show modal
+  const modalImg = document.getElementById('awardModalImg');
+  modalImg.src = imageSrc;
+  modalImg.alt = altText;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeAwardModal() {
+  const modal = document.getElementById('awardModal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+}
+
+// Make functions globally accessible
+window.openAwardModal = openAwardModal;
+window.closeAwardModal = closeAwardModal;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {

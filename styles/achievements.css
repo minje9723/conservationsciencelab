@@ -204,71 +204,39 @@
 
 /* Award Card with Image Layout */
 .achievement-list li[data-type="award"].has-image {
-  display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: 2rem;
-  align-items: start;
-  padding: 2rem;
+  position: relative;
+  padding: 1.5rem;
+  padding-top: 1rem;
   background: linear-gradient(135deg, #fffbf0 0%, #fff9e6 100%);
   border: 2px solid #ffd700;
-  box-shadow: 0 6px 20px rgba(251, 188, 4, 0.15);
-  position: relative;
-  overflow: visible;
-}
-
-.achievement-list li[data-type="award"].has-image::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(135deg, #ffd700, #ffed4e, #ffd700);
-  border-radius: 0;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.achievement-list li[data-type="award"].has-image:hover::before {
-  opacity: 0.3;
+  box-shadow: 0 4px 12px rgba(251, 188, 4, 0.15);
+  transition: all 0.3s ease;
 }
 
 .achievement-list li[data-type="award"].has-image:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(251, 188, 4, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(251, 188, 4, 0.25);
 }
 
+/* Award certificate image - small, below icon */
 .award-image-container {
-  width: 100%;
+  position: absolute;
+  top: 3.5rem;
+  right: 1rem;
+  width: 80px;
+  height: auto;
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   background: white;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-
-.award-image-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 237, 78, 0.05));
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.award-image-container:hover::after {
-  opacity: 1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 5;
 }
 
 .award-image-container:hover {
-  transform: scale(1.03) rotate(-1deg);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .award-image {
@@ -276,44 +244,17 @@
   height: auto;
   display: block;
   object-fit: cover;
-  cursor: pointer;
-  transition: transform 0.4s ease;
-}
-
-.award-image-container:hover .award-image {
-  transform: scale(1.05);
 }
 
 .award-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding-right: 1rem;
-}
-
-.achievement-list li[data-type="award"].has-image .achievement-icon {
-  top: 1rem;
-  right: 1rem;
-  width: 3rem;
-  height: 3rem;
-  font-size: 1.5rem;
-  box-shadow: 0 4px 12px rgba(251, 188, 4, 0.3);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
+  gap: 0.8rem;
+  padding-right: 100px;
 }
 
 .achievement-list li[data-type="award"].has-image .achievement-title {
-  font-size: 1.4rem;
   color: #8b6914;
-  margin-bottom: 0.5rem;
 }
 
 .achievement-list li[data-type="award"].has-image .achievement-meta {
@@ -323,37 +264,89 @@
 
 .achievement-list li[data-type="award"].has-image .achievement-summary {
   color: #5d4e00;
-  line-height: 1.7;
+  line-height: 1.6;
+}
+
+/* Image Modal for Award Certificates */
+.award-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+  animation: fadeIn 0.3s ease;
+}
+
+.award-modal.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.award-modal-content {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.award-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10001;
+  transition: color 0.3s ease;
+}
+
+.award-modal-close:hover {
+  color: #ffd700;
 }
 
 /* Responsive award card */
-@media (max-width: 1200px) {
-  .achievement-list li[data-type="award"].has-image {
-    grid-template-columns: 280px 1fr;
-    gap: 1.5rem;
-  }
-}
-
-@media (max-width: 1024px) {
-  .achievement-list li[data-type="award"].has-image {
-    grid-template-columns: 250px 1fr;
-    padding: 1.5rem;
-  }
-}
-
 @media (max-width: 768px) {
-  .achievement-list li[data-type="award"].has-image {
-    grid-template-columns: 1fr;
-    padding: 1.5rem;
-  }
-  
   .award-image-container {
-    max-width: 400px;
-    margin: 0 auto;
+    width: 70px;
+    top: 3rem;
   }
   
   .award-content {
-    padding-right: 0;
+    padding-right: 85px;
+  }
+  
+  .award-modal-content {
+    max-width: 95%;
+    max-height: 95%;
+  }
+  
+  .award-modal-close {
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
   }
 }
 
