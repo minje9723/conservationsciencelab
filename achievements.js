@@ -638,11 +638,37 @@ function sortAchievements(criteria = 'year', order = 'desc') {
   renderAchievements();
 }
 
+// Update filter container layout based on language
+function updateFilterLayout() {
+  const filterContainer = document.querySelector('.achievements-filter-container');
+  if (!filterContainer) return;
+  
+  const currentLang = getCurrentLanguage();
+  
+  // 모바일 화면에서만 적용 (768px 이하)
+  if (window.innerWidth <= 768) {
+    if (currentLang === 'en') {
+      filterContainer.classList.add('lang-en-mode');
+    } else {
+      filterContainer.classList.remove('lang-en-mode');
+    }
+  } else {
+    // 데스크톱에서는 클래스 제거
+    filterContainer.classList.remove('lang-en-mode');
+  }
+}
+
 // Initialize achievements page
 function initAchievements() {
   // Check URL parameters for filter
   const urlParams = new URLSearchParams(window.location.search);
   const urlFilter = urlParams.get('filter');
+  
+  // 초기 필터 레이아웃 설정
+  updateFilterLayout();
+  
+  // 창 크기 변경 시 필터 레이아웃 업데이트
+  window.addEventListener('resize', updateFilterLayout);
   
   // Override setLang function to include achievement rendering
   const originalSetLang = window.setLang;
@@ -658,7 +684,31 @@ function initAchievements() {
           el.style.display = 'none';
         }
       });
+      // 필터 레이아웃 업데이트
+      updateFilterLayout();
     };
+  }
+  
+  // Listen for language changes - Desktop (lang-option buttons)
+  document.querySelectorAll('.lang-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setTimeout(() => {
+        updateFilterLayout();
+      }, 100);
+    });
+  });
+  
+  // Listen for language changes - Mobile (langToggle button)
+  const langToggle = document.getElementById('langToggle');
+  if (langToggle) {
+    langToggle.addEventListener('click', () => {
+      // Only for mobile screens
+      if (window.innerWidth <= 1002) {
+        setTimeout(() => {
+          updateFilterLayout();
+        }, 150);
+      }
+    });
   }
 
   // Get filter elements once
