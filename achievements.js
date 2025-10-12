@@ -565,25 +565,14 @@ function filterAchievements(type = 'all') {
     document.body.classList.add('filtered');
   }
   
-  // Filter and sort by year (newest first)
-  const visibleItems = achievementItems.filter(item => {
-    const itemType = item.getAttribute('data-type');
-    return type === 'all' || itemType === type;
-  }).sort((a, b) => {
-    const yearA = parseInt(a.querySelector('.achievement-year')?.textContent) || 0;
-    const yearB = parseInt(b.querySelector('.achievement-year')?.textContent) || 0;
-    return yearB - yearA; // Descending order (newest first)
-  });
-  
-  // Hide all items first
+  // Filter items without reordering - maintain original order from achievements array
   achievementItems.forEach(item => {
-    item.style.display = 'none';
-  });
-  
-  // Show and reorder visible items
-  visibleItems.forEach(item => {
-    item.style.display = '';
-    achievementsList.appendChild(item); // Move to end (reorder in DOM)
+    const itemType = item.getAttribute('data-type');
+    if (type === 'all' || itemType === type) {
+      item.style.display = '';
+    } else {
+      item.style.display = 'none';
+    }
   });
   
   // Update button counts to show only for active filter
