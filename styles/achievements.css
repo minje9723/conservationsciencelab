@@ -202,7 +202,7 @@
   gap: 1rem;
 }
 
-/* Award Card with Image Layout - Compact Design */
+/* Award Card with Image Layout - Right-side Image */
 .achievement-list li.award-with-image {
   background: #fff;
   border: 1px solid #e0e6ed;
@@ -214,7 +214,6 @@
   grid-template-rows: auto auto 1fr;
   gap: 0.8rem 1rem;
   padding: 1.5rem;
-  padding-top: 2.5rem; /* Extra space for icon */
   min-height: auto;
   position: relative;
 }
@@ -224,31 +223,27 @@
   box-shadow: 0 8px 24px rgba(26,35,126,0.12);
 }
 
-/* Icon positioning for award with image - top right */
+/* Icon positioning for award with image */
 .achievement-list li.award-with-image .achievement-icon {
   position: absolute;
   top: -1rem;
   right: 1rem;
-  grid-column: unset;
-  grid-row: unset;
 }
 
-/* Image in top-right corner - aligned with icon */
+/* Image in right side - spans all rows */
 .achievement-list li.award-with-image .award-image-preview {
   grid-column: 2;
   grid-row: 1 / 4;
   align-self: start;
-  justify-self: end;
 }
 
-/* Title spans first column, first row - aligned with image top */
+/* Title spans first column, first row */
 .achievement-list li.award-with-image .achievement-title {
   grid-column: 1;
   grid-row: 1;
   color: #1a237e;
   margin-bottom: 0;
-  padding-right: 1rem;
-  align-self: start;
+  padding-right: 3.5rem; /* Space for icon */
 }
 
 /* Meta spans first column, second row */
