@@ -156,7 +156,7 @@ const achievements = [
     type: "publication",
     title_en: "Applicability Research of Restoration Material for Bronze using Copper PLA 3D Printing",
     title_ko: "Copper PLA 3D 프린팅을 활용한 청동유물 복원재료 적용 가능성 연구",
-    authors: "Min Je Kim, Sang Ok Lee, Gwang Yong Chung",
+    authors: "Min Je Kim, Sang Ok Lee, Kwang Yong Chung",
     authors_ko: "김민제, 이상옥, 정광용",
     journal: "The Journal of Study on Korean Traditional Culture",
     journal_ko: "한국전통문화연구",
@@ -192,7 +192,7 @@ const achievements = [
     type: "publication",
     title_en: "Material Properties of Lime Mortars Used in the Architectural Heritage of the Joseon Dynasty",
     title_ko: "조선시대 건축유산에 사용된 석회 모르타르의 재료 특성",
-    authors: "Han Ul Im, Sang Ok Lee, Gwang Yong Chung",
+    authors: "Han Ul Im, Sang Ok Lee, Kwang Yong Chung",
     authors_ko: "임한울, 이상옥, 정광용",
     journal: "Heritage",
     journal_ko: "헤리티지",
@@ -210,8 +210,8 @@ const achievements = [
     type: "publication",
     title_en: "Corrosion Properties of Traditional Forged High Tin Bronzes by Quenching(Cu-Sn alloy) Excavated from Archaeological Site",
     title_ko: "방짜기술로 제작된 출토 Cu-Sn 청동합의 부식 특성",
-    authors: "Go Woon Bae, Sang Ok Lee",
-    authors_ko: "배고운, 이상옥",
+    authors: "Go Woon Bae",
+    authors_ko: "배고운",
     journal: "Korean Journal of Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "Korean J. Tradit. Cult.",
@@ -228,8 +228,8 @@ const achievements = [
     type: "publication",
     title_en: "Techniques Analysis of Gilt-bronze Fittings Excavated from Buyeo Royal Tombs",
     title_ko: "부여 왕릉원 출토 부속금구의 제작기술 연구 -금동투금구를 중심으로-",
-    authors: "Jun Hyeok Jang, Sang Ok Lee",
-    authors_ko: "장준혁, 이상옥",
+    authors: "Jun Hyeok Jang",
+    authors_ko: "장준혁",
     journal: "Korean Journal of Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "Korean J. Tradit. Cult.",
@@ -246,8 +246,8 @@ const achievements = [
     type: "publication",
     title_en: "Analsys of internal structure of wooden buddha statue at Yecheon Yongmunsa using X-ray Computed tomography",
     title_ko: "X선 CT를 활용한 예천 용문사 목조지장보살좌상 내부구조 분석",
-    authors: "Sang Hoon Lee, Sang Ok Lee, Yu Mi Gu, Ji Woo Kim",
-    authors_ko: "이상훈, 이상옥, 구유미, 김지우",
+    authors: "Sang Hoon Lee, Go Woon Bae, Seung Mu Heo, Kwang Yong Chung",
+    authors_ko: "이상훈, 배고운, 허승무, 정광용",
     journal: "Korean Journal of Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "Korean J. Tradit. Cult.",
@@ -366,6 +366,150 @@ const achievements = [
     doi: "",
     keywords: ["Bronze artefacts", "Chemical component", "Microstructure", "Cross-checking", "Applicability for authenticity"],
     keywords_ko: ["청동기", "화학성분", "미세조직", "교차검증", "진위판별"]
+  },
+  {
+    id: 33,
+    type: "publication",
+    title_en: "The Reuse Methods of Traditional Metal Hardware for Reinforcing the Structure of Korea Traditional Wooden Building",
+    title_ko: "목조 건축문화재에 사용된 구조⋅보강용 전통 철물의 재사용 방안 연구",
+    authors: "Sang A Min, Sang Ok Lee, Kwang Yong Chung",
+    authors_ko: "민상아, 이상옥, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2022,
+    summary_en: "Study on reuse methods of traditional metal hardware for structural reinforcement of wooden architectural heritage through shape processing and metallurgical analysis.",
+    summary_ko: "목조 건축문화재의 구조 보강용 전통 철물의 형태 가공 및 금속학적 분석을 통한 재사용 방안 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=94174&cID=",
+    doi: "https://doi.org/10.12654/JCS.2022.38.5.08",
+    keywords: ["Traditional Metal Hardware", "Shape Processing", "Heat Treatment", "Reuse", "Metal"],
+    keywords_ko: ["전통 철물", "형태 가공", "열처리", "재사용", "금속"]
+  },
+  {
+    id: 34,
+    type: "publication",
+    title_en: "A Study on the Stability of Using Alkali Solution Desalination on Gilt Plated Silver-Iron Artifacts",
+    title_ko: "알칼리 수용액을 이용한 출토 철지금은장관정의 탈염처리 적용성 평가",
+    authors: "Jun Hyeon Park, Go Woon Bae, Kwang Yong Chung",
+    authors_ko: "박준현, 배고운, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2021,
+    summary_en: "Evaluation of desalination stability for gilt plated silver-iron nails using NaOH and Sodium Sesquicarbonate solutions.",
+    summary_ko: "철지금은장관정에 대한 NaOH법과 Sodium Sesquicarbonate법을 이용한 탈염처리의 안정성 평가.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=94311&cID=",
+    doi: "https://doi.org/10.12654/JCS.2021.37.2.09",
+    keywords: ["Gilt Plated Silver-Iron Nails", "NaOH", "Sodium Sesquicarbonate", "Desalination"],
+    keywords_ko: ["철지금은장관정", "NaOH법", "Sodium Sesquicarbonate법", "탈염처리"]
+  },
+  {
+    id: 35,
+    type: "publication",
+    title_en: "Provenance Analysis of Horse-shaped Bronze Buckles Excavated from Site of Songjeol-dong, Cheongju",
+    title_ko: "납동위원소비 분석을 활용한 청주 송절동유적 출토 마형대구의 원료산지 고찰",
+    authors: "Go Woon Bae, Sang Ok Lee, Kwang Yong Chung, Seoung Chul Shin",
+    authors_ko: "배고운, 이상옥, 정광용, 신승철",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2019,
+    summary_en: "Provenance study of horse-shaped bronze buckles through lead isotope ratio analysis to identify raw material origins and regional characteristics.",
+    summary_ko: "납동위원소비 분석을 통한 청주 송절동유적 출토 마형대구의 원료산지 및 지역적 특성 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=94068&cID=",
+    doi: "https://doi.org/10.12654/JCS.2019.35.3.03",
+    keywords: ["Songjeol-dong Site in Cheongju", "Horse-shaped Bronze Buckle", "Bronze Artifacts", "Lead Isotope Ratio", "Provenance"],
+    keywords_ko: ["청주 송절동유적", "마형대구", "청동기", "납동위원소비", "원료산지"]
+  },
+  {
+    id: 36,
+    type: "publication",
+    title_en: "Analysis of Material Characteristics for Blackwares at Excavated from the Bonggok Kiln Site of Jinan-gun",
+    title_ko: "진안 봉곡도요지 출토 흑유자기의 재료학적 특성 분석",
+    authors: "Minsoo Park, Kwang Yong Chung",
+    authors_ko: "박민수, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2016,
+    summary_en: "Material characteristics analysis of blackwares through scientific analyses and reproduction experiments to identify glaze composition and iron oxide crystals.",
+    summary_ko: "과학적 분석 및 재현실험을 통한 흑유자기의 유약 성분 및 산화철 결정 구조 규명 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=51759&cID=",
+    doi: "",
+    keywords: ["Bonggok Kiln Site", "Blackware", "Glaze", "Red Ocher", "Iron Oxide"],
+    keywords_ko: ["봉곡도요지", "흑유자기", "유약", "석간주", "산화철"]
+  },
+  {
+    id: 37,
+    type: "publication",
+    title_en: "Application of Fiber Laser for Removing the Coating Layer from Painted Sculptures",
+    title_ko: "Fiber 레이저를 활용한 페인팅 조각작품 도장층 제거 적용성 연구",
+    authors: "Sang Hoon Lee, Dae Geon Beom, Song Yi Song, Kwang Yong Chung",
+    authors_ko: "이상훈, 범대건, 송송이, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2024,
+    summary_en: "Study on the applicability of fiber laser cleaning for removing coating layers from painted sculptures through optimization of process parameters.",
+    summary_ko: "페인팅 조각작품의 도장층 제거를 위한 Fiber 레이저 클리닝 공정 변수 최적화 및 적용성 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=94494&cID=",
+    doi: "https://doi.org/10.12654/JCS.2024.40.4.11",
+    keywords: ["Outdoor painted sculptures", "Laser cleaning", "Fiber laser"],
+    keywords_ko: ["페인트 조각", "레이저 클리닝", "Fiber 레이저"]
+  },
+  {
+    id: 38,
+    type: "publication",
+    title_en: "Conservation Measures for Media Art According to Technological Changes: Color Reproducibility Comparison for Conservation of Artwork Using Video Display",
+    title_ko: "기술 변화에 따른 미디어 아트 보존 방안: 디스플레이 장치를 사용한 미술품 보존을 위한 색 재현성 비교",
+    authors: "Geon Min Bae, Kwang Yong Chung",
+    authors_ko: "배건민, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2024,
+    summary_en: "Comparative study on color reproducibility between CRT and LCD displays for media art conservation through spectral distribution and chromatic stability analysis.",
+    summary_ko: "미디어 아트 보존을 위한 CRT와 LCD 디스플레이의 분광 분포 및 색도 안정성 비교 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=94421&cID=",
+    doi: "https://doi.org/10.12654/JCS.2024.40.2.07",
+    keywords: ["Media art", "Video art", "Display", "Conservation method", "Conservation case"],
+    keywords_ko: ["미디어 아트", "비디오 아트", "디스플레이", "보존 방법", "보존 사례"]
+  },
+  {
+    id: 39,
+    type: "publication",
+    title_en: "A Study on Evaluation Methods of Conserving Painted Sculpture",
+    title_ko: "페인팅 조각 작품의 보존 평가방법 연구",
+    authors: "Dae Geon Beom, Song Yi Song, Kwang Yong Chung",
+    authors_ko: "범대건, 송송이, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2023,
+    summary_en: "Development of condition report and evaluation methods for outdoor painted sculptures through comparative analysis of original and alternative paints.",
+    summary_ko: "야외 페인팅 조각 작품의 원본 페인트 및 대체 페인트 물성 비교를 통한 상태조사표 개발 및 평가방법 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=94225&cID=",
+    doi: "https://doi.org/10.12654/JCS.2023.39.2.02",
+    keywords: ["Outdoor Painted Sculpture", "Public Artworks Conservation", "Condition report"],
+    keywords_ko: ["야외 페인팅 조각", "공공미술품 보존", "재도장 평가 상태조사표"]
+  },
+  {
+    id: 40,
+    type: "publication",
+    title_en: "Characteristics of Corrosion Layers and Corrosion Products by Lead Contents of Excavated Bronze Artifacts",
+    title_ko: "출토 청동유물의 납 함량에 따른 부식층 및 부식생성물 특성 분석",
+    authors: "Gyeong Seo Choi, Go Woon Bae, Sang Ok Lee, Kwang Yong Chung",
+    authors_ko: "최경서, 배고운, 이상옥, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2022,
+    summary_en: "Comprehensive analysis of corrosion layer structures and products in excavated bronze artifacts with different lead contents.",
+    summary_ko: "납 함량이 다른 출토 청동유물의 부식층 구조 및 부식생성물 종합 분석 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=94169&cID=",
+    doi: "https://doi.org/10.12654/JCS.2022.38.5.03",
+    keywords: ["Excavated bronze artifacts", "Leaded bronze", "Lead", "Corrosion characteristics"],
+    keywords_ko: ["청동유물", "납청동", "납", "부식특성"]
   },
   {
     id: 6,
@@ -688,7 +832,7 @@ function addAchievement(achievementData) {
   renderAchievements();
   
   // Update counts after adding
-  const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
+  const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'publication';
   updateActiveFilterCount(currentFilter);
 }
 
@@ -700,7 +844,7 @@ function updateAchievement(id, achievementData) {
     renderAchievements();
     
     // Update counts after updating
-    const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
+    const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'publication';
     updateActiveFilterCount(currentFilter);
   }
 }
@@ -713,7 +857,7 @@ function removeAchievement(id) {
     renderAchievements();
     
     // Update counts after removing
-    const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
+    const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'publication';
     updateActiveFilterCount(currentFilter);
   }
 }
@@ -749,30 +893,30 @@ function createAchievementCard(achievement, lang) {
   
   switch (achievement.type) {
     case 'publication':
+      const authors = lang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
       metaInfo = `
-        <span class="lang lang-en">${achievement.authors}</span>
-        <span class="lang lang-ko" style="display:none;">${achievement.authors_ko || achievement.authors}</span>
+        <span>${authors}</span>
         <span class="achievement-year">${achievement.year}</span>
       `;
       break;
     case 'conference':
+      const event = lang === 'ko' ? (achievement.event_ko || achievement.event) : achievement.event;
       metaInfo = `
-        <span class="lang lang-en">${achievement.event}</span>
-        <span class="lang lang-ko" style="display:none;">${achievement.event_ko || achievement.event}</span>
+        <span>${event}</span>
         <span class="achievement-year">${achievement.year}</span>
       `;
       break;
     case 'award':
+      const organization = lang === 'ko' ? (achievement.organization_ko || achievement.organization) : achievement.organization;
       metaInfo = `
-        <span class="lang lang-en">${achievement.organization}</span>
-        <span class="lang lang-ko" style="display:none;">${achievement.organization_ko || achievement.organization}</span>
+        <span>${organization}</span>
         <span class="achievement-year">${achievement.year}</span>
       `;
       break;
     case 'patent':
+      const patent_office = lang === 'ko' ? (achievement.patent_office_ko || achievement.patent_office) : achievement.patent_office;
       metaInfo = `
-        <span class="lang lang-en">${achievement.patent_office}</span>
-        <span class="lang lang-ko" style="display:none;">${achievement.patent_office_ko || achievement.patent_office}</span>
+        <span>${patent_office}</span>
         <span class="achievement-year">${achievement.year}</span>
       `;
       break;
@@ -780,20 +924,21 @@ function createAchievementCard(achievement, lang) {
 
   // Special layout for awards with images
   if (achievement.type === 'award' && achievement.award_image) {
+    const title = lang === 'ko' ? achievement.title_ko : achievement.title_en;
+    const enlargeText = lang === 'ko' ? '클릭하여 확대' : 'Click to enlarge';
     return `
       <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll award-with-image">
         <div class="achievement-icon">
           ${getTypeIcon(achievement.type)}
         </div>
         <div class="achievement-title">
-          <span class="lang lang-en"><b>${achievement.title_en}</b></span>
-          <span class="lang lang-ko" style="display:none;"><b>${achievement.title_ko}</b></span>
+          <b>${title}</b>
         </div>
         <div class="achievement-meta">
           ${metaInfo}
         </div>
-        <div class="award-image-preview" onclick="openAwardModal('${achievement.award_image}', '${(lang === 'ko' ? achievement.title_ko : achievement.title_en).replace(/'/g, "\\'")}')">
-          <img src="${achievement.award_image}" alt="${lang === 'ko' ? achievement.title_ko : achievement.title_en}" loading="lazy">
+        <div class="award-image-preview" onclick="openAwardModal('${achievement.award_image}', '${title.replace(/'/g, "\\'")}')">
+          <img src="${achievement.award_image}" alt="${title}" loading="lazy">
           <div class="award-image-overlay">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
@@ -801,8 +946,7 @@ function createAchievementCard(achievement, lang) {
               <line x1="11" y1="8" x2="11" y2="14"></line>
               <line x1="8" y1="11" x2="14" y2="11"></line>
             </svg>
-            <span class="lang lang-en">Click to enlarge</span>
-            <span class="lang lang-ko" style="display:none;">클릭하여 확대</span>
+            <span>${enlargeText}</span>
           </div>
         </div>
       </li>
@@ -810,26 +954,27 @@ function createAchievementCard(achievement, lang) {
   }
 
   // Default layout for other types
+  const title = lang === 'ko' ? achievement.title_ko : achievement.title_en;
+  const summary = lang === 'ko' ? achievement.summary_ko : achievement.summary_en;
+  const linkText = lang === 'ko' ? '세부 정보 보기' : 'View Details';
+  
   return `
     <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll">
       <div class="achievement-icon">
         ${getTypeIcon(achievement.type)}
       </div>
       <div class="achievement-title">
-        <span class="lang lang-en"><b>${achievement.title_en}</b></span>
-        <span class="lang lang-ko" style="display:none;"><b>${achievement.title_ko}</b></span>
+        <b>${title}</b>
       </div>
       <div class="achievement-meta">
         ${metaInfo}
       </div>
       <div class="achievement-summary">
-        <span class="lang lang-en">${achievement.summary_en}</span>
-        <span class="lang lang-ko" style="display:none;">${achievement.summary_ko}</span>
+        ${summary}
       </div>
       ${achievement.link ? `
         <a class="achievement-link" href="${achievement.link}" target="_blank">
-          <span class="lang lang-en">View Details</span>
-          <span class="lang lang-ko" style="display:none;">세부 정보 보기</span>
+          ${linkText}
         </a>
       ` : ''}
     </li>
@@ -858,13 +1003,13 @@ function renderAchievements() {
   if (!achievementsList) return;
 
   const lang = getCurrentLanguage();
-  const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
+  const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'publication';
   
   // Filter achievements based on current filter
-  let filteredAchievements = achievements;
-  if (currentFilter !== 'all') {
-    filteredAchievements = achievements.filter(achievement => achievement.type === currentFilter);
-  }
+  let filteredAchievements = achievements.filter(achievement => achievement.type === currentFilter);
+  
+  // Sort by year (newest first)
+  filteredAchievements.sort((a, b) => b.year - a.year);
   
   // Calculate pagination
   const totalItems = filteredAchievements.length;
@@ -945,6 +1090,16 @@ function renderPaginationButtons(container, totalPages, currentPage) {
   
   buttonsHTML += '</div>';
   container.innerHTML = buttonsHTML;
+  
+  // Apply current language to pagination buttons
+  const currentLang = getCurrentLanguage();
+  container.querySelectorAll('.lang').forEach(el => {
+    if (el.classList.contains('lang-' + currentLang)) {
+      el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
+  });
 }
 
 // Change page function
@@ -1039,6 +1194,7 @@ function initAchievements() {
   document.querySelectorAll('.lang-option').forEach(btn => {
     btn.addEventListener('click', () => {
       setTimeout(() => {
+        renderAchievements();
         updateFilterLayout();
       }, 100);
     });
@@ -1051,6 +1207,7 @@ function initAchievements() {
       // Only for mobile screens
       if (window.innerWidth <= 1002) {
         setTimeout(() => {
+          renderAchievements();
           updateFilterLayout();
         }, 150);
       }
@@ -1114,8 +1271,8 @@ function initAchievements() {
   // Render achievements from JS data
   renderAchievements();
   
-  // Set initial filter based on URL parameter or default to 'all'
-  const initialFilter = urlFilter && ['publication', 'conference', 'patent', 'award'].includes(urlFilter) ? urlFilter : 'all';
+  // Set initial filter based on URL parameter or default to 'publication'
+  const initialFilter = urlFilter && ['publication', 'conference', 'patent', 'award'].includes(urlFilter) ? urlFilter : 'publication';
   
   // Update UI to reflect the initial filter
   achievementFilters.forEach(f => {
@@ -1169,9 +1326,9 @@ function initAchievements() {
   }
 }
 
-// Update filter button counts - only show count for active filter
+// Update filter button counts - show count only for active filter
 function updateActiveFilterCount(activeFilterType) {
-  const achievementItems = document.querySelectorAll('.achievement-list li');
+  // Count achievements from the entire achievements array, not just displayed items
   const counts = {
     publication: 0,
     conference: 0,
@@ -1179,8 +1336,8 @@ function updateActiveFilterCount(activeFilterType) {
     award: 0
   };
   
-  achievementItems.forEach(item => {
-    const type = item.getAttribute('data-type');
+  achievements.forEach(achievement => {
+    const type = achievement.type;
     if (counts[type] !== undefined) {
       counts[type]++;
     }
@@ -1191,11 +1348,6 @@ function updateActiveFilterCount(activeFilterType) {
   achievementFilters.forEach(button => {
     const filterType = button.getAttribute('data-filter');
     
-    // Skip 'all' button
-    if (filterType === 'all') {
-      return;
-    }
-    
     const langSpans = button.querySelectorAll('.lang');
     langSpans.forEach(span => {
       // Get original text without count
@@ -1204,7 +1356,9 @@ function updateActiveFilterCount(activeFilterType) {
       // Only show count if this filter is active
       if (filterType === activeFilterType) {
         const count = counts[filterType];
-        span.textContent = `${originalText} (${count})`;
+        if (count !== undefined) {
+          span.textContent = `${originalText} (${count})`;
+        }
       } else {
         span.textContent = originalText;
       }
