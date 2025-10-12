@@ -873,7 +873,8 @@ function getCurrentLanguage() {
   if (savedLang) {
     return savedLang;
   }
-  return document.getElementById('lang-ko') && document.getElementById('lang-ko').classList.contains('active') ? 'ko' : 'en';
+  // Default to Korean
+  return document.getElementById('lang-ko') && document.getElementById('lang-ko').classList.contains('active') ? 'ko' : 'ko';
 }
 
 // Get type icon

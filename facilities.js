@@ -188,7 +188,7 @@ function removeFacility(id) {
 
 // Get current language
 function getCurrentLanguage() {
-  return document.getElementById('lang-ko') && document.getElementById('lang-ko').classList.contains('active') ? 'ko' : 'en';
+  return document.getElementById('lang-ko') && document.getElementById('lang-ko').classList.contains('active') ? 'ko' : 'ko';
 }
 
 // Get category icon

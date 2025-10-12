@@ -182,7 +182,7 @@ function getCurrentLanguage() {
   const docLang = document.documentElement.lang;
   if (docLang === 'ko' || docLang === 'en') return docLang;
   
-  return 'en'; // default
+  return 'ko'; // default to Korean
 }
 
 // Create modern project card HTML (new design inspired by the provided image)

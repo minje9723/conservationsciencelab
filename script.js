@@ -100,6 +100,15 @@ function setLang(lang) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 초기 언어 설정 (한국어 기본값)
+  const koBtn = document.getElementById('lang-ko');
+  const enBtn = document.getElementById('lang-en');
+  if (koBtn && !localStorage.getItem('preferred-language')) {
+    koBtn.classList.add('active');
+    enBtn?.classList.remove('active');
+    setLang('ko');
+  }
+  
   // 스크롤 감지 및 상단바 제어
   const header = document.querySelector('.transparent-header');
   let lastScroll = 0;
