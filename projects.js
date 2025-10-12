@@ -1,84 +1,139 @@
 // Projects page specific functionality
 
-// Projects data
+// Projects data - 각 카테고리별 2개씩
 const projects = [
+  // Site Survey & Manufacturing Analysis (현장 조사 및 제작기법 분석)
   {
     id: 1,
-    title_en: "Analysis of Traditional Heritage Materials",
-    title_ko: "전통 문화재 재료 분석",
-    description_en: "A comprehensive study on the scientific analysis and preservation of traditional Korean heritage materials using advanced analytical techniques.",
-    description_ko: "고급 분석 기술을 사용한 한국 전통 문화재 재료의 과학적 분석 및 보존에 대한 종합적 연구.",
+    title_en: "Scientific Analysis of Baekje Gold Ornaments",
+    title_ko: "백제 금제 장신구 과학적 분석 연구",
+    description_en: "Comprehensive scientific investigation of manufacturing techniques and material composition of Baekje period gold ornaments using advanced analytical methods.",
+    description_ko: "첨단 분석 방법을 활용한 백제시대 금제 장신구의 제작기법 및 재질 구성에 대한 종합 과학 조사.",
     category: "site-investigation",
     duration: "2024 - 2026",
-    funding: "National Research Foundation",
+    funding: "National Research Foundation of Korea",
     funding_ko: "한국연구재단",
-    keywords: ["Material Analysis", "Heritage Preservation", "Traditional Materials"],
-    keywords_ko: ["재료 분석", "유산 보존", "전통 재료"],
-    team: ["Sang Ok Lee", "Min Je Kim", "Eun Kyung Seo"],
-    publications: [],
-    images: ["assets/projects/material-analysis-1.jpg"]
-  },
-  {
-    id: 3,
-    title_en: "Metal 3D Printing for Heritage Restoration",
-    title_ko: "문화재 복원을 위한 금속 3D 프린팅",
-    description_en: "Research on using metal 3D printing technology for creating replacement parts and restoration components for metal cultural heritage objects.",
-    description_ko: "금속 문화유산의 교체 부품 및 복원 구성 요소 제작을 위한 금속 3D 프린팅 기술 활용 연구.",
-    category: "excavated-conservation",
-    duration: "2022 - 2024",
-    funding: "NUCH Research Fund",
-    funding_ko: "한국전통문화대학교 연구비",
-    keywords: ["Metal 3D Printing", "Restoration", "Cultural Heritage"],
-    keywords_ko: ["금속 3D 프린팅", "복원", "문화유산"],
-    team: ["Sang Ok Lee", "Min Je Kim", "Sin Gi Kim"],
-    publications: ["DOI:10.5000/heritage2025"],
-    images: ["assets/projects/metal-3d-1.jpg"]
-  },
-  {
-    id: 4,
-    title_en: "Smart Materials for Preventive Conservation",
-    title_ko: "예방보존을 위한 스마트 재료",
-    description_en: "Development of intelligent materials and sensors for monitoring environmental conditions in museums and heritage sites.",
-    description_ko: "박물관과 문화재 사이트의 환경 조건을 모니터링하기 위한 지능형 재료와 센서 개발.",
-    category: "preservation-research",
-    duration: "2023 - 2026",
-    funding: "European Union Horizon",
-    funding_ko: "유럽연합 호라이즌",
-    keywords: ["Smart Materials", "Environmental Monitoring", "Sensors"],
-    keywords_ko: ["스마트 재료", "환경 모니터링", "센서"],
-    team: ["So Youn Choi", "Gyu Ri Choi", "Ye Ni Heo"],
+    keywords: ["Gold Ornaments", "Baekje", "Scientific Analysis", "XRF", "SEM-EDS"],
+    keywords_ko: ["금제 장신구", "백제", "과학 분석", "형광분석", "전자현미경"],
+    team: ["Sang Ok Lee", "Min Je Kim", "Gyu Ri Choi"],
     publications: [],
     images: []
   },
   {
-    id: 5,
-    title_en: "Digital Reconstruction of Lost Cultural Heritage",
-    title_ko: "소실된 문화유산의 디지털 복원",
-    description_en: "Virtual reconstruction of destroyed or lost cultural heritage sites using historical documentation and archaeological evidence.",
-    description_ko: "역사적 문서와 고고학적 증거를 사용하여 파괴되거나 소실된 문화유산지의 가상 복원.",
+    id: 2,
+    title_en: "Field Investigation of Traditional Temple Murals",
+    title_ko: "전통 사찰 벽화 현장 조사 연구",
+    description_en: "On-site investigation and pigment analysis of deteriorating wall paintings in historic Korean Buddhist temples to develop conservation strategies.",
+    description_ko: "역사적인 한국 불교 사찰의 훼손된 벽화에 대한 현장 조사 및 안료 분석을 통한 보존 방안 마련.",
     category: "site-investigation",
-    duration: "2022 - 2024",
-    funding: "UNESCO Heritage Fund",
-    funding_ko: "유네스코 문화유산 기금",
-    keywords: ["Virtual Reconstruction", "Digital Heritage", "VR"],
-    keywords_ko: ["가상 복원", "디지털 유산", "가상현실"],
-    team: ["Sang Ok Lee", "Chae Rin Kim", "Hyo Jeong Kim"],
-    publications: ["DOI:10.1234/heritage2023", "DOI:10.5678/digital2024"],
+    duration: "2023 - 2025",
+    funding: "Cultural Heritage Administration",
+    funding_ko: "문화재청",
+    keywords: ["Wall Paintings", "Buddhist Temple", "Pigment Analysis", "Field Survey"],
+    keywords_ko: ["벽화", "사찰", "안료 분석", "현장 조사"],
+    team: ["Eun Kyung Seo", "Hyo Jeong Kim", "Ji Eun Hyun"],
+    publications: [],
+    images: []
+  },
+  
+  // Heritage Conservation (문화유산 보존처리)
+  {
+    id: 3,
+    title_en: "Conservation of Excavated Iron Artifacts from Gaya",
+    title_ko: "가야 출토 철제 유물 보존처리",
+    description_en: "Conservation treatment of iron artifacts excavated from Gaya archaeological sites, including weapons, agricultural tools, and ornaments.",
+    description_ko: "가야 유적지에서 출토된 무기, 농기구, 장신구 등 철제 유물에 대한 보존처리 작업.",
+    category: "excavated-conservation",
+    duration: "2024 - 2025",
+    funding: "Gyeongsangnam-do Cultural Heritage Foundation",
+    funding_ko: "경상남도문화재단",
+    keywords: ["Iron Artifacts", "Gaya", "Conservation", "Archaeological Excavation"],
+    keywords_ko: ["철제 유물", "가야", "보존처리", "고고 발굴"],
+    team: ["Sang Ok Lee", "Sin Gi Kim", "Su Jeong Kim"],
+    publications: [],
+    images: []
+  },
+  {
+    id: 4,
+    title_en: "Restoration of Joseon Dynasty White Porcelain",
+    title_ko: "조선시대 백자 복원 연구",
+    description_en: "Detailed restoration and conservation of fragmented Joseon Dynasty white porcelain using both traditional methods and modern scientific techniques.",
+    description_ko: "전통 기법과 현대 과학 기술을 활용한 조선시대 백자 파편의 정밀 복원 및 보존처리.",
+    category: "excavated-conservation",
+    duration: "2023 - 2024",
+    funding: "National Palace Museum of Korea",
+    funding_ko: "국립고궁박물관",
+    keywords: ["White Porcelain", "Joseon Dynasty", "Ceramic Restoration", "Conservation"],
+    keywords_ko: ["백자", "조선시대", "도자기 복원", "보존처리"],
+    team: ["So Youn Choi", "Chae Rin Kim", "Ye Ni Heo"],
+    publications: [],
+    images: []
+  },
+  
+  // Heritage Designation (국가유산 지정 및 승격 연구)
+  {
+    id: 5,
+    title_en: "Scientific Research for Goryeo Metal Craft Designation",
+    title_ko: "고려시대 금속공예품 국보 지정 과학 연구",
+    description_en: "Comprehensive scientific investigation to support the national treasure designation of Goryeo Dynasty metal crafts through material and technique analysis.",
+    description_ko: "재료 및 기법 분석을 통한 고려시대 금속공예품의 국보 지정을 위한 종합 과학 조사 연구.",
+    category: "designation-research",
+    duration: "2024 - 2025",
+    funding: "Cultural Heritage Administration",
+    funding_ko: "문화재청",
+    keywords: ["Goryeo Dynasty", "Metal Crafts", "National Treasure", "Scientific Investigation"],
+    keywords_ko: ["고려시대", "금속공예", "국보지정", "과학조사"],
+    team: ["Sang Ok Lee", "Min Je Kim", "Eun Kyung Seo"],
+    publications: [],
     images: []
   },
   {
     id: 6,
-    title_en: "Nano-Conservation Materials for Stone Heritage",
-    title_ko: "석조문화재를 위한 나노보존재료",
-    description_en: "Research into nano-structured consolidants and protective coatings for stone cultural heritage preservation.",
-    description_ko: "석조문화재 보존을 위한 나노구조 강화재와 보호 코팅 연구.",
+    title_en: "Authenticity Study for Buddhist Scripture Upgrade",
+    title_ko: "불교 경전 문화재 승격 진위 검증 연구",
+    description_en: "Multi-analytical research for authenticity verification of Buddhist scriptures proposed for cultural heritage status upgrade.",
+    description_ko: "문화재 등급 승격이 제안된 불교 경전의 진위 검증을 위한 다중 분석 연구.",
     category: "designation-research",
-    duration: "2024 - 2027",
-    funding: "Korea Heritage Agency",
-    funding_ko: "한국문화재청",
-    keywords: ["Nanotechnology", "Stone Conservation", "Consolidants"],
-    keywords_ko: ["나노기술", "석조보존", "강화재"],
+    duration: "2023 - 2024",
+    funding: "Buddhist Cultural Heritage Committee",
+    funding_ko: "불교문화재위원회",
+    keywords: ["Buddhist Scripture", "Authenticity", "Heritage Upgrade", "Verification"],
+    keywords_ko: ["불교 경전", "진위 검증", "문화재 승격", "과학 조사"],
+    team: ["Eun Kyung Seo", "Chae Rin Kim", "Hyo Jeong Kim"],
+    publications: [],
+    images: []
+  },
+  
+  // Heritage Strategy (문화유산 보존 방안 연구)
+  {
+    id: 7,
+    title_en: "Preventive Conservation Guidelines for Wooden Heritage",
+    title_ko: "목조문화재 예방 보존 지침 개발 연구",
+    description_en: "Development of comprehensive preventive conservation guidelines for wooden cultural heritage considering climate change impacts and environmental factors.",
+    description_ko: "기후변화 영향과 환경 요인을 고려한 목조문화재 예방 보존 종합 지침 개발 연구.",
+    category: "preservation-research",
+    duration: "2023 - 2025",
+    funding: "Cultural Heritage Administration",
+    funding_ko: "문화재청",
+    keywords: ["Wooden Heritage", "Preventive Conservation", "Climate Change", "Guidelines"],
+    keywords_ko: ["목조문화재", "예방 보존", "기후변화", "보존 지침"],
     team: ["Eun Kyung Seo", "Su Jeong Kim", "Ji Eun Hyun"],
+    publications: [],
+    images: []
+  },
+  {
+    id: 8,
+    title_en: "IoT-based Monitoring System for Stone Heritage",
+    title_ko: "석조문화재 IoT 기반 모니터링 시스템 구축",
+    description_en: "Development and implementation of IoT-based real-time monitoring system for tracking deterioration of outdoor stone cultural heritage.",
+    description_ko: "옥외 석조문화재의 훼손 상태를 실시간으로 추적하기 위한 IoT 기반 모니터링 시스템 개발 및 구축.",
+    category: "preservation-research",
+    duration: "2024 - 2026",
+    funding: "National Research Foundation of Korea",
+    funding_ko: "한국연구재단",
+    keywords: ["Stone Heritage", "IoT", "Monitoring System", "Real-time Tracking"],
+    keywords_ko: ["석조문화재", "사물인터넷", "모니터링 시스템", "실시간 추적"],
+    team: ["Sang Ok Lee", "Sin Gi Kim", "Gyu Ri Choi"],
     publications: [],
     images: []
   }
@@ -112,7 +167,22 @@ function removeProject(id) {
 
 // Get current language
 function getCurrentLanguage() {
-  return document.getElementById('lang-ko') && document.getElementById('lang-ko').classList.contains('active') ? 'ko' : 'en';
+  // Check localStorage first
+  const savedLang = localStorage.getItem('preferred-language');
+  if (savedLang) return savedLang;
+  
+  // Check active button
+  const koBtn = document.getElementById('lang-ko');
+  const enBtn = document.getElementById('lang-en');
+  
+  if (koBtn && koBtn.classList.contains('active')) return 'ko';
+  if (enBtn && enBtn.classList.contains('active')) return 'en';
+  
+  // Check document lang attribute
+  const docLang = document.documentElement.lang;
+  if (docLang === 'ko' || docLang === 'en') return docLang;
+  
+  return 'en'; // default
 }
 
 // Create modern project card HTML (new design inspired by the provided image)
@@ -396,12 +466,29 @@ function viewProjectDetails(id) {
 
 // Initialize projects page
 function initProjects() {
-  // Override setLang function to include project rendering
-  const originalSetLang = window.setLang;
-  window.setLang = function(lang) {
-    originalSetLang(lang);
-    renderProjects();
-  };
+  // Listen for language changes - Desktop (lang-option buttons)
+  document.querySelectorAll('.lang-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Delay to ensure language switch completes first
+      setTimeout(() => {
+        renderProjects();
+      }, 100);
+    });
+  });
+  
+  // Listen for language changes - Mobile (langToggle button)
+  const langToggle = document.getElementById('langToggle');
+  if (langToggle) {
+    langToggle.addEventListener('click', () => {
+      // Only for mobile screens
+      if (window.innerWidth <= 1002) {
+        // Delay to ensure language switch completes first
+        setTimeout(() => {
+          renderProjects();
+        }, 150);
+      }
+    });
+  }
 
   // Check URL parameters for initial filter
   const urlParams = new URLSearchParams(window.location.search);

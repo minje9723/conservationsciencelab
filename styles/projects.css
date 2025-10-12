@@ -1220,17 +1220,20 @@ main .page-banner.scrolled {
   }
   
   .filter-btn {
-    font-size: 0.8rem;
-    padding: 0.6rem 0.8rem;
+    font-size: 0.75rem;
+    padding: 0.6rem 0.7rem;
+    white-space: normal;
+    line-height: 1.3;
+    text-align: center;
   }
   
-  /* 1행에 2개 버튼 (전체 프로젝트 40%, 문화유산 현장 조사 60%) */
+  /* 1행에 2개 버튼 (All 30%, Site Survey 70%) */
   .filter-btn:nth-child(1) {
-    flex: 0 0 calc(40% - 0.3rem);
+    flex: 0 0 calc(28% - 0.3rem);
   }
   
   .filter-btn:nth-child(2) {
-    flex: 0 0 calc(60% - 0.2rem);
+    flex: 0 0 calc(72% - 0.2rem);
   }
   
   /* 2행에 3개 버튼 */
