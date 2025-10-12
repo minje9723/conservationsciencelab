@@ -98,60 +98,6 @@ const achievements = [
     keywords_ko: ["천주교", "종교문화유산", "목록화", "분류체계", "보존관리"]
   },
   {
-    id: 3,
-    type: "publication",
-    title_en: "Reverse Casting Using Metal PLA 3D Printing: A Study Based on Digital Data of Royal Seals from the National Palace Museum, Korea",
-    title_ko: "국립고궁박물관 소장 어보의 디지털 데이터를 활용한 금속 PLA 3D 프린팅 기반 역주조 공법 기초 연구",
-    authors: "Sangok Lee, Minje Kim, Singi Kim",
-    authors_ko: "김민제, 김신기, 이상옥",
-    journal: "Korean Journal of Palace Museum",
-    journal_ko: "고궁문화",
-    journal_abbr: "Korean J. Palace Mus.",
-    year: 2025,
-    summary_en: "Feasibility study of metal PLA 3D printing and reverse casting for heritage restoration using royal seal data.",
-    summary_ko: "어보 데이터를 활용한 금속 PLA 3D 프린팅 기반 역주조 공법의 문화유산 복원 적용 가능성 연구.",
-    link: "https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART003218035",
-    doi: "",
-    keywords: ["3D Printing", "Heritage Restoration", "Metal Casting"],
-    keywords_ko: ["3D 프린팅", "문화재 복원", "금속 주조"]
-  },
-  {
-    id: 5,
-    type: "publication",
-    title_en: "A Study on the Prevention of Specular Reflections in 3D Scanning of Glossy Artifacts",
-    title_ko: "광택 유물의 3D 스캐닝에서 정반사 방지에 관한 연구",
-    authors: "Hyo Jeong Kim, Min Je Kim, So Yeon Choi, Jeong Eun Oh, Sang Ok Lee",
-    authors_ko: "김효정, 김민제, 최소연, 오정은, 이상옥",
-    journal: "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
-    journal_ko: "ISPRS 사진측량 및 원격탐사 공간정보과학 연보",
-    journal_abbr: "ISPRS Ann. Photogramm. Remote Sens. Spatial Inf. Sci.",
-    year: 2025,
-    summary_en: "Evaluated material safety and applicability of vanishing scanning sprays for 3D scanning of glossy artifacts.",
-    summary_ko: "광택 유물의 3D 스캐닝을 위한 자연 소멸형 스캔 스프레이의 재료 안전성 및 적용성 평가.",
-    link: "https://isprs-annals.copernicus.org/articles/X-M-2-2025/157/2025/isprs-annals-X-M-2-2025-157-2025.html",
-    doi: "10.5194/isprs-annals-X-M-2-2025-157-2025",
-    keywords: ["Glossy Artifacts", "3D Laser Scanning", "Specular Reflections", "Vanishing Scanning Sprays", "Material Safety"],
-    keywords_ko: ["광택 유물", "3D 레이저 스캐닝", "정반사", "소멸형 스캔 스프레이", "재료 안전성"]
-  },
-  {
-    id: 18,
-    type: "publication",
-    title_en: "Photogrammetry-Based Monitoring for the Continuous Management of Cultural Heritage: A Case Study of the Petroglyphs of Cheonjeon-ri, Ulju",
-    title_ko: "문화유산의 지속적 관리를 위한 사진측량 기반 모니터링: 울주 천전리 암각화 사례 연구",
-    authors: "Hae Jun Park, Gyu Ri Choi, Jeong Yeon Kim, Sang Ok Lee",
-    authors_ko: "박해준, 최규리, 김정연, 이상옥",
-    journal: "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
-    journal_ko: "ISPRS 사진측량 및 원격탐사 공간정보과학 연보",
-    journal_abbr: "ISPRS Ann. Photogramm. Remote Sens. Spatial Inf. Sci.",
-    year: 2025,
-    summary_en: "Applied photogrammetry for digital documentation and damage detection monitoring of outdoor cultural heritage sites.",
-    summary_ko: "야외 문화유산의 디지털 기록 및 손상 감지 모니터링을 위한 사진측량 기법 적용 연구.",
-    link: "https://isprs-annals.copernicus.org/articles/X-M-2-2025/275/2025/",
-    doi: "10.5194/isprs-annals-X-M-2-2025-275-2025",
-    keywords: ["Photogrammetry", "Digital Documentation", "Monitoring", "Damage Detection", "Cultural Heritage Management"],
-    keywords_ko: ["사진측량", "디지털 기록", "모니터링", "손상 감지", "문화유산 관리"]
-  },
-  {
     id: 6,
     type: "conference",
     title_en: "Digital Heritage Documentation and 3D Reconstruction",
@@ -319,6 +265,82 @@ const achievements = [
     keywords_ko: ["최우수발표", "3D 프린팅", "금속 보존", "국제학술"]
   },
   {
+    id: 15,
+    type: "award",
+    title_en: "Excellence in Oral Presentation Award (Excellence Award)",
+    title_ko: "우수구두발표상 (우수상)",
+    recipient: "Gyu Ri Choi, Sang Ok Lee",
+    recipient_ko: "최규리, 이상옥",
+    organization: "Korean Society of Conservation Science for Cultural Heritage - 58th Spring Conference",
+    organization_ko: "(사)한국문화재보존과학회 제58회 춘계학술대회",
+    year: 2023,
+    summary_en: "Excellence Award in oral presentation for research on basic investigation and conservation management of Catholic cultural heritage.",
+    summary_ko: "천주교 동산문화유산 기초조사 및 보존관리 방안 연구로 우수구두발표상 수상.",
+    link: "",
+    award_image: "assets/awards/oral-excellence-2023.jpg",
+    category: "Academic Conference",
+    category_ko: "학술대회",
+    keywords: ["Oral Presentation", "Catholic Heritage", "Conservation", "Excellence Award"],
+    keywords_ko: ["구두발표", "천주교문화유산", "보존관리", "우수상"]
+  },
+  {
+    id: 16,
+    type: "award",
+    title_en: "Excellence in Poster Award",
+    title_ko: "우수포스터상",
+    recipient: "Jeong Yeon Kim",
+    recipient_ko: "김정연",
+    organization: "The 7th Postgraduate Forum of China and Korea on Cultural Heritage Conservation",
+    organization_ko: "한중 문화유산보존 대학원생 포럼 제7회",
+    year: 2024,
+    summary_en: "Excellence in Poster Award for research on weathering phenomena assessment in Laos laterite with emphasis on salt spray testing methodology.",
+    summary_ko: "라오스 라테라이트의 풍화 현상 평가 및 염분 분무 시험 방법론 연구로 우수포스터상 수상.",
+    link: "",
+    award_image: "assets/awards/poster-excellence-2024.jpg",
+    category: "International Conference",
+    category_ko: "국제학술대회",
+    keywords: ["Poster", "Laterite", "Weathering", "Salt Spray Testing"],
+    keywords_ko: ["포스터", "라테라이트", "풍화", "염분시험"]
+  },
+  {
+    id: 17,
+    type: "award",
+    title_en: "Best Poster Award",
+    title_ko: "우수포스터상",
+    recipient: "Gyu Ri Choi",
+    recipient_ko: "최규리",
+    organization: "The 7th Postgraduate Forum of China and Korea on Cultural Heritage Conservation",
+    organization_ko: "한중 문화유산보존 대학원생 포럼 제7회",
+    year: 2024,
+    summary_en: "Best Poster Award for research on analysis of conservation environment of mural painting under climate factors.",
+    summary_ko: "기후 요인에 따른 벽화 보존 환경 분석 연구로 우수포스터상 수상.",
+    link: "",
+    award_image: "assets/awards/poster-best-2024.jpg",
+    category: "International Conference",
+    category_ko: "국제학술대회",
+    keywords: ["Poster", "Mural Painting", "Climate", "Conservation Environment"],
+    keywords_ko: ["포스터", "벽화", "기후", "보존환경"]
+  },
+  {
+    id: 18,
+    type: "award",
+    title_en: "Excellence in Oral Presentation Award",
+    title_ko: "우수구두발표상",
+    recipient: "Min Je Kim, Sang Ok Lee, Kwang Yong Jung",
+    recipient_ko: "김민제, 이상옥, 정광용",
+    organization: "Korean Society of Conservation Science for Cultural Heritage - 56th Fall Conference",
+    organization_ko: "(사)한국문화재보존과학회 제56회 추계학술대회",
+    year: 2022,
+    summary_en: "Excellence in oral presentation award for research on feasibility study of 3D printing restoration using Cu-PLA for metal cultural heritage.",
+    summary_ko: "Cu-PLA를 활용한 금속문화유산 3D 프린팅 복원 가능성 연구로 우수구두발표상 수상.",
+    link: "",
+    award_image: "assets/awards/oral-excellence-2022.jpg",
+    category: "Academic Conference",
+    category_ko: "학술대회",
+    keywords: ["Oral Presentation", "3D Printing", "Cu-PLA", "Metal Conservation"],
+    keywords_ko: ["구두발표", "3D 프린팅", "Cu-PLA", "금속보존"]
+  },
+  {
     id: 8,
     type: "patent",
     title_en: "Method for 3D Printing-based Heritage Restoration",
@@ -450,13 +472,12 @@ function getTypeIcon(type) {
 // Create achievement card HTML
 function createAchievementCard(achievement, lang) {
   let metaInfo = '';
-  let linkText = lang === 'ko' ? '세부정보 보기' : 'View Details';
   
   switch (achievement.type) {
     case 'publication':
       metaInfo = `
-        <span class="lang lang-en">Authors: ${achievement.authors}</span>
-        <span class="lang lang-ko" style="display:none;">저자: ${achievement.authors_ko || achievement.authors}</span>
+        <span class="lang lang-en">${achievement.authors}</span>
+        <span class="lang lang-ko" style="display:none;">${achievement.authors_ko || achievement.authors}</span>
         <span class="achievement-year">${achievement.year}</span>
       `;
       break;
@@ -533,8 +554,8 @@ function createAchievementCard(achievement, lang) {
       </div>
       ${achievement.link ? `
         <a class="achievement-link" href="${achievement.link}" target="_blank">
-          <span class="lang lang-en">${linkText}</span>
-          <span class="lang lang-ko" style="display:none;">${linkText}</span>
+          <span class="lang lang-en">View Details</span>
+          <span class="lang lang-ko" style="display:none;">세부 정보 보기</span>
         </a>
       ` : ''}
     </li>
