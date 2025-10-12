@@ -1458,6 +1458,7 @@ function closeAwardModal() {
 // Make functions globally accessible
 window.openAwardModal = openAwardModal;
 window.closeAwardModal = closeAwardModal;
+window.changePage = changePage;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
