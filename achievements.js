@@ -803,6 +803,24 @@ function initAchievements() {
       }
     });
   }, 200);
+  
+  // Setup modal event listeners
+  const modal = document.getElementById('awardModal');
+  if (modal) {
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeAwardModal();
+      }
+    });
+    
+    // Close on ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeAwardModal();
+      }
+    });
+  }
 }
 
 // Update filter button counts - only show count for active filter
@@ -910,45 +928,21 @@ function initBannerAnimation() {
 
 // Award Image Modal Functions
 function openAwardModal(imageSrc, altText) {
-  // Create modal if it doesn't exist
-  let modal = document.getElementById('awardModal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'awardModal';
-    modal.className = 'award-modal';
-    modal.innerHTML = `
-      <span class="award-modal-close" onclick="closeAwardModal()">&times;</span>
-      <img class="award-modal-content" id="awardModalImg" alt="">
-    `;
-    document.body.appendChild(modal);
-    
-    // Close on background click
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeAwardModal();
-      }
-    });
-    
-    // Close on ESC key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeAwardModal();
-      }
-    });
-  }
-  
-  // Set image and show modal
+  const modal = document.getElementById('awardModal');
   const modalImg = document.getElementById('awardModalImg');
-  modalImg.src = imageSrc;
-  modalImg.alt = altText;
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  
+  if (modal && modalImg) {
+    modalImg.src = imageSrc;
+    modalImg.alt = altText;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  }
 }
 
 function closeAwardModal() {
   const modal = document.getElementById('awardModal');
   if (modal) {
-    modal.classList.remove('active');
+    modal.style.display = 'none';
     document.body.style.overflow = ''; // Restore scrolling
   }
 }
