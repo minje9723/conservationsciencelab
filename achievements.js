@@ -1108,10 +1108,17 @@ function changePage(page) {
   currentPage = page;
   renderAchievements();
   
-  // Scroll to top of achievements section
-  const achievementsSection = document.querySelector('.achievements-section');
-  if (achievementsSection) {
-    achievementsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Scroll to filter buttons position (consistent home position for pagination)
+  const filterContainer = document.querySelector('.achievement-filters');
+  if (filterContainer) {
+    const offset = 100; // Offset for fixed header
+    const elementPosition = filterContainer.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
   }
 }
 
