@@ -210,11 +210,13 @@
   box-shadow: 0 4px 16px rgba(26,35,126,0.08);
   transition: all 0.3s ease;
   display: grid;
-  grid-template-columns: 140px 1fr;
+  grid-template-columns: 1fr 140px;
   grid-template-rows: auto auto 1fr;
   gap: 0.8rem 1rem;
   padding: 1.5rem;
+  padding-top: 2.5rem; /* Extra space for icon */
   min-height: auto;
+  position: relative;
 }
 
 .achievement-list li.award-with-image:hover {
@@ -222,43 +224,45 @@
   box-shadow: 0 8px 24px rgba(26,35,126,0.12);
 }
 
-/* Icon positioning for award with image */
+/* Icon positioning for award with image - top right */
 .achievement-list li.award-with-image .achievement-icon {
-  grid-column: 2;
-  grid-row: 1;
   position: absolute;
   top: -1rem;
   right: 1rem;
+  grid-column: unset;
+  grid-row: unset;
 }
 
-/* Image in top-left corner (1st quadrant) */
+/* Image in top-right corner - aligned with icon */
 .achievement-list li.award-with-image .award-image-preview {
-  grid-column: 1;
+  grid-column: 2;
   grid-row: 1 / 4;
   align-self: start;
+  justify-self: end;
 }
 
-/* Title spans second column, first row */
+/* Title spans first column, first row - aligned with image top */
 .achievement-list li.award-with-image .achievement-title {
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 1;
   color: #1a237e;
   margin-bottom: 0;
-  padding-right: 3rem; /* Space for icon */
+  padding-right: 1rem;
+  align-self: start;
 }
 
-/* Meta spans second column, second row */
+/* Meta spans first column, second row */
 .achievement-list li.award-with-image .achievement-meta {
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 2;
   color: #5c6bc0;
   font-size: 0.92rem;
   margin-bottom: 0;
 }
 
-/* Summary spans second column, third row */
+/* Summary spans first column, third row */
 .achievement-list li.award-with-image .achievement-summary {
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 3;
   color: #555;
   line-height: 1.6;
