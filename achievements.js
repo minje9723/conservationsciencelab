@@ -278,6 +278,96 @@ const achievements = [
     keywords_ko: ["조선시대 기와", "디지털 실측", "디지털 가시화", "물성평가", "형태 복원"]
   },
   {
+    id: 28,
+    type: "publication",
+    title_en: "The Metallurgical Characteristics of Modern Brassware by Manufacturing Techniques",
+    title_ko: "제작기법에 따른 현대 유기(鍮器)의 금속학적 특성 분석",
+    authors: "Yu Ran Seok, Go Woon Bae",
+    authors_ko: "석유란, 배고운",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2024,
+    summary_en: "Objective evidence to distinguish between modern casting brassware and traditional forged brassware through metallographic characteristics analysis.",
+    summary_ko: "현대 유기의 제작기법에 따른 금속학적 특성 확인을 통한 현대식 주조유기와 전통 방짜유기 구별 근거 마련.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=94503&cID=",
+    doi: "10.12654/JCS.2024.40.4.02",
+    keywords: ["Modern Brassware", "Casting Brassware", "Forged Brassware", "Bangjja Brassware", "Production Process"],
+    keywords_ko: ["현대 유기", "방짜유기", "주조유기", "제작기법", "미세조직"]
+  },
+  {
+    id: 29,
+    type: "publication",
+    title_en: "Scientific Analysis and Provenance Study of Bronze Artifacts Excavated from Dongchon Site in Sunchang, Jeollabuk‐do, Korea",
+    title_ko: "전북 순창 동촌유적 출토 청동기의 원료 산지연구",
+    authors: "Go Woon Bae, Kwang Yong Chung",
+    authors_ko: "배고운, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2016,
+    summary_en: "Lead isotope ratio analysis of bronze artifacts excavated from Dongchon Site to determine provenance of raw materials.",
+    summary_ko: "순창 동촌유적 출토 청동기의 납동위원소비 분석을 통한 원료 산지 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=51722&cID=",
+    doi: "",
+    keywords: ["Dongchon site in Sunchang", "Early iron age", "Bronze artifact", "Lead isotope ratio", "Provenance"],
+    keywords_ko: ["순창 동촌유적", "초기 철기시대", "청동기", "납동위원소비", "산지 연구"]
+  },
+  {
+    id: 30,
+    type: "publication",
+    title_en: "Basic Characteristics and Application of Modern Dancheong Pigment Jangdanyuksaek (Incarnadine)",
+    title_ko: "현대 단청용 장단육색의 기본 특성 및 사용 기준 연구",
+    authors: "Eun Ji Kim, Kwang Yong Chung",
+    authors_ko: "김은지, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2015,
+    summary_en: "Analysis of physical characteristics and proper mixing ratios of modern Dancheong pigments through accelerated weathering and UV degradation tests.",
+    summary_ko: "현대 단청안료의 물리적 특성 분석 및 가속열화시험을 통한 적정 혼합비율 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=51709&cID=",
+    doi: "",
+    keywords: ["Modern Dancheong", "Jangdanyuksaek (Incarnadine) Pigment", "Basic Characteristics", "Application"],
+    keywords_ko: ["현대 단청", "장단육색", "기본 특성", "사용 기준"]
+  },
+  {
+    id: 31,
+    type: "publication",
+    title_en: "A Study on Influence of Firing Temperature and Temper Content on the Physical Properties of Earthenware Coffin",
+    title_ko: "소성온도와 혼입물 함량이 옹관의 물성에 주는 영향에 관한 연구",
+    authors: "Kyu Been Kim, Kwang Yong Chung",
+    authors_ko: "김규빈, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2014,
+    summary_en: "Study on the role of temper and physical properties of earthenware coffin according to firing temperature and clay state modification.",
+    summary_ko: "소성온도와 점토 상태 변화에 따른 혼입물의 역할과 옹관의 물리적 특성 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=51660&cID=",
+    doi: "",
+    keywords: ["earthenware coffin", "source soil", "temper", "reduction firing", "specific gravity", "absorption factor", "XRF", "XRD", "volume", "expansion"],
+    keywords_ko: ["옹관", "태토", "혼입물", "환원소성", "비중", "흡수율", "XRF", "XRD", "부피", "팽창"]
+  },
+  {
+    id: 32,
+    type: "publication",
+    title_en: "Applicability for Authenticity of Bronze Artefacts using Scientific Analyses",
+    title_ko: "과학적 분석을 통한 전세품 청동기의 진위판별 적용 가능성 연구",
+    authors: "Misol Do, Kwang Yong Chung",
+    authors_ko: "도미솔, 정광용",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    year: 2013,
+    summary_en: "Study on applicability for authenticity determination of bronze artifacts through microstructure, chemical component analysis, and corrosion research.",
+    summary_ko: "미세조직, 화학성분 분석 및 부식 연구를 통한 전세품 청동기의 진위판별 적용 가능성 연구.",
+    link: "http://journal.conservation.or.kr/journal/article.php?code=51618&cID=",
+    doi: "",
+    keywords: ["Bronze artefacts", "Chemical component", "Microstructure", "Cross-checking", "Applicability for authenticity"],
+    keywords_ko: ["청동기", "화학성분", "미세조직", "교차검증", "진위판별"]
+  },
+  {
     id: 6,
     type: "conference",
     title_en: "Digital Heritage Documentation and 3D Reconstruction",
@@ -628,6 +718,10 @@ function removeAchievement(id) {
   }
 }
 
+// Pagination variables
+let currentPage = 1;
+const itemsPerPage = 12;
+
 // Get current language
 function getCurrentLanguage() {
   // Check localStorage first, then button state
@@ -744,10 +838,8 @@ function createAchievementCard(achievement, lang) {
 
 // Filter achievements
 function filterAchievements(type = 'all') {
-  const achievementsList = document.querySelector('.achievement-list');
-  if (!achievementsList) return;
-  
-  const achievementItems = Array.from(document.querySelectorAll('.achievement-list li'));
+  // Reset to first page when filter changes
+  currentPage = 1;
   
   // Add or remove filtered class from body
   if (type === 'all') {
@@ -756,23 +848,8 @@ function filterAchievements(type = 'all') {
     document.body.classList.add('filtered');
   }
   
-  // Filter items without reordering - maintain original order from achievements array
-  achievementItems.forEach(item => {
-    const itemType = item.getAttribute('data-type');
-    if (type === 'all' || itemType === type) {
-      item.style.display = '';
-    } else {
-      item.style.display = 'none';
-    }
-  });
-  
-  // Update button counts to show only for active filter
-  updateActiveFilterCount(type);
-  
-  // Re-trigger animation for visible items
-  setTimeout(() => {
-    initAnimations();
-  }, 50);
+  // Re-render achievements with pagination
+  renderAchievements();
 }
 
 // Render all achievements
@@ -781,16 +858,105 @@ function renderAchievements() {
   if (!achievementsList) return;
 
   const lang = getCurrentLanguage();
-  achievementsList.innerHTML = achievements.map(achievement => createAchievementCard(achievement, lang)).join('');
+  const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
+  
+  // Filter achievements based on current filter
+  let filteredAchievements = achievements;
+  if (currentFilter !== 'all') {
+    filteredAchievements = achievements.filter(achievement => achievement.type === currentFilter);
+  }
+  
+  // Calculate pagination
+  const totalItems = filteredAchievements.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedAchievements = filteredAchievements.slice(startIndex, endIndex);
+  
+  // Render achievement cards
+  achievementsList.innerHTML = paginatedAchievements.map(achievement => createAchievementCard(achievement, lang)).join('');
+  
+  // Render pagination controls
+  renderPagination(totalPages, currentPage);
   
   // Update filter counts after rendering
-  const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'all';
   updateActiveFilterCount(currentFilter);
   
   // Re-initialize animations after rendering
   setTimeout(() => {
     initAnimations();
   }, 50);
+}
+
+// Render pagination controls
+function renderPagination(totalPages, currentPage) {
+  const paginationContainer = document.querySelector('.pagination-container');
+  if (!paginationContainer) {
+    // Create pagination container if it doesn't exist
+    const achievementSection = document.querySelector('.achievements-section');
+    if (achievementSection) {
+      const container = document.createElement('div');
+      container.className = 'pagination-container';
+      achievementSection.appendChild(container);
+      renderPaginationButtons(container, totalPages, currentPage);
+    }
+  } else {
+    renderPaginationButtons(paginationContainer, totalPages, currentPage);
+  }
+}
+
+// Render pagination buttons
+function renderPaginationButtons(container, totalPages, currentPage) {
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+  
+  let buttonsHTML = '<div class="pagination-buttons">';
+  
+  // Previous button
+  buttonsHTML += `
+    <button class="pagination-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+      <span class="lang lang-en">Previous</span>
+      <span class="lang lang-ko" style="display:none;">이전</span>
+    </button>
+  `;
+  
+  // Page numbers
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+      buttonsHTML += `
+        <button class="pagination-btn page-number ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+          ${i}
+        </button>
+      `;
+    } else if (i === currentPage - 2 || i === currentPage + 2) {
+      buttonsHTML += '<span class="pagination-ellipsis">...</span>';
+    }
+  }
+  
+  // Next button
+  buttonsHTML += `
+    <button class="pagination-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+      <span class="lang lang-en">Next</span>
+      <span class="lang lang-ko" style="display:none;">다음</span>
+    </button>
+  `;
+  
+  buttonsHTML += '</div>';
+  container.innerHTML = buttonsHTML;
+}
+
+// Change page function
+function changePage(page) {
+  currentPage = page;
+  renderAchievements();
+  
+  // Scroll to top of achievements section
+  const achievementsSection = document.querySelector('.achievements-section');
+  if (achievementsSection) {
+    achievementsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 // Sort achievements by year, type, or title
