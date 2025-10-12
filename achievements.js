@@ -1109,7 +1109,7 @@ function changePage(page) {
   renderAchievements();
   
   // Scroll to filter buttons position (consistent home position for pagination)
-  const filterContainer = document.querySelector('.achievement-filters');
+  const filterContainer = document.querySelector('.achievements-filter-container');
   if (filterContainer) {
     const offset = 100; // Offset for fixed header
     const elementPosition = filterContainer.getBoundingClientRect().top;
