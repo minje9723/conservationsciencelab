@@ -226,12 +226,12 @@ const achievements = [
   {
     id: 7,
     type: "award",
-    title_en: "Best Excellence Award - 8th 3D Printing BIZCON Competition",
-    title_ko: "제8회 3D프린팅 BIZCON 경진대회 최우수상",
+    title_en: "Cultural Heritage Administration Award",
+    title_ko: "문화재청장상",
     recipient: "National Heritage Conservation Research Institute",
     recipient_ko: "한국전통문화대학교 보존과학연구소 목원재료연구실",
-    organization: "Ministry of Culture, Heritage and Tourism (Cultural Heritage Administration)",
-    organization_ko: "문화재청",
+    organization: "8th 3D Printing BIZCON Competition",
+    organization_ko: "제8회 3D프린팅 BIZCON 경진대회",
     year: 2023,
     summary_en: "Awarded for excellence in 3D printing business activities, presenting innovative ideas for utilizing cultural heritage 3D data at the design booth of the 8th 3D Printing BIZCON Competition.",
     summary_ko: "3D 프린팅 산업 활성화를 위해 개최한 제8회 3D프린팅 BIZCON 경진대회 디자인 부야에서 문화재 3D 데이터를 활용한 독창적인 아이디어로 위와 같은 성적을 거두었기에 이 상장을 수여함.",
@@ -245,17 +245,17 @@ const achievements = [
   {
     id: 19,
     type: "award",
-    title_en: "National Heritage Conservation Technology Award",
-    title_ko: "국가유산 보존기술상",
+    title_en: "Minister of Culture, Sports and Tourism Award",
+    title_ko: "문화체육관광부장관상",
     recipient: "Conservation Science Lab",
     recipient_ko: "보존과학연구소",
-    organization: "Ministry of Culture, Sports and Tourism",
-    organization_ko: "문화체육관광부",
+    organization: "National Heritage Conservation Technology Awards",
+    organization_ko: "국가유산 보존기술 시상식",
     year: 2023,
     summary_en: "Recognition for outstanding contributions to the development of innovative conservation technologies for Korean cultural heritage.",
     summary_ko: "한국 문화유산을 위한 혁신적인 보존 기술 개발에 대한 뛰어난 기여를 인정받은 상.",
     link: "",
-    award_image: "",
+    award_image: "assets/awards/award-placeholder-19.jpg",
     category: "Technology Innovation",
     category_ko: "기술 혁신",
     keywords: ["Technology Award", "Heritage Conservation", "Innovation"],
@@ -264,59 +264,59 @@ const achievements = [
   {
     id: 12,
     type: "award",
-    title_en: "Excellence in Digital Heritage Award",
-    title_ko: "디지털 유산 우수상",
-    recipient: "Min Je Kim",
-    recipient_ko: "김민제",
-    organization: "International Council on Monuments and Sites (ICOMOS)",
-    organization_ko: "국제기념물유적협의회 (ICOMOS)",
+    title_en: "Best Presentation Award",
+    title_ko: "우수구두발표상",
+    recipient: "Gyu Ri Choi, Seo Hyeon Lee, Yong Jae Jeong, Sang Ok Lee",
+    recipient_ko: "최규리, 이서현, 정용재, 이상옥",
+    organization: "The 59th Spring Conference of Korean Society of Conservation Science for Cultural Heritage",
+    organization_ko: "한국문화재보존과학회 제59회 춘계학술대회",
     year: 2024,
-    summary_en: "Recognition for pioneering work in applying digital technologies to cultural heritage documentation and preservation.",
-    summary_ko: "디지털 기술을 문화유산 기록 및 보존에 적용한 선구적인 업적에 대한 인정.",
+    summary_en: "Award for outstanding oral presentation on analysis of preservation environment for ancient tomb murals according to climate change and underground temperature.",
+    summary_ko: "기후변화와 지중온도에 따른 고분 벽화의 보존환경 분석 연구 발표로 우수구두발표상 수상.",
     link: "",
-    award_image: "",
-    category: "Digital Heritage",
-    category_ko: "디지털 유산",
-    keywords: ["Digital Heritage", "Technology Application", "Documentation"],
-    keywords_ko: ["디지털 유산", "기술 적용", "기록화"]
+    award_image: "assets/awards/oral-presentation-2024.jpg",
+    category: "Conference Presentation",
+    category_ko: "학술발표",
+    keywords: ["Oral Presentation", "Climate Change", "Mural Conservation"],
+    keywords_ko: ["구두발표", "기후변화", "벽화 보존"]
   },
   {
     id: 13,
     type: "award",
-    title_en: "Young Conservator Award",
-    title_ko: "젊은 보존과학자상",
-    recipient: "So Yeon Choi",
-    recipient_ko: "최소연",
-    organization: "Korean Society of Conservation Science",
-    organization_ko: "한국보존과학회",
-    year: 2025,
-    summary_en: "Award for outstanding research contributions by early-career professionals in conservation science.",
-    summary_ko: "보존과학 분야 초기 경력 전문가의 뛰어난 연구 기여에 대한 상.",
+    title_en: "Best Poster Presentation Award",
+    title_ko: "우수포스터발표상",
+    recipient: "Chae Rin Kim, Gyu Ri Choi, Seo Hyeon Lee, So Yeon Choi, Sang Ok Lee",
+    recipient_ko: "김채린, 최규리, 이서현, 최소연, 이상옥",
+    organization: "The 59th Spring Conference of Korean Society of Conservation Science for Cultural Heritage",
+    organization_ko: "한국문화재보존과학회 제59회 춘계학술대회",
+    year: 2024,
+    summary_en: "Award for outstanding poster presentation on research of manufacturing techniques for Buddhist sculptures at Cheongdo Deoksa Temple.",
+    summary_ko: "청도 덕사 영산전과 명부전 소재 불조각상의 제작기법 연구 포스터 발표로 우수포스터발표상 수상.",
     link: "",
-    award_image: "assets/awards/3d-printing-bizcon-2023.jpg",
-    category: "Research Excellence",
-    category_ko: "연구 우수성",
-    keywords: ["Young Researcher", "Conservation Science", "Research Award"],
-    keywords_ko: ["신진 연구자", "보존과학", "연구상"]
+    award_image: "assets/awards/poster-presentation-2024.jpg",
+    category: "Conference Presentation",
+    category_ko: "학술발표",
+    keywords: ["Poster Presentation", "Buddhist Sculpture", "Manufacturing Technique"],
+    keywords_ko: ["포스터발표", "불조각상", "제작기법"]
   },
   {
     id: 14,
     type: "award",
-    title_en: "Best Paper Award in Heritage Science",
-    title_ko: "문화유산과학 최우수논문상",
-    recipient: "Hyo Jeong Kim",
-    recipient_ko: "김효정",
-    organization: "Asian Academy of Heritage Science",
-    organization_ko: "아시아 문화유산과학 학회",
-    year: 2025,
-    summary_en: "Best paper award for groundbreaking research on metal conservation techniques for archaeological artifacts.",
-    summary_ko: "고고 유물의 금속 보존 기술에 관한 획기적인 연구로 최우수논문상 수상.",
+    title_en: "Best Presentation Award",
+    title_ko: "최우수발표상",
+    recipient: "Min Je Kim",
+    recipient_ko: "김민제",
+    organization: "The 7th Postgraduate Forum of China and Korea on Cultural Heritage Conservation",
+    organization_ko: "한중 문화유산보존 대학원생 포럼 제7회",
+    year: 2024,
+    summary_en: "Best presentation award for research on applicability and characteristic evaluation of Metal PLA 3D printing method for metal cultural heritage restoration.",
+    summary_ko: "금속 PLA 3D 프린팅 기법을 활용한 금속 문화유산 복원의 적용성 및 특성 평가 연구로 최우수발표상 수상.",
     link: "",
-    award_image: "",
-    category: "Research Publication",
-    category_ko: "연구 출판",
-    keywords: ["Best Paper", "Metal Conservation", "Archaeological Artifacts"],
-    keywords_ko: ["최우수논문", "금속 보존", "고고 유물"]
+    award_image: "assets/awards/china-korea-forum-2024.jpg",
+    category: "International Conference",
+    category_ko: "국제학술대회",
+    keywords: ["Best Presentation", "3D Printing", "Metal Conservation", "International"],
+    keywords_ko: ["최우수발표", "3D 프린팅", "금속 보존", "국제학술"]
   },
   {
     id: 8,
@@ -510,16 +510,6 @@ function createAchievementCard(achievement, lang) {
             <span class="lang lang-ko" style="display:none;">클릭하여 확대</span>
           </div>
         </div>
-        <div class="achievement-summary">
-          <span class="lang lang-en">${achievement.summary_en}</span>
-          <span class="lang lang-ko" style="display:none;">${achievement.summary_ko}</span>
-        </div>
-        ${achievement.link ? `
-          <a class="achievement-link" href="${achievement.link}" target="_blank">
-            <span class="lang lang-en">${linkText}</span>
-            <span class="lang lang-ko" style="display:none;">${linkText}</span>
-          </a>
-        ` : ''}
       </li>
     `;
   }
@@ -754,8 +744,8 @@ function initAchievements() {
 
   const filterContainer = document.querySelector('.achievements-filter-container');
 
-  // Don't render from JS data initially - use HTML content
-  // renderAchievements();
+  // Render achievements from JS data
+  renderAchievements();
   
   // Set initial filter based on URL parameter or default to 'all'
   const initialFilter = urlFilter && ['publication', 'conference', 'patent', 'award'].includes(urlFilter) ? urlFilter : 'all';
