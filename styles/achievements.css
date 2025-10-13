@@ -508,6 +508,55 @@ body.filtered .achievement-icon {
   margin-bottom: 0.05rem;
 }
 
+/* Achievement footer with badge and link */
+.achievement-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+  flex-wrap: wrap;
+}
+
+/* Indexing badge styles */
+.indexing-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.indexing-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* SCI badge - vibrant red/gold gradient */
+.indexing-sci {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: #ffffff;
+  border: 1px solid #b91c1c;
+}
+
+/* Scopus badge - vibrant orange gradient */
+.indexing-scopus {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff;
+  border: 1px solid #c2410c;
+}
+
+/* KCI badge - blue gradient */
+.indexing-kci {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  color: #ffffff;
+  border: 1px solid #1d4ed8;
+}
+
 .achievement-link {
   display: inline-block;
   align-self: flex-start;

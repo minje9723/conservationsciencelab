@@ -13,6 +13,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2025,
     summary_en: "Scientific analysis of sintered metal PLA samples to evaluate their suitability for restoring metal cultural heritage.",
     summary_ko: "금속 PLA 소결 시편의 근현대 금속 문화유산 복원 재료 적합성 평가를 위한 과학적 분석 연구.",
@@ -32,6 +33,7 @@ const achievements = [
     journal: "Korean Journal of Palace Museum",
     journal_ko: "고궁문화",
     journal_abbr: "Korean J. Palace Mus.",
+    indexing: "KCI",
     year: 2025,
     summary_en: "Feasibility study of metal PLA 3D printing and reverse casting for heritage restoration using royal seal data.",
     summary_ko: "어보 데이터를 활용한 금속 PLA 3D 프린팅 기반 역주조 공법의 문화유산 복원 적용 가능성 연구.",
@@ -51,6 +53,7 @@ const achievements = [
     journal: "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
     journal_ko: "ISPRS 사진측량 및 원격탐사 공간정보과학 연보",
     journal_abbr: "ISPRS Ann. Photogramm. Remote Sens. Spatial Inf. Sci.",
+    indexing: "Scopus",
     year: 2025,
     summary_en: "Evaluated material safety and applicability of vanishing scanning sprays for 3D scanning of glossy artifacts.",
     summary_ko: "광택 유물의 3D 스캐닝을 위한 자연 소멸형 스캔 스프레이의 재료 안전성 및 적용성 평가.",
@@ -70,6 +73,7 @@ const achievements = [
     journal: "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
     journal_ko: "ISPRS 사진측량 및 원격탐사 공간정보과학 연보",
     journal_abbr: "ISPRS Ann. Photogramm. Remote Sens. Spatial Inf. Sci.",
+    indexing: "Scopus",
     year: 2025,
     summary_en: "Applied photogrammetry for digital documentation and damage detection monitoring of outdoor cultural heritage sites.",
     summary_ko: "야외 문화유산의 디지털 기록 및 손상 감지 모니터링을 위한 사진측량 기법 적용 연구.",
@@ -89,6 +93,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2023,
     summary_en: "Proposed a new classification system and management guidelines for Catholic moveable cultural heritage preservation.",
     summary_ko: "천주교 동산문화유산의 새로운 분류체계 및 보존관리 지침 제안.",
@@ -107,6 +112,7 @@ const achievements = [
     journal: "Journal of Museum Studies",
     journal_ko: "박물관보존과학",
     journal_abbr: "J. Museum Stud.",
+    indexing: "KCI",
     year: 2024,
     summary_en: "Scientific analysis and classification of horse strap pendants manufacturing techniques from Munsan-ri Tumuli using microscopy, X-ray, and XRF analysis.",
     summary_ko: "현미경 분석, X선 투과 조사, X선 형광 분석을 통한 문산리 고분군 출토 행엽의 제작 기법 연구.",
@@ -125,6 +131,7 @@ const achievements = [
     journal: "The Journal of Study on Korean Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "J. Study Korean Trad. Cult.",
+    indexing: "KCI",
     year: 2022,
     summary_en: "Metallurgical analysis of Smith's tools and ironware excavated from Janggye-ri ancient tombs to investigate iron manufacturing technology characteristics in Jangsu area.",
     summary_ko: "장수 장계리 고분군 출토 단야구 및 철기의 금속학적 분석을 통한 장수지역 철기제작기술 특징 연구.",
@@ -143,6 +150,7 @@ const achievements = [
     journal: "The Journal of Study on Korean Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "J. Study Korean Trad. Cult.",
+    indexing: "KCI",
     year: 2023,
     summary_en: "Scientific analysis and conservation plan for the molding clay of the Clay Seated Amitabha Buddha Triad in Muryangsa Temple to establish preservation measures.",
     summary_ko: "부여 무량사 소조아미타여래삼존좌상 소조토의 과학적 분석을 바탕으로 제작기법 규명 및 보존 방안 수립.",
@@ -179,6 +187,7 @@ const achievements = [
     journal: "Korean Journal of Metals and Materials",
     journal_ko: "대한금속재료학회지",
     journal_abbr: "Korean J. Met. Mater.",
+    indexing: "SCI",
     year: 2022,
     summary_en: "Comprehensive analysis of corrosion characteristics of excavated bronze artifacts according to their alloy ratio and microstructure from Songguk-ri site.",
     summary_ko: "송국리 유적 출토 고려시대 청동유물의 합금성분 및 미세조직에 따른 부식 특성 종합 분석.",
@@ -197,6 +206,7 @@ const achievements = [
     journal: "Heritage",
     journal_ko: "헤리티지",
     journal_abbr: "Heritage",
+    indexing: "Scopus",
     year: 2025,
     summary_en: "Scientific analysis of lime mortar samples from Joseon Dynasty architectural heritage sites to identify raw materials and characteristics.",
     summary_ko: "조선시대 건축유산 석회 모르타르의 원료와 특성을 규명하기 위한 과학적 분석 연구.",
@@ -215,6 +225,7 @@ const achievements = [
     journal: "Korean Journal of Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "Korean J. Tradit. Cult.",
+    indexing: "KCI",
     year: 2025,
     summary_en: "Study on corrosion mechanisms of bronze artifacts manufactured using traditional forged high tin bronze techniques through microstructure and corrosion layer analysis.",
     summary_ko: "방짜기술로 제작된 청동유물의 미세조직 및 부식층 분석을 통한 부식 메커니즘 연구.",
@@ -233,6 +244,7 @@ const achievements = [
     journal: "Korean Journal of Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "Korean J. Tradit. Cult.",
+    indexing: "KCI",
     year: 2025,
     summary_en: "Scientific analysis of gilt-bronze fittings from Buyeo Royal Tombs to identify manufacturing techniques and compare with similar artifacts from Iksan Ssangreung Tombs.",
     summary_ko: "부여 왕릉원 4호분 출토 금동투금구의 제작기술 특징 확인 및 익산 쌍릉 출토 유물과의 비교 연구.",
@@ -251,6 +263,7 @@ const achievements = [
     journal: "Korean Journal of Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "Korean J. Tradit. Cult.",
+    indexing: "KCI",
     year: 2025,
     summary_en: "Detailed investigation of internal structure and construction methods of wooden Buddha statue using X-ray CT for conservation treatment planning.",
     summary_ko: "X선 CT를 이용한 목조지장보살좌상의 내부구조 및 결구 방식에 대한 정밀조사를 통한 보존처리 계획 수립.",
@@ -269,6 +282,7 @@ const achievements = [
     journal: "Korean Journal of Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "Korean J. Tradit. Cult.",
+    indexing: "KCI",
     year: 2023,
     summary_en: "Digital measurement and physical property analysis of old roof tiles from Daeungjeon Hall at Mihwangsa Temple using 3D scanning and XRD analysis.",
     summary_ko: "3차원 스캔과 XRD 분석을 이용한 미황사 대웅전 옛기와의 디지털 실측 및 물리·화학적 특성 연구.",
@@ -287,6 +301,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2024,
     summary_en: "Objective evidence to distinguish between modern casting brassware and traditional forged brassware through metallographic characteristics analysis.",
     summary_ko: "현대 유기의 제작기법에 따른 금속학적 특성 확인을 통한 현대식 주조유기와 전통 방짜유기 구별 근거 마련.",
@@ -305,6 +320,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2016,
     summary_en: "Lead isotope ratio analysis of bronze artifacts excavated from Dongchon Site to determine provenance of raw materials.",
     summary_ko: "순창 동촌유적 출토 청동기의 납동위원소비 분석을 통한 원료 산지 연구.",
@@ -323,6 +339,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2015,
     summary_en: "Analysis of physical characteristics and proper mixing ratios of modern Dancheong pigments through accelerated weathering and UV degradation tests.",
     summary_ko: "현대 단청안료의 물리적 특성 분석 및 가속열화시험을 통한 적정 혼합비율 연구.",
@@ -341,6 +358,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2014,
     summary_en: "Study on the role of temper and physical properties of earthenware coffin according to firing temperature and clay state modification.",
     summary_ko: "소성온도와 점토 상태 변화에 따른 혼입물의 역할과 옹관의 물리적 특성 연구.",
@@ -359,6 +377,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2013,
     summary_en: "Study on applicability for authenticity determination of bronze artifacts through microstructure, chemical component analysis, and corrosion research.",
     summary_ko: "미세조직, 화학성분 분석 및 부식 연구를 통한 전세품 청동기의 진위판별 적용 가능성 연구.",
@@ -377,6 +396,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2022,
     summary_en: "Study on reuse methods of traditional metal hardware for structural reinforcement of wooden architectural heritage through shape processing and metallurgical analysis.",
     summary_ko: "목조 건축문화재의 구조 보강용 전통 철물의 형태 가공 및 금속학적 분석을 통한 재사용 방안 연구.",
@@ -395,6 +415,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2021,
     summary_en: "Evaluation of desalination stability for gilt plated silver-iron nails using NaOH and Sodium Sesquicarbonate solutions.",
     summary_ko: "철지금은장관정에 대한 NaOH법과 Sodium Sesquicarbonate법을 이용한 탈염처리의 안정성 평가.",
@@ -413,6 +434,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2019,
     summary_en: "Provenance study of horse-shaped bronze buckles through lead isotope ratio analysis to identify raw material origins and regional characteristics.",
     summary_ko: "납동위원소비 분석을 통한 청주 송절동유적 출토 마형대구의 원료산지 및 지역적 특성 연구.",
@@ -431,6 +453,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2016,
     summary_en: "Material characteristics analysis of blackwares through scientific analyses and reproduction experiments to identify glaze composition and iron oxide crystals.",
     summary_ko: "과학적 분석 및 재현실험을 통한 흑유자기의 유약 성분 및 산화철 결정 구조 규명 연구.",
@@ -449,6 +472,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2024,
     summary_en: "Study on the applicability of fiber laser cleaning for removing coating layers from painted sculptures through optimization of process parameters.",
     summary_ko: "페인팅 조각작품의 도장층 제거를 위한 Fiber 레이저 클리닝 공정 변수 최적화 및 적용성 연구.",
@@ -467,6 +491,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2024,
     summary_en: "Comparative study on color reproducibility between CRT and LCD displays for media art conservation through spectral distribution and chromatic stability analysis.",
     summary_ko: "미디어 아트 보존을 위한 CRT와 LCD 디스플레이의 분광 분포 및 색도 안정성 비교 연구.",
@@ -485,6 +510,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2023,
     summary_en: "Development of condition report and evaluation methods for outdoor painted sculptures through comparative analysis of original and alternative paints.",
     summary_ko: "야외 페인팅 조각 작품의 원본 페인트 및 대체 페인트 물성 비교를 통한 상태조사표 개발 및 평가방법 연구.",
@@ -503,6 +529,7 @@ const achievements = [
     journal: "Journal of Conservation Science",
     journal_ko: "보존과학회지",
     journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
     year: 2022,
     summary_en: "Comprehensive analysis of corrosion layer structures and products in excavated bronze artifacts with different lead contents.",
     summary_ko: "납 함량이 다른 출토 청동유물의 부식층 구조 및 부식생성물 종합 분석 연구.",
@@ -603,25 +630,6 @@ const achievements = [
     keywords_ko: ["3D 프린팅", "문화재 보존", "혁신", "경진대회"]
   },
   {
-    id: 19,
-    type: "award",
-    title_en: "Minister of Culture, Sports and Tourism Award",
-    title_ko: "문화체육관광부장관상",
-    recipient: "Conservation Science Lab",
-    recipient_ko: "보존과학연구소",
-    organization: "National Heritage Conservation Technology Awards",
-    organization_ko: "국가유산 보존기술 시상식",
-    year: 2023,
-    summary_en: "Recognition for outstanding contributions to the development of innovative conservation technologies for Korean cultural heritage.",
-    summary_ko: "한국 문화유산을 위한 혁신적인 보존 기술 개발에 대한 뛰어난 기여를 인정받은 상.",
-    link: "",
-    award_image: "assets/awards/award-placeholder-19.jpg",
-    category: "Technology Innovation",
-    category_ko: "기술 혁신",
-    keywords: ["Technology Award", "Heritage Conservation", "Innovation"],
-    keywords_ko: ["기술상", "문화재 보존", "혁신"]
-  },
-  {
     id: 12,
     type: "award",
     title_en: "Best Presentation Award",
@@ -629,7 +637,7 @@ const achievements = [
     recipient: "Gyu Ri Choi, Seo Hyeon Lee, Yong Jae Jeong, Sang Ok Lee",
     recipient_ko: "최규리, 이서현, 정용재, 이상옥",
     organization: "The 59th Spring Conference of Korean Society of Conservation Science for Cultural Heritage",
-    organization_ko: "한국문화재보존과학회 제59회 춘계학술대회",
+    organization_ko: "(사)한국문화재보존과학회 제59회 춘계학술대회",
     year: 2024,
     summary_en: "Award for outstanding oral presentation on analysis of preservation environment for ancient tomb murals according to climate change and underground temperature.",
     summary_ko: "기후변화와 지중온도에 따른 고분 벽화의 보존환경 분석 연구 발표로 우수구두발표상 수상.",
@@ -648,7 +656,7 @@ const achievements = [
     recipient: "Chae Rin Kim, Gyu Ri Choi, Seo Hyeon Lee, So Yeon Choi, Sang Ok Lee",
     recipient_ko: "김채린, 최규리, 이서현, 최소연, 이상옥",
     organization: "The 59th Spring Conference of Korean Society of Conservation Science for Cultural Heritage",
-    organization_ko: "한국문화재보존과학회 제59회 춘계학술대회",
+    organization_ko: "(사)한국문화재보존과학회 제59회 춘계학술대회",
     year: 2024,
     summary_en: "Award for outstanding poster presentation on research of manufacturing techniques for Buddhist sculptures at Cheongdo Deoksa Temple.",
     summary_ko: "청도 덕사 영산전과 명부전 소재 불조각상의 제작기법 연구 포스터 발표로 우수포스터발표상 수상.",
@@ -895,8 +903,10 @@ function createAchievementCard(achievement, lang) {
   switch (achievement.type) {
     case 'publication':
       const authors = lang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
+      const journal = lang === 'ko' ? (achievement.journal_ko || achievement.journal) : achievement.journal;
       metaInfo = `
         <span>${authors}</span>
+        <span class="achievement-journal">${journal}</span>
         <span class="achievement-year">${achievement.year}</span>
       `;
       break;
@@ -959,6 +969,12 @@ function createAchievementCard(achievement, lang) {
   const summary = lang === 'ko' ? achievement.summary_ko : achievement.summary_en;
   const linkText = lang === 'ko' ? '세부 정보 보기' : 'View Details';
   
+  // Create indexing badge for publications
+  let indexingBadge = '';
+  if (achievement.type === 'publication' && achievement.indexing) {
+    indexingBadge = `<span class="indexing-badge indexing-${achievement.indexing.toLowerCase()}">${achievement.indexing}</span>`;
+  }
+  
   return `
     <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll">
       <div class="achievement-icon">
@@ -973,11 +989,14 @@ function createAchievementCard(achievement, lang) {
       <div class="achievement-summary">
         ${summary}
       </div>
-      ${achievement.link ? `
-        <a class="achievement-link" href="${achievement.link}" target="_blank">
-          ${linkText}
-        </a>
-      ` : ''}
+      <div class="achievement-footer">
+        ${indexingBadge}
+        ${achievement.link ? `
+          <a class="achievement-link" href="${achievement.link}" target="_blank">
+            ${linkText}
+          </a>
+        ` : ''}
+      </div>
     </li>
   `;
 }
