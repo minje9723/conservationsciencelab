@@ -479,6 +479,20 @@ body.filtered .achievement-icon {
   margin-bottom: 0.5rem;
 }
 
+.achievement-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.8rem;
+}
+
+.meta-row {
+  font-size: 0.95rem;
+  color: #3949ab;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
 .achievement-summary {
   font-size: 0.97rem;
   color: #555;

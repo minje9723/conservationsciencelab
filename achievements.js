@@ -905,9 +905,9 @@ function createAchievementCard(achievement, lang) {
       const authors = lang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
       const journal = lang === 'ko' ? (achievement.journal_ko || achievement.journal) : achievement.journal;
       metaInfo = `
-        <span>${authors}</span>
-        <span class="achievement-journal">${journal}</span>
-        <span class="achievement-year">${achievement.year}</span>
+        <div class="meta-row">${authors}</div>
+        <div class="meta-row achievement-journal">${journal}</div>
+        <div class="meta-row achievement-year">${achievement.year}</div>
       `;
       break;
     case 'conference':
