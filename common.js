@@ -49,6 +49,7 @@ function setLang(lang, userSelected = false) {
   
   // Save language preference
   localStorage.setItem('preferred-language', lang);
+  localStorage.setItem('language', lang);
   
   // 사용자가 직접 선택한 경우 기록
   if (userSelected) {

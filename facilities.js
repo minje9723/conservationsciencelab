@@ -656,7 +656,7 @@ function removeFacility(id) {
 
 // Get current language
 function getCurrentLanguage() {
-  return document.getElementById('lang-ko') && document.getElementById('lang-ko').classList.contains('active') ? 'ko' : 'ko';
+  return localStorage.getItem('language') || 'ko';
 }
 
 // Get category icon
@@ -782,25 +782,20 @@ function initFacilities() {
   if (originalSetLang) {
     window.setLang = function(lang) {
       originalSetLang(lang);
-      // Update language visibility for dynamically rendered content
-      document.querySelectorAll('.lang').forEach(el => {
-        if (el.classList.contains('lang-en')) {
-          el.style.display = lang === 'en' ? '' : 'none';
-        } else if (el.classList.contains('lang-ko')) {
-          el.style.display = lang === 'ko' ? '' : 'none';
-        }
-      });
+      // Re-render facilities with new language
+      renderFacilities();
     };
   }
 
-  // Hide filter container if exists
-  const filterContainer = document.querySelector('.facilities-filter-container');
-  if (filterContainer) {
-    filterContainer.style.display = 'none';
+  // Wait for common.js to initialize language, then render
+  if (window.languageInitialized) {
+    renderFacilities();
+  } else {
+    // Wait a bit for common.js to set up language
+    setTimeout(() => {
+      renderFacilities();
+    }, 100);
   }
-
-  // Initial render
-  renderFacilities();
 }
 
 // Make functions available globally
