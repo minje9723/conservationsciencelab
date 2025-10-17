@@ -72,6 +72,89 @@
   overflow: hidden;
 }
 
+/* Director Slider Wrapper */
+.director-slider {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.director-cards-wrapper {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Director Navigation Buttons */
+.director-nav-btn {
+  background: var(--bg-white);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-smooth);
+  color: var(--primary-blue);
+  font-size: 1.2rem;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.director-nav-btn:hover {
+  background: var(--primary-blue);
+  color: var(--bg-white);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-hover);
+}
+
+.director-nav-btn:active {
+  transform: scale(0.95);
+}
+
+/* Director Indicators */
+.director-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.director-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-blue);
+  background: transparent;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  padding: 0;
+}
+
+.director-indicator.active {
+  background: var(--primary-blue);
+  transform: scale(1.3);
+}
+
+.director-indicator:hover {
+  background: var(--primary-purple);
+  border-color: var(--primary-purple);
+}
+
+/* Director Period */
+.director-period {
+  font-size: 1rem;
+  color: var(--accent-color);
+  font-weight: 600;
+  margin: 0.5rem 0 0 0;
+}
+
 /* Professor Card */
 .professor-card {
   background: var(--bg-white);
@@ -679,6 +762,27 @@
     padding: 0 1rem;
   }
   
+  /* Director Slider Mobile */
+  .director-slider {
+    gap: 1rem;
+  }
+  
+  .director-nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  
+  .director-indicators {
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+  }
+  
+  .director-indicator {
+    width: 10px;
+    height: 10px;
+  }
+  
   .team-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
@@ -819,6 +923,31 @@
   .team-members,
   .alumni-network {
     padding: 4rem 0;
+  }
+  
+  /* Director Slider Mobile Small */
+  .director-slider {
+    gap: 0.5rem;
+  }
+  
+  .director-nav-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+  
+  .director-indicators {
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .director-indicator {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .director-period {
+    font-size: 0.9rem;
   }
   
   /* 480px 이하에서도 2열 유지 */
