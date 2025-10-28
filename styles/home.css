@@ -364,6 +364,11 @@
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
   position: relative;
   overflow: hidden;
+  /* Link styles */
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  cursor: pointer;
 }
 
 .hero-impact-card::before {
@@ -395,6 +400,11 @@
     0 16px 48px 0 rgba(31, 38, 135, 0.25),
     inset 0 1px 2px 0 rgba(255, 255, 255, 0.4),
     0 4px 16px 0 rgba(255, 255, 255, 0.2);
+}
+
+.hero-impact-card:active {
+  transform: translateY(-6px) scale(1.02);
+  transition: all 0.1s ease;
 }
 
 .hero-metric-icon {
