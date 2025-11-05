@@ -202,6 +202,82 @@
   gap: 1rem;
 }
 
+/* Patent Preparation Notice Styles */
+.patent-preparation-notice {
+  background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+  border: 2px solid #00d2be;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: 0 8px 24px rgba(0, 210, 190, 0.12);
+}
+
+.patent-preparation-notice .notice-icon {
+  color: #00d2be;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.patent-preparation-notice .notice-icon svg {
+  width: 64px;
+  height: 64px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.patent-preparation-notice .notice-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a237e;
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+}
+
+.patent-preparation-notice .notice-description {
+  font-size: 1.1rem;
+  color: #5f6368;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive styles for patent notice */
+@media (max-width: 768px) {
+  .patent-preparation-notice {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .patent-preparation-notice .notice-icon svg {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .patent-preparation-notice .notice-title {
+    font-size: 1.4rem;
+  }
+  
+  .patent-preparation-notice .notice-description {
+    font-size: 1rem;
+  }
+}
+
 /* Award Card with Image Layout - Right-side Image */
 .achievement-list li.award-with-image {
   background: #fff;

@@ -4,6 +4,29 @@
 // Publications are sorted by year (newest first)
 const achievements = [
   {
+    id: 0,
+    type: "publication",
+    title_en: "Assessment of the Stability of Partial Paint Restoration on Damaged Areas for Outdoor Steel Sculptures",
+    title_ko: "야외 철제 조각 작품의 페인트 손상부에 대한 부분복원 안정성 평가",
+    authors: "So Yeon Choi, Sang Ok Lee",
+    authors_ko: "최소연, 이상옥",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
+    year: 2025,
+    volume: "41",
+    issue: "3",
+    pages: "561-570",
+    summary_en: "This study proposes partial restoration methods for paint damage on outdoor steel sculptures and quantitatively evaluates their stability. Digital imaging techniques were used to objectively assess visual integration and preservation effectiveness.",
+    summary_ko: "야외 철제 조각 작품의 페인트 손상에 대한 부분복원 방법을 제시하고 안정성을 정량적으로 평가한 연구. 디지털 이미징 기법을 활용하여 시각적 통합도와 보존 효과를 객관적으로 평가하였습니다.",
+    link: "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003253065",
+    doi: "",
+    image: "assets/achievements/outdoor-steel-sculpture.jpg",
+    keywords: ["Outdoor sculpture", "Steel sculpture", "Paint", "Coating material", "Partial restoration", "Conservation treatment"],
+    keywords_ko: ["야외 조각 작품", "철제 조각 작품", "페인트", "도료", "부분복원", "보존처리"]
+  },
+  {
     id: 1,
     type: "publication",
     title_en: "Applicability Research Restoration Material of Metal PLA Sintering for Contemporary Metal Cultural Heritage",
@@ -837,75 +860,76 @@ const achievements = [
     category_ko: "학술대회",
     keywords: ["Oral Presentation", "3D Printing", "Cu-PLA", "Metal Conservation"],
     keywords_ko: ["구두발표", "3D 프린팅", "Cu-PLA", "금속보존"]
-  },
-  {
-    id: 8,
-    type: "patent",
-    title_en: "Method for 3D Printing-based Heritage Restoration",
-    title_ko: "3D 프린팅 기반 문화재 복원 방법",
-    inventors: "Sang Ok Lee, Min Je Kim",
-    inventors_ko: "이상옥, 김민제",
-    patent_office: "Korean Intellectual Property Office",
-    patent_office_ko: "한국특허청",
-    year: 2024,
-    patent_number: "KR-2024-0123456",
-    summary_en: "Patent for innovative 3D printing methodology specifically designed for cultural heritage restoration applications.",
-    summary_ko: "문화재 복원 응용을 위해 특별히 설계된 혁신적인 3D 프린팅 방법론에 대한 특허.",
-    link: "",
-    keywords: ["3D Printing Patent", "Heritage Restoration", "Innovation"],
-    keywords_ko: ["3D 프린팅 특허", "문화재 복원", "혁신"]
-  },
-  {
-    id: 15,
-    type: "patent",
-    title_en: "Non-contact Surface Analysis System for Cultural Heritage",
-    title_ko: "문화유산 비접촉 표면 분석 시스템",
-    inventors: "Hyo Jeong Kim, Jeong Yeon Kim, Sang Ok Lee",
-    inventors_ko: "김효정, 김정연, 이상옥",
-    patent_office: "Korean Intellectual Property Office",
-    patent_office_ko: "한국특허청",
-    year: 2025,
-    patent_number: "KR-2025-0234567",
-    summary_en: "Patent for advanced non-contact analysis system enabling safe and detailed surface examination of fragile artifacts.",
-    summary_ko: "취약한 유물의 안전하고 상세한 표면 검사를 가능하게 하는 첨단 비접촉 분석 시스템 특허.",
-    link: "",
-    keywords: ["Non-contact Analysis", "Surface Examination", "Heritage Technology"],
-    keywords_ko: ["비접촉 분석", "표면 검사", "문화유산 기술"]
-  },
-  {
-    id: 16,
-    type: "patent",
-    title_en: "Eco-friendly Conservation Material Composition",
-    title_ko: "친환경 보존처리 재료 조성물",
-    inventors: "Gyu Ri Choi, Jeong Eun Oh",
-    inventors_ko: "최규리, 오정은",
-    patent_office: "Korean Intellectual Property Office",
-    patent_office_ko: "한국특허청",
-    year: 2024,
-    patent_number: "KR-2024-0345678",
-    summary_en: "Patent for environmentally sustainable and reversible conservation material suitable for various heritage objects.",
-    summary_ko: "다양한 문화유산 객체에 적합한 환경 친화적이고 가역적인 보존 재료 특허.",
-    link: "",
-    keywords: ["Eco-friendly Material", "Conservation Treatment", "Sustainability"],
-    keywords_ko: ["친환경 재료", "보존처리", "지속가능성"]
-  },
-  {
-    id: 17,
-    type: "patent",
-    title_en: "AI-based Heritage Deterioration Prediction System",
-    title_ko: "AI 기반 문화유산 열화 예측 시스템",
-    inventors: "So Yeon Choi, Min Je Kim",
-    inventors_ko: "최소연, 김민제",
-    patent_office: "Korean Intellectual Property Office",
-    patent_office_ko: "한국특허청",
-    year: 2025,
-    patent_number: "KR-2025-0456789",
-    summary_en: "Patent for artificial intelligence system that predicts and monitors deterioration patterns in cultural heritage objects.",
-    summary_ko: "문화유산 객체의 열화 패턴을 예측하고 모니터링하는 인공지능 시스템 특허.",
-    link: "",
-    keywords: ["Artificial Intelligence", "Deterioration Prediction", "Monitoring System"],
-    keywords_ko: ["인공지능", "열화 예측", "모니터링 시스템"]
   }
+  // Patents - Temporarily Disabled (In Preparation)
+  // {
+  //   id: 8,
+  //   type: "patent",
+  //   title_en: "Method for 3D Printing-based Heritage Restoration",
+  //   title_ko: "3D 프린팅 기반 문화재 복원 방법",
+  //   inventors: "Sang Ok Lee, Min Je Kim",
+  //   inventors_ko: "이상옥, 김민제",
+  //   patent_office: "Korean Intellectual Property Office",
+  //   patent_office_ko: "한국특허청",
+  //   year: 2024,
+  //   patent_number: "KR-2024-0123456",
+  //   summary_en: "Patent for innovative 3D printing methodology specifically designed for cultural heritage restoration applications.",
+  //   summary_ko: "문화재 복원 응용을 위해 특별히 설계된 혁신적인 3D 프린팅 방법론에 대한 특허.",
+  //   link: "",
+  //   keywords: ["3D Printing Patent", "Heritage Restoration", "Innovation"],
+  //   keywords_ko: ["3D 프린팅 특허", "문화재 복원", "혁신"]
+  // },
+  // {
+  //   id: 15,
+  //   type: "patent",
+  //   title_en: "Non-contact Surface Analysis System for Cultural Heritage",
+  //   title_ko: "문화유산 비접촉 표면 분석 시스템",
+  //   inventors: "Hyo Jeong Kim, Jeong Yeon Kim, Sang Ok Lee",
+  //   inventors_ko: "김효정, 김정연, 이상옥",
+  //   patent_office: "Korean Intellectual Property Office",
+  //   patent_office_ko: "한국특허청",
+  //   year: 2025,
+  //   patent_number: "KR-2025-0234567",
+  //   summary_en: "Patent for advanced non-contact analysis system enabling safe and detailed surface examination of fragile artifacts.",
+  //   summary_ko: "취약한 유물의 안전하고 상세한 표면 검사를 가능하게 하는 첨단 비접촉 분석 시스템 특허.",
+  //   link: "",
+  //   keywords: ["Non-contact Analysis", "Surface Examination", "Heritage Technology"],
+  //   keywords_ko: ["비접촉 분석", "표면 검사", "문화유산 기술"]
+  // },
+  // {
+  //   id: 16,
+  //   type: "patent",
+  //   title_en: "Eco-friendly Conservation Material Composition",
+  //   title_ko: "친환경 보존처리 재료 조성물",
+  //   inventors: "Gyu Ri Choi, Jeong Eun Oh",
+  //   inventors_ko: "최규리, 오정은",
+  //   patent_office: "Korean Intellectual Property Office",
+  //   patent_office_ko: "한국특허청",
+  //   year: 2024,
+  //   patent_number: "KR-2024-0345678",
+  //   summary_en: "Patent for environmentally sustainable and reversible conservation material suitable for various heritage objects.",
+  //   summary_ko: "다양한 문화유산 객체에 적합한 환경 친화적이고 가역적인 보존 재료 특허.",
+  //   link: "",
+  //   keywords: ["Eco-friendly Material", "Conservation Treatment", "Sustainability"],
+  //   keywords_ko: ["친환경 재료", "보존처리", "지속가능성"]
+  // },
+  // {
+  //   id: 17,
+  //   type: "patent",
+  //   title_en: "AI-based Heritage Deterioration Prediction System",
+  //   title_ko: "AI 기반 문화유산 열화 예측 시스템",
+  //   inventors: "So Yeon Choi, Min Je Kim",
+  //   inventors_ko: "최소연, 김민제",
+  //   patent_office: "Korean Intellectual Property Office",
+  //   patent_office_ko: "한국특허청",
+  //   year: 2025,
+  //   patent_number: "KR-2025-0456789",
+  //   summary_en: "Patent for artificial intelligence system that predicts and monitors deterioration patterns in cultural heritage objects.",
+  //   summary_ko: "문화유산 객체의 열화 패턴을 예측하고 모니터링하는 인공지능 시스템 특허.",
+  //   link: "",
+  //   keywords: ["Artificial Intelligence", "Deterioration Prediction", "Monitoring System"],
+  //   keywords_ko: ["인공지능", "열화 예측", "모니터링 시스템"]
+  // }
 ];
 
 // Add new achievement function
@@ -1100,6 +1124,45 @@ function renderAchievements() {
 
   const lang = getCurrentLanguage();
   const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'publication';
+  
+  // Special handling for patent filter (temporarily in preparation)
+  if (currentFilter === 'patent') {
+    achievementsList.innerHTML = `
+      <div class="patent-preparation-notice">
+        <div class="notice-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <h3 class="notice-title lang lang-en">Patent Applications in Preparation</h3>
+        <h3 class="notice-title lang lang-ko" style="display:none;">특허 출원 준비 중</h3>
+        <p class="notice-description lang lang-en">We are currently preparing patent applications for our innovative conservation technologies and methodologies. Please check back soon for updates.</p>
+        <p class="notice-description lang lang-ko" style="display:none;">현재 혁신적인 보존 기술 및 방법론에 대한 특허 출원을 준비하고 있습니다. 곧 업데이트될 예정이니 다시 방문해 주세요.</p>
+      </div>
+    `;
+    
+    // Apply current language to notice
+    achievementsList.querySelectorAll('.lang').forEach(el => {
+      if (el.classList.contains('lang-' + lang)) {
+        el.style.display = '';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+    
+    // Clear pagination since there are no items
+    const paginationContainer = document.querySelector('.pagination-container');
+    if (paginationContainer) {
+      paginationContainer.innerHTML = '';
+    }
+    
+    // Update filter count to 0
+    updateActiveFilterCount('patent');
+    
+    return;
+  }
   
   // Filter achievements based on current filter
   let filteredAchievements = achievements.filter(achievement => achievement.type === currentFilter);

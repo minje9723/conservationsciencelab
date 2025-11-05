@@ -275,6 +275,10 @@
   font-weight: 400;
 }
 
+.position-item strong {
+  margin-right: 0.5rem;
+}
+
 /* Professor Education Section */
 .professor-education {
   display: flex;
@@ -303,6 +307,10 @@
   color: var(--text-dark);
   line-height: 1.6;
   font-weight: 400;
+}
+
+.education-item strong {
+  margin-right: 0.5rem;
 }
 
 /* Professor Contact Info */
