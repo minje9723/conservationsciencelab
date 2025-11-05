@@ -8,11 +8,11 @@ main .page-banner {
   width: 100vw;
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
-  height: clamp(200px, 25vh, 400px) !important;
+  height: clamp(300px, 35vh, 500px) !important;
 }
 
 main .page-banner.scrolled {
-  height: clamp(120px, 15vh, 250px) !important;
+  height: clamp(150px, 20vh, 300px) !important;
 }
 
 /* Animation Classes - Members Page Style */

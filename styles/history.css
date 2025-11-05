@@ -2,11 +2,11 @@
 
 /* Page Banner Height Override */
 .page-banner {
-  height: clamp(200px, 25vh, 400px) !important;
+  height: clamp(300px, 35vh, 500px) !important;
 }
 
 .page-banner.scrolled {
-  height: clamp(120px, 15vh, 250px) !important;
+  height: clamp(150px, 20vh, 300px) !important;
 }
 
 /* Page Banner Styles with Animation */
