@@ -698,93 +698,170 @@ function getStatusName(status, lang) {
   return statuses[status] ? statuses[status][lang] : status;
 }
 
-// Filter projects with new design
-function filterProjects(category = 'all') {
-  const projectItems = document.querySelectorAll('.modern-project-card, .revolutionary-project-card, .project-item');
+// Pagination state
+let currentPage = 1;
+const itemsPerPage = 9;
+let currentCategory = 'all';
+
+// Get project counts by category
+function getProjectCounts() {
+  const counts = {
+    all: projects.length,
+    'site-investigation': 0,
+    'excavated-conservation': 0,
+    'designation-research': 0,
+    'preservation-research': 0
+  };
   
-  let visibleCount = 0;
-  
-  projectItems.forEach(item => {
-    const itemCategory = item.getAttribute('data-category');
-    
-    const categoryMatch = category === 'all' || itemCategory === category;
-    
-    if (categoryMatch) {
-      item.style.display = '';
-      item.style.animation = 'fadeInUp 0.6s ease-out forwards';
-      visibleCount++;
-    } else {
-      item.style.display = 'none';
+  projects.forEach(project => {
+    if (counts[project.category] !== undefined) {
+      counts[project.category]++;
     }
   });
   
-  // Show message if no results
-  const container = document.querySelector('.modern-projects-grid, .revolutionary-projects-grid, .projects-grid');
-  const noResultsMsg = document.getElementById('noResultsMessage');
+  return counts;
+}
+
+// Update filter buttons with counts - only show for active button
+function updateFilterCounts(activeCategory) {
+  const counts = getProjectCounts();
+  const lang = getCurrentLanguage();
   
-  if (visibleCount === 0) {
-    if (!noResultsMsg) {
-      const msg = document.createElement('div');
-      msg.id = 'noResultsMessage';
-      msg.className = 'no-results-message';
-      msg.innerHTML = `
-        <span class="lang lang-en">No projects found matching the selected filters.</span>
-        <span class="lang lang-ko" style="display:none;">선택한 필터와 일치하는 프로젝트가 없습니다.</span>
-      `;
-      if (container) container.appendChild(msg);
+  document.querySelectorAll('.filter-btn[data-category]').forEach(btn => {
+    const category = btn.getAttribute('data-category');
+    const count = counts[category] || 0;
+    
+    // Remove existing count badge if any
+    const existingBadge = btn.querySelector('.filter-count');
+    if (existingBadge) existingBadge.remove();
+    
+    // Only add count badge to active button
+    if (category === activeCategory) {
+      const badge = document.createElement('span');
+      badge.className = 'filter-count';
+      badge.textContent = count;
+      btn.appendChild(badge);
     }
-  } else {
-    if (noResultsMsg) noResultsMsg.remove();
-  }
+  });
+}
+
+// Filter projects with pagination
+function filterProjects(category = 'all', page = 1) {
+  currentCategory = category;
+  currentPage = page;
+  
+  const filteredProjects = category === 'all' 
+    ? projects 
+    : projects.filter(p => p.category === category);
+  
+  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const projectsToShow = filteredProjects.slice(startIndex, endIndex);
+  
+  // Render filtered projects
+  renderProjectsPage(projectsToShow);
+  
+  // Update pagination
+  renderPagination(totalPages, page);
   
   // Update filter button states
-  updateSmartFilterStates(category, status);
+  updateSmartFilterStates(category);
+  
+  // Update filter counts for active button only
+  updateFilterCounts(category);
 }
 
 // Update smart filter button states
-function updateSmartFilterStates(activeCategory, activeStatus) {
+function updateSmartFilterStates(activeCategory) {
   // Update category filters
   document.querySelectorAll('.filter-btn[data-category]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.category === activeCategory);
   });
-  
-  // Update status filters
-  document.querySelectorAll('.filter-btn[data-status]').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.status === activeStatus);
-  });
 }
 
-// Render all projects with revolutionary design
-function renderProjects() {
-  // Try new showcase first, fall back to legacy
-  const projectShowcase = document.getElementById('projectShowcase');
-  const projectList = document.getElementById('projectList');
-  
-  const container = projectShowcase || projectList;
+// Render projects for current page
+function renderProjectsPage(projectsToShow) {
+  const container = document.getElementById('projectShowcase') || document.getElementById('projectList');
   if (!container) return;
 
   const lang = getCurrentLanguage();
   
-  if (projectShowcase) {
-    // Use modern card design
-    container.innerHTML = `
-      <div class="modern-projects-grid">
-        ${projects.map(project => createModernProjectCard(project, lang)).join('')}
-      </div>
-    `;
-  } else {
-    // Use modern card design for main listing too
-    container.innerHTML = `
-      <div class="modern-projects-grid">
-        ${projects.map(project => createModernProjectCard(project, lang)).join('')}
-      </div>
-    `;
-  }
+  container.innerHTML = `
+    <div class="modern-projects-grid">
+      ${projectsToShow.map(project => createModernProjectCard(project, lang)).join('')}
+    </div>
+  `;
   
-  // Re-initialize animations after rendering
+  // Re-initialize animations
   setTimeout(() => {
     initAnimations();
   }, 50);
+}
+
+// Render pagination controls
+function renderPagination(totalPages, currentPage) {
+  const container = document.querySelector('.projects-showcase');
+  if (!container) return;
+  
+  // Remove existing pagination
+  const existingPagination = document.querySelector('.pagination-container');
+  if (existingPagination) existingPagination.remove();
+  
+  if (totalPages <= 1) return;
+  
+  const lang = getCurrentLanguage();
+  const paginationHTML = `
+    <div class="pagination-container">
+      <button class="pagination-btn" id="prevPage" ${currentPage === 1 ? 'disabled' : ''}>
+        <i class="fas fa-chevron-left"></i>
+        <span class="lang lang-en">Previous</span>
+        <span class="lang lang-ko" style="display:none;">이전</span>
+      </button>
+      
+      <div class="pagination-numbers">
+        ${Array.from({ length: totalPages }, (_, i) => i + 1).map(page => `
+          <button class="pagination-number ${page === currentPage ? 'active' : ''}" data-page="${page}">
+            ${page}
+          </button>
+        `).join('')}
+      </div>
+      
+      <button class="pagination-btn" id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}>
+        <span class="lang lang-en">Next</span>
+        <span class="lang lang-ko" style="display:none;">다음</span>
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  `;
+  
+  container.insertAdjacentHTML('afterend', paginationHTML);
+  
+  // Add event listeners
+  document.getElementById('prevPage')?.addEventListener('click', () => {
+    if (currentPage > 1) {
+      filterProjects(currentCategory, currentPage - 1);
+    }
+  });
+  
+  document.getElementById('nextPage')?.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+      filterProjects(currentCategory, currentPage + 1);
+    }
+  });
+  
+  document.querySelectorAll('.pagination-number').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const page = parseInt(e.target.getAttribute('data-page'));
+      filterProjects(currentCategory, page);
+    });
+  });
+}
+
+// Render all projects with pagination
+function renderProjects() {
+  // Render first page (updateFilterCounts will be called in filterProjects)
+  filterProjects(currentCategory, 1);
 }
 
 // View project details - removed for compact design
@@ -845,19 +922,16 @@ function initProjects() {
   document.querySelectorAll('.filter-btn[data-category]:not(.nav-project-filter)').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      // Update active state
-      document.querySelectorAll('.filter-btn[data-category]:not(.nav-project-filter)').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
       
-      currentCategory = btn.getAttribute('data-category');
-      filterProjects(currentCategory);
+      const category = btn.getAttribute('data-category');
+      filterProjects(category, 1);
       
       // Update URL parameter
       const newUrl = new URL(window.location);
-      if (currentCategory === 'all') {
+      if (category === 'all') {
         newUrl.searchParams.delete('category');
       } else {
-        newUrl.searchParams.set('category', currentCategory);
+        newUrl.searchParams.set('category', category);
       }
       window.history.replaceState({}, '', newUrl);
     });
@@ -865,9 +939,6 @@ function initProjects() {
 
   // Initial render with filter if URL parameter exists
   renderProjects();
-  if (categoryParam && categoryParam !== 'all') {
-    filterProjects(currentCategory);
-  }
 }
 
 // Make functions available globally

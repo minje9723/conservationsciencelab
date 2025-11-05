@@ -1492,7 +1492,7 @@ function initAchievements() {
   }
 }
 
-// Update filter button counts - show count only for active filter
+// Update filter button counts - show count with badge design
 function updateActiveFilterCount(activeFilterType) {
   // Count achievements from the entire achievements array, not just displayed items
   const counts = {
@@ -1513,22 +1513,21 @@ function updateActiveFilterCount(activeFilterType) {
   const achievementFilters = document.querySelectorAll('.achievement-filter');
   achievementFilters.forEach(button => {
     const filterType = button.getAttribute('data-filter');
+    const count = counts[filterType];
     
-    const langSpans = button.querySelectorAll('.lang');
-    langSpans.forEach(span => {
-      // Get original text without count
-      const originalText = span.textContent.replace(/\s*\(\d+\)/, '');
-      
-      // Only show count if this filter is active
-      if (filterType === activeFilterType) {
-        const count = counts[filterType];
-        if (count !== undefined) {
-          span.textContent = `${originalText} (${count})`;
-        }
-      } else {
-        span.textContent = originalText;
-      }
-    });
+    // Remove existing count badge if any
+    const existingBadge = button.querySelector('.filter-count');
+    if (existingBadge) {
+      existingBadge.remove();
+    }
+    
+    // Only add count badge to active button
+    if (filterType === activeFilterType && count !== undefined) {
+      const badge = document.createElement('span');
+      badge.className = 'filter-count';
+      badge.textContent = count;
+      button.appendChild(badge);
+    }
   });
 }
 

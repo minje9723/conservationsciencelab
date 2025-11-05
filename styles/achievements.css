@@ -702,6 +702,31 @@ body.filtered .achievement-icon {
   letter-spacing: 0.3px;
   position: relative;
   overflow: hidden;
+  
+  /* Flexbox for count badge */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.achievement-filter .filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  background: rgba(0, 210, 190, 0.15);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #00D2BE;
+  line-height: 1;
+}
+
+.achievement-filter.active .filter-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
 }
 
 .achievement-filter::before {
@@ -860,6 +885,16 @@ body.filtered .achievement-icon {
     padding: 0.5rem 0.1rem;
     font-size: 0.6rem;
     min-height: 1.8rem;
+  }
+}
+
+/* Responsive Filter Count Badge */
+@media screen and (max-width: 428px) {
+  .achievement-filter .filter-count {
+    min-width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    padding: 0 4px;
   }
 }
 
