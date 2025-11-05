@@ -185,41 +185,42 @@ function getCurrentLanguage() {
   return 'ko'; // default to Korean
 }
 
-// Create modern project card HTML (new design inspired by the provided image)
+// Create modern project card HTML (compact design without placeholder)
 function createModernProjectCard(project, lang) {
   const title = lang === 'ko' ? project.title_ko : project.title_en;
   const description = lang === 'ko' ? project.description_ko : project.description_en;
   const funding = lang === 'ko' ? (project.funding_ko || project.funding) : project.funding;
+  const keywords = lang === 'ko' ? (project.keywords_ko || project.keywords) : project.keywords;
 
-  const categoryColors = {
-    'excavated-conservation': '#8D6E63',
-    'site-investigation': '#2196F3',
-    'designation-research': '#9C27B0',
-    'preservation-research': '#4CAF50'
+  const categoryIcons = {
+    'excavated-conservation': '⛏️',
+    'site-investigation': '🔍',
+    'designation-research': '📜',
+    'preservation-research': '🛡️'
   };
-
-  const categoryColor = categoryColors[project.category] || '#2196F3';
 
   return `
     <div class="modern-project-card animate-on-scroll" data-category="${project.category}">
-      <div class="project-image-section">
-        ${project.images && project.images.length > 0 
-          ? `<img src="${project.images[0]}" alt="${title}" class="project-image" loading="lazy">`
-          : `<div class="project-placeholder" style="background: linear-gradient(135deg, ${categoryColor}, ${categoryColor}33);"></div>`
-        }
-        <div class="project-category-tag" style="background-color: ${categoryColor};">
-          ${getCategoryName(project.category, lang)}
-        </div>
-      </div>
-      
       <div class="project-content">
+        <div class="project-category-badge ${project.category}">
+          <span class="category-icon">${categoryIcons[project.category] || '🔬'}</span>
+          <span class="category-text">${getCategoryName(project.category, lang)}</span>
+        </div>
+        
         <h3 class="project-title">${title}</h3>
-        <p class="project-description">${description}</p>
         
         <div class="project-meta">
-          <div class="project-duration">
+          <div class="meta-item">
             <i class="fa fa-calendar"></i>
             <span>${project.duration}</span>
+          </div>
+          <div class="meta-item">
+            <i class="fa fa-building"></i>
+            <span>${funding}</span>
+          </div>
+          <div class="meta-item">
+            <i class="fa fa-users"></i>
+            <span>${project.team.length} ${lang === 'ko' ? '명' : 'members'}</span>
           </div>
         </div>
       </div>
