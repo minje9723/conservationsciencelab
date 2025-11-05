@@ -275,6 +275,36 @@
   font-weight: 400;
 }
 
+/* Professor Education Section */
+.professor-education {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.education-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.education-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.education-item {
+  font-size: 1rem;
+  color: var(--text-dark);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
 /* Professor Contact Info */
 .professor-contact-info {
   display: flex;
@@ -751,6 +781,21 @@
   }
   
   .professor-header {
+    text-align: center;
+  }
+  
+  /* Mobile Education Section */
+  .professor-education {
+    margin-top: 1rem;
+  }
+  
+  .education-title {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  
+  .education-item {
+    font-size: 0.95rem;
     text-align: center;
   }
   
