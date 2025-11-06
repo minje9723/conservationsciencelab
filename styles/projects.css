@@ -592,6 +592,15 @@ main .page-banner.scrolled {
   color: #4CAF50;
 }
 
+.category-badge.restoration-research {
+  background: linear-gradient(135deg, #FF9800, #F57C00);
+  color: white;
+}
+
+.revolutionary-project-card .category-badge.restoration-research ~ * {
+  color: #FF9800;
+}
+
 /* 비주얼 섹션 완전 제거 */
 .project-visual,
 .project-gradient,
@@ -1128,6 +1137,11 @@ main .page-banner.scrolled {
 
 .project-category-badge.preservation-research {
   background: linear-gradient(135deg, #4CAF50, #388E3C);
+  color: white;
+}
+
+.project-category-badge.restoration-research {
+  background: linear-gradient(135deg, #FF9800, #F57C00);
   color: white;
 }
 
