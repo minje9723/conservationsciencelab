@@ -699,7 +699,7 @@ function getStatusName(status, lang) {
 }
 
 // Pagination state
-let currentPage = 1;
+let projectsCurrentPage = 1;
 const itemsPerPage = 9;
 let currentCategory = 'all';
 
@@ -748,7 +748,7 @@ function updateFilterCounts(activeCategory) {
 // Filter projects with pagination
 function filterProjects(category = 'all', page = 1) {
   currentCategory = category;
-  currentPage = page;
+  projectsCurrentPage = page;
   
   const filteredProjects = category === 'all' 
     ? projects 
@@ -800,7 +800,7 @@ function renderProjectsPage(projectsToShow) {
 }
 
 // Render pagination controls
-function renderPagination(totalPages, currentPage) {
+function renderPagination(totalPages, projectsCurrentPageParam) {
   const container = document.querySelector('.projects-showcase');
   if (!container) return;
   
@@ -813,7 +813,7 @@ function renderPagination(totalPages, currentPage) {
   const lang = getCurrentLanguage();
   const paginationHTML = `
     <div class="pagination-container">
-      <button class="pagination-btn" id="prevPage" ${currentPage === 1 ? 'disabled' : ''}>
+      <button class="pagination-btn" id="prevPage" ${projectsCurrentPageParam === 1 ? 'disabled' : ''}>
         <i class="fas fa-chevron-left"></i>
         <span class="lang lang-en">Previous</span>
         <span class="lang lang-ko" style="display:none;">이전</span>
@@ -821,13 +821,13 @@ function renderPagination(totalPages, currentPage) {
       
       <div class="pagination-numbers">
         ${Array.from({ length: totalPages }, (_, i) => i + 1).map(page => `
-          <button class="pagination-number ${page === currentPage ? 'active' : ''}" data-page="${page}">
+          <button class="pagination-number ${page === projectsCurrentPageParam ? 'active' : ''}" data-page="${page}">
             ${page}
           </button>
         `).join('')}
       </div>
       
-      <button class="pagination-btn" id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}>
+      <button class="pagination-btn" id="nextPage" ${projectsCurrentPageParam === totalPages ? 'disabled' : ''}>
         <span class="lang lang-en">Next</span>
         <span class="lang lang-ko" style="display:none;">다음</span>
         <i class="fas fa-chevron-right"></i>
@@ -839,14 +839,14 @@ function renderPagination(totalPages, currentPage) {
   
   // Add event listeners
   document.getElementById('prevPage')?.addEventListener('click', () => {
-    if (currentPage > 1) {
-      filterProjects(currentCategory, currentPage - 1);
+    if (projectsCurrentPage > 1) {
+      filterProjects(currentCategory, projectsCurrentPage - 1);
     }
   });
   
   document.getElementById('nextPage')?.addEventListener('click', () => {
-    if (currentPage < totalPages) {
-      filterProjects(currentCategory, currentPage + 1);
+    if (projectsCurrentPage < totalPages) {
+      filterProjects(currentCategory, projectsCurrentPage + 1);
     }
   });
   

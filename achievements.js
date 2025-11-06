@@ -971,7 +971,7 @@ function removeAchievement(id) {
 }
 
 // Pagination variables
-let currentPage = 1;
+let achievementsCurrentPage = 1;
 const itemsPerPage = 12;
 
 // Get current language
@@ -1104,7 +1104,7 @@ function createAchievementCard(achievement, lang) {
 // Filter achievements
 function filterAchievements(type = 'all') {
   // Reset to first page when filter changes
-  currentPage = 1;
+  achievementsCurrentPage = 1;
   
   // Add or remove filtered class from body
   if (type === 'all') {
@@ -1173,7 +1173,7 @@ function renderAchievements() {
   // Calculate pagination
   const totalItems = filteredAchievements.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
+  const startIndex = (achievementsCurrentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedAchievements = filteredAchievements.slice(startIndex, endIndex);
   
@@ -1181,7 +1181,7 @@ function renderAchievements() {
   achievementsList.innerHTML = paginatedAchievements.map(achievement => createAchievementCard(achievement, lang)).join('');
   
   // Render pagination controls
-  renderPagination(totalPages, currentPage);
+  renderPagination(totalPages, achievementsCurrentPage);
   
   // Update filter counts after rendering
   updateActiveFilterCount(currentFilter);
@@ -1193,7 +1193,7 @@ function renderAchievements() {
 }
 
 // Render pagination controls
-function renderPagination(totalPages, currentPage) {
+function renderPagination(totalPages, achievementsCurrentPageParam) {
   const paginationContainer = document.querySelector('.pagination-container');
   if (!paginationContainer) {
     // Create pagination container if it doesn't exist
@@ -1202,15 +1202,15 @@ function renderPagination(totalPages, currentPage) {
       const container = document.createElement('div');
       container.className = 'pagination-container';
       achievementSection.appendChild(container);
-      renderPaginationButtons(container, totalPages, currentPage);
+      renderPaginationButtons(container, totalPages, achievementsCurrentPageParam);
     }
   } else {
-    renderPaginationButtons(paginationContainer, totalPages, currentPage);
+    renderPaginationButtons(paginationContainer, totalPages, achievementsCurrentPageParam);
   }
 }
 
 // Render pagination buttons
-function renderPaginationButtons(container, totalPages, currentPage) {
+function renderPaginationButtons(container, totalPages, achievementsCurrentPageParam) {
   if (totalPages <= 1) {
     container.innerHTML = '';
     return;
@@ -1220,7 +1220,7 @@ function renderPaginationButtons(container, totalPages, currentPage) {
   
   // Previous button
   buttonsHTML += `
-    <button class="pagination-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+    <button class="pagination-btn" ${achievementsCurrentPageParam === 1 ? 'disabled' : ''} onclick="changePage(${achievementsCurrentPageParam - 1})">
       <span class="lang lang-en">Previous</span>
       <span class="lang lang-ko" style="display:none;">이전</span>
     </button>
@@ -1228,20 +1228,20 @@ function renderPaginationButtons(container, totalPages, currentPage) {
   
   // Page numbers
   for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+    if (i === 1 || i === totalPages || (i >= achievementsCurrentPageParam - 1 && i <= achievementsCurrentPageParam + 1)) {
       buttonsHTML += `
-        <button class="pagination-btn page-number ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+        <button class="pagination-btn page-number ${i === achievementsCurrentPageParam ? 'active' : ''}" onclick="changePage(${i})">
           ${i}
         </button>
       `;
-    } else if (i === currentPage - 2 || i === currentPage + 2) {
+    } else if (i === achievementsCurrentPageParam - 2 || i === achievementsCurrentPageParam + 2) {
       buttonsHTML += '<span class="pagination-ellipsis">...</span>';
     }
   }
   
   // Next button
   buttonsHTML += `
-    <button class="pagination-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+    <button class="pagination-btn" ${achievementsCurrentPageParam === totalPages ? 'disabled' : ''} onclick="changePage(${achievementsCurrentPageParam + 1})">
       <span class="lang lang-en">Next</span>
       <span class="lang lang-ko" style="display:none;">다음</span>
     </button>
@@ -1263,7 +1263,7 @@ function renderPaginationButtons(container, totalPages, currentPage) {
 
 // Change page function
 function changePage(page) {
-  currentPage = page;
+  achievementsCurrentPage = page;
   renderAchievements();
   
   // Scroll to filter buttons position (consistent home position for pagination)
