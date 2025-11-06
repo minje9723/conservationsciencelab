@@ -357,7 +357,7 @@ const projects = [
     id: 91,
     title_en: "Comparative Analysis Research for Estimating Korean-style Cattle Production Methods",
     title_ko: "대한식 소총의 제작방법 추정을 위한 비교분석 연구",
-    category: "preservation-research",
+    category: "site-investigation",
     duration: "2023",
     funding: "War Memorial of Korea",
     funding_ko: "전쟁기념관"
@@ -716,7 +716,7 @@ const projects = [
   {
     id: 25,
     title_en: "Conservation Treatment and Scientific Analysis of Embroidered Chogak Cushions at Daegu Modern History Museum",
-    title_ko: "대구근대역사박물관 소장 석조각상 보존처리 용역",
+    title_ko: "대구근대역사박물관 소장 석조각상 보존처리",
     category: "excavated-conservation",
     duration: "2022",
     funding: "Daegu Modern History Museum",
@@ -788,7 +788,7 @@ const projects = [
   {
     id: 33,
     title_en: "Academic Research on Stone Maitreya Bodhisattva at Buyeo Daejosa Temple",
-    title_ko: "부여 대조사 석조미륵보살입상 학술조사용역",
+    title_ko: "부여 대조사 석조미륵보살입상 학술조사",
     category: "site-investigation",
     duration: "2022",
     funding: "Buyeo County Office",
@@ -869,7 +869,7 @@ const projects = [
   {
     id: 42,
     title_en: "Precision Safety Diagnosis Services for Guest House at Buyeo Hongsanhyeon Government Office",
-    title_ko: "부여 홍산현 관아 객사 정밀안전진단 용역",
+    title_ko: "부여 홍산현 관아 객사 정밀안전진단",
     category: "preservation-research",
     duration: "2022",
     funding: "Facility Safety Research Institute",
@@ -905,7 +905,7 @@ const projects = [
   {
     id: 46,
     title_en: "Precision Safety Diagnosis Services for Former Gongdeok Substation Main Building in Seoul",
-    title_ko: "서울 구 공업전승소 본관 정밀안전진단 용역",
+    title_ko: "서울 구 공업전승소 본관 정밀안전진단",
     category: "preservation-research",
     duration: "2022",
     funding: "Facility Safety Research Institute",
@@ -1022,7 +1022,7 @@ const projects = [
   {
     id: 59,
     title_en: "Conservation Work for Iron Seated Buddha at Incheon Yongsu Temple",
-    title_ko: "인천 용수사 철조여래좌상 보존 공사",
+    title_ko: "인천 용수사 철조여래좌상 보존",
     category: "preservation-research",
     duration: "2022",
     funding: "Daesan Cultural Heritage Conservation",
@@ -1049,7 +1049,7 @@ const projects = [
   {
     id: 62,
     title_en: "Investigation for Promotion of Ilraksa Iron Buddha",
-    title_ko: "일락사철불 승격지정 조사용역",
+    title_ko: "일락사철불 승격지정 조사",
     category: "designation-research",
     duration: "2022",
     funding: "Seosan City Office",
