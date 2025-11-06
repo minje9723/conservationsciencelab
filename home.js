@@ -114,9 +114,12 @@ function loadFeaturedProjects() {
   const desktopLayout = document.getElementById('projectsDesktopLayout');
   if ((!projectsGrid && !desktopLayout) || typeof projects === 'undefined') return;
 
-  // Featured Project IDs - Update these to change which projects are featured
-  // You can change these IDs to feature different projects
-  const featuredProjectIds = [1, 3, 4, 5]; // Change these numbers to feature different projects
+  // Featured Project IDs - 주요 연구 프로젝트 4개
+  // 138: 이집트 룩소르 문화유산 복원 (2024)
+  // 142: 구미 하이테크밸리 6차 출토 금속 유물 보존처리 (2025)
+  // 143: 관북리 출토 등자의 금속 PLA 3D 프린팅 복원 연구 (2025)
+  // 144: 안성 내장리 회곽묘 모르타르 분석 (2025)
+  const featuredProjectIds = [138, 142, 143, 144];
   
   // Get featured projects by IDs, or fall back to first 4 if IDs not found
   let featuredProjects = featuredProjectIds
@@ -133,10 +136,11 @@ function loadFeaturedProjects() {
     const title = currentLang === 'ko' ? project.title_ko : project.title_en;
     const description = currentLang === 'ko' ? project.description_ko : project.description_en;
     const categoryNames = {
-      'excavated-conservation': currentLang === 'ko' ? '문화유산 보존처리' : 'Heritage Conservation',
-      'site-investigation': currentLang === 'ko' ? '현장 조사 및 분석' : 'Site Survey',
-      'designation-research': currentLang === 'ko' ? '지정 연구' : 'Designation Research',
-      'preservation-research': currentLang === 'ko' ? '보존 연구' : 'Preservation Research'
+      'excavated-conservation': currentLang === 'ko' ? '보존처리' : 'Conservation',
+      'site-investigation': currentLang === 'ko' ? '현장조사' : 'Investigation',
+      'designation-research': currentLang === 'ko' ? '지정연구' : 'Designation',
+      'preservation-research': currentLang === 'ko' ? '보존연구' : 'Preservation',
+      'restoration-research': currentLang === 'ko' ? '복원연구' : 'Restoration'
     };
 
     // Use project image if available, otherwise use placeholder with category-specific icon
@@ -199,24 +203,27 @@ function loadFeaturedProjects() {
     existingProjectColumns.forEach(col => col.remove());
 
     const categoryNames = {
-      'excavated-conservation': currentLang === 'ko' ? '문화유산 보존처리' : 'Heritage Conservation',
-      'site-investigation': currentLang === 'ko' ? '현장 조사 및 분석' : 'Site Survey',
-      'designation-research': currentLang === 'ko' ? '지정 연구' : 'Designation Research',
-      'preservation-research': currentLang === 'ko' ? '보존 연구' : 'Preservation Research'
+      'excavated-conservation': currentLang === 'ko' ? '보존처리' : 'Conservation',
+      'site-investigation': currentLang === 'ko' ? '현장조사' : 'Investigation',
+      'designation-research': currentLang === 'ko' ? '지정연구' : 'Designation',
+      'preservation-research': currentLang === 'ko' ? '보존연구' : 'Preservation',
+      'restoration-research': currentLang === 'ko' ? '복원연구' : 'Restoration'
     };
 
     const categoryGradients = {
       'excavated-conservation': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       'site-investigation': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
       'designation-research': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      'preservation-research': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+      'preservation-research': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      'restoration-research': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
     };
 
     const categoryIcons = {
       'excavated-conservation': '🏺',
       'site-investigation': '🔍',
       'designation-research': '📋',
-      'preservation-research': '🛡️'
+      'preservation-research': '🛡️',
+      'restoration-research': '🔧'
     };
 
     // 타이틀 박스를 마지막에 추가하기 위해 headerColumn 참조 저장
@@ -262,13 +269,14 @@ function loadFeaturedProjects() {
 function loadLatestAchievements() {
   const achievementsGrid = document.getElementById('latestAchievementsGrid');
   const desktopLayout = document.getElementById('achievementsDesktopLayout');
-  if ((!achievementsGrid && !desktopLayout) || typeof achievements === 'undefined') return;
+  
+  if ((!achievementsGrid && !desktopLayout) || typeof achievements === 'undefined') {
+    return;
+  }
 
-  // Automatically get the top 4 most recent achievements from ALL types
-  // Sort by year (newest first), then take the first 4
-  const latestAchievements = achievements
-    .sort((a, b) => b.year - a.year)
-    .slice(0, 4);
+  // Automatically get the top 4 most recent achievements (최상위 4개)
+  // achievements.js에서 이미 최신순으로 정렬되어 있으므로 그대로 첫 4개 추출
+  const latestAchievements = achievements.slice(0, 4);
   
   const currentLang = document.documentElement.lang || 'ko';
 
@@ -338,7 +346,7 @@ function loadLatestAchievements() {
     const existingImageColumns = desktopLayout.querySelectorAll('.achievement-image-column');
     existingImageColumns.forEach(col => col.remove());
 
-    latestAchievements.forEach(achievement => {
+    latestAchievements.forEach((achievement, index) => {
       const title = currentLang === 'ko' ? achievement.title_ko : achievement.title_en;
       const authors = currentLang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
       const journal = currentLang === 'ko' ? (achievement.journal_ko || achievement.journal || achievement.event_ko || achievement.event) : (achievement.journal || achievement.event);

@@ -3,6 +3,42 @@
 // Projects data - 실제 프로젝트 사례
 const projects = [
   {
+    id: 142,
+    title_en: "Conservation Treatment of Metal Artifacts Excavated from Gumi Hi-Tech Valley 6th District",
+    title_ko: "구미 하이테크밸리 6차 출토 금속 유물 보존처리",
+    category: "excavated-conservation",
+    duration: "2025",
+    funding: "Korea National University of Heritage",
+    funding_ko: "한국문화재연구원",
+    description_en: "Conservation treatment of metal artifacts excavated from the 6th district of Gumi Hi-Tech Valley, including scientific analysis and stabilization of corroded surfaces.",
+    description_ko: "구미 하이테크밸리 6차 지구에서 출토된 금속 유물의 보존처리 프로젝트로, 부식된 표면의 과학적 분석 및 안정화 작업을 진행합니다.",
+    images: ["assets/projects/gumi-metal-artifacts.jpg"]
+  },
+  {
+    id: 143,
+    title_en: "Metal PLA 3D Printing Restoration Study of Stirrup Excavated from Gwanbuk-ri",
+    title_ko: "관북리 출토 등자의 금속 PLA 3D 프린팅 복원 연구",
+    category: "restoration-research",
+    duration: "2025",
+    funding: "Korea National University of Heritage",
+    funding_ko: "국립부여문화유산연구소",
+    description_en: "Research on restoration of ancient stirrup using metal PLA 3D printing technology, combining traditional conservation with modern digital manufacturing methods.",
+    description_ko: "금속 PLA 3D 프린팅 기술을 활용한 고대 등자 복원 연구로, 전통 보존과학과 현대 디지털 제조 기법을 결합합니다.",
+    images: ["assets/projects/gwanbukri-stirrup-3d.jpg.png"]
+  },
+  {
+    id: 144,
+    title_en: "Mortar Analysis of Lime Tomb at Anseong Naejang-ri",
+    title_ko: "안성 내장리 회곽묘 모르타르 분석",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Korea National University of Heritage",
+    funding_ko: "기남문화유산연구원",
+    description_en: "Scientific analysis of mortar materials from the lime tomb at Anseong Naejang-ri, investigating composition and construction techniques.",
+    description_ko: "안성 내장리 회곽묘의 모르타르 재료에 대한 과학적 분석으로, 성분 및 축조 기법을 연구합니다.",
+    images: ["assets/projects/anseong-mortar-analysis.jpg"]
+  },
+  {
     id: 112,
     title_en: "Analysis of Jijang and Ten Kings Painting at Gapyeong Hyeondeungsa Temple",
     title_ko: "가평 현등사 지장시왕도 분석",
@@ -243,7 +279,10 @@ const projects = [
     category: "restoration-research",
     duration: "2024",
     funding: "Korea Heritage Service",
-    funding_ko: "국가유산청"
+    funding_ko: "국가유산청",
+    description_en: "Restoration and maintenance planning for cultural heritage in Luxor, Egypt, including the conservation of Ramesseum Pylon gates through international cooperation.",
+    description_ko: "국제 협력을 통한 이집트 룩소르 문화유산의 복원 정비계획 수립 및 라메세움 탑문의 보존 작업을 진행합니다.",
+    images: ["assets/projects/egypt-luxor-ramesseum.jpg.png"]
   },
   {
     id: 139,
@@ -1498,7 +1537,7 @@ function getStatusName(status, lang) {
 
 // Pagination state
 let projectsCurrentPage = 1;
-const itemsPerPage = 9;
+const projectsItemsPerPage = 9;
 let currentCategory = 'all';
 
 // Get project counts by category
@@ -1553,9 +1592,9 @@ function filterProjects(category = 'all', page = 1) {
     ? projects 
     : projects.filter(p => p.category === category);
   
-  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const totalPages = Math.ceil(filteredProjects.length / projectsItemsPerPage);
+  const startIndex = (page - 1) * projectsItemsPerPage;
+  const endIndex = startIndex + projectsItemsPerPage;
   const projectsToShow = filteredProjects.slice(startIndex, endIndex);
   
   // Render filtered projects

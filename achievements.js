@@ -972,7 +972,7 @@ function removeAchievement(id) {
 
 // Pagination variables
 let achievementsCurrentPage = 1;
-const itemsPerPage = 12;
+const achievementsItemsPerPage = 12;
 
 // Get current language
 function getCurrentLanguage() {
@@ -1172,9 +1172,9 @@ function renderAchievements() {
   
   // Calculate pagination
   const totalItems = filteredAchievements.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (achievementsCurrentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const totalPages = Math.ceil(totalItems / achievementsItemsPerPage);
+  const startIndex = (achievementsCurrentPage - 1) * achievementsItemsPerPage;
+  const endIndex = startIndex + achievementsItemsPerPage;
   const paginatedAchievements = filteredAchievements.slice(startIndex, endIndex);
   
   // Render achievement cards
