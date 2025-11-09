@@ -1490,13 +1490,8 @@
     text-align: center;
     line-height: 1.2;
     letter-spacing: -0.02em;
-    /* 주요 연구 프로젝트와 동일한 그라데이션 효과 */
-    background: linear-gradient(135deg, #1e40af, #7c3aed, #dc2626);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientFlow 6s ease-in-out infinite;
+    /* 그라데이션 효과 제거 - 단색으로 변경 */
+    color: #1e293b;
   }
 
   .achievement-view-more-btn {
@@ -1689,12 +1684,8 @@
     text-align: center;
     line-height: 1.2;
     letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #1e40af, #7c3aed, #dc2626);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientFlow 6s ease-in-out infinite;
+    /* 그라데이션 효과 제거 - 단색으로 변경 */
+    color: #1e293b;
   }
 
   .project-view-more-btn {
@@ -2390,19 +2381,13 @@
   height: 16px;
 }
 
-.section-title {
-  font-size: 3.5rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #1e40af, #7c3aed, #dc2626);
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientFlow 6s ease-in-out infinite;
-  margin-bottom: 1.5rem;
-}
-
-@keyframes gradientFlow {
+  .section-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    /* 그라데이션 효과 제거 - 단색으로 변경 */
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+  }@keyframes gradientFlow {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
