@@ -5,8 +5,54 @@ function initHeroVideoAnimation() {
   const heroVideo = document.getElementById('heroVideo');
   const heroContent = document.getElementById('heroContent');
   const heroOverlay = document.querySelector('.hero-overlay');
+  const header = document.querySelector('header');
   
   if (!heroVideo || !heroContent) return;
+  
+  // 헤더 바 초기 숨김
+  if (header) {
+    header.style.opacity = '0';
+    header.style.visibility = 'hidden';
+    header.style.transition = 'opacity 1s ease, visibility 0s 1s';
+  }
+  
+  // 화면 크기에 따라 적절한 비디오 소스 선택
+  function setVideoSource() {
+    const isMobile = window.innerWidth <= 768;
+    const desktopVideo = 'assets/sector banner/home sector banner.mp4';
+    const mobileVideo = 'assets/sector banner/비디오 프로젝트 4 MOBILE.mp4';
+    
+    const videoSource = heroVideo.querySelector('source');
+    const newSource = isMobile ? mobileVideo : desktopVideo;
+    
+    // 현재 소스와 다른 경우에만 변경
+    if (videoSource) {
+      const currentSrc = videoSource.src.split('/').pop();
+      const newSrc = newSource.split('/').pop();
+      
+      if (currentSrc !== newSrc) {
+        videoSource.src = newSource;
+        heroVideo.load();
+        heroVideo.play().catch(err => console.log('Video play failed:', err));
+      }
+    }
+  }
+  
+  // 초기 비디오 소스 설정
+  setVideoSource();
+  
+  // 화면 크기 변경 시 비디오 소스 업데이트 (디바운스 적용)
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const wasPlaying = !heroVideo.paused;
+      setVideoSource();
+      if (wasPlaying) {
+        heroVideo.play().catch(err => console.log('Video play failed:', err));
+      }
+    }, 250);
+  });
   
   // 초기 상태: 컨텐츠 완전히 숨김 (CSS에서 이미 설정되어 있음)
   heroContent.style.transition = 'opacity 1.5s ease, transform 1.5s ease, visibility 0s 0s';
@@ -23,6 +69,13 @@ function initHeroVideoAnimation() {
       heroOverlay.style.background = 'rgba(26, 35, 126, 0.4)';
     }
     
+    // 헤더 바 페이드 인 (비디오 끝나고 바로)
+    if (header) {
+      header.style.transition = 'opacity 1s ease, visibility 0s 0s';
+      header.style.visibility = 'visible';
+      header.style.opacity = '1';
+    }
+    
     // 컨텐츠 페이드 인 (비디오 페이드아웃 시작 후 0.3초 뒤)
     setTimeout(() => {
       heroContent.style.visibility = 'visible';
@@ -31,8 +84,12 @@ function initHeroVideoAnimation() {
     }, 300);
   });
   
-  // 비디오 로드 실패 시 바로 컨텐츠 표시
+  // 비디오 로드 실패 시 바로 컨텐츠와 헤더 표시
   heroVideo.addEventListener('error', () => {
+    if (header) {
+      header.style.visibility = 'visible';
+      header.style.opacity = '1';
+    }
     heroContent.style.visibility = 'visible';
     heroContent.style.opacity = '1';
     heroContent.style.transform = 'translateY(0)';
@@ -40,6 +97,10 @@ function initHeroVideoAnimation() {
   
   // 비디오가 매우 짧거나 이미 끝난 경우 대비
   if (heroVideo.ended) {
+    if (header) {
+      header.style.visibility = 'visible';
+      header.style.opacity = '1';
+    }
     heroContent.style.visibility = 'visible';
     heroContent.style.opacity = '1';
     heroContent.style.transform = 'translateY(0)';
