@@ -33,6 +33,34 @@
   height: 100%;
   z-index: 1;
   overflow: hidden;
+  /* 앰비언트 라이트 효과 - 영상 색상에 맞춘 그라데이션 배경 */
+  background: radial-gradient(ellipse at center, 
+    rgba(26, 35, 126, 0.8) 0%,     /* 중앙: 진한 네이비 블루 */
+    rgba(40, 53, 147, 0.85) 30%,   /* 중간: 인디고 */
+    rgba(21, 32, 96, 0.9) 70%,     /* 외곽: 더 진한 네이비 */
+    rgba(15, 23, 70, 0.95) 100%    /* 가장자리: 거의 검정에 가까운 블루 */
+  );
+  animation: ambientPulse 8s ease-in-out infinite;
+}
+
+/* 앰비언트 라이트 맥동 효과 */
+@keyframes ambientPulse {
+  0%, 100% {
+    background: radial-gradient(ellipse at center, 
+      rgba(26, 35, 126, 0.8) 0%,
+      rgba(40, 53, 147, 0.85) 30%,
+      rgba(21, 32, 96, 0.9) 70%,
+      rgba(15, 23, 70, 0.95) 100%
+    );
+  }
+  50% {
+    background: radial-gradient(ellipse at center, 
+      rgba(30, 41, 140, 0.75) 0%,   /* 조금 더 밝게 */
+      rgba(45, 58, 160, 0.8) 30%,
+      rgba(26, 37, 110, 0.85) 70%,
+      rgba(18, 26, 80, 0.9) 100%
+    );
+  }
 }
 
 .hero-video {
@@ -40,61 +68,58 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  max-width: none;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 비율 유지하며 전체 영상 표시 (레터박스 허용) */
   object-position: center center;
   z-index: 1;
-  /* ?�능 최적??*/
+  /* 성능 최적화 */
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-/* ?�면 비율???�른 ?�어�?비디??최적??*/
-@media (min-aspect-ratio: 16/9) {
+/* 데스크톱 - 가로 화면 (일반 PC, 태블릿 가로) */
+@media (min-width: 769px) {
   .hero-video {
-    width: 100%;
-    height: auto;
-  }
-}
-
-@media (max-aspect-ratio: 9/16) {
-  .hero-video {
-    width: auto;
-    height: 100%;
-  }
-}
-
-@media (min-aspect-ratio: 9/16) and (max-aspect-ratio: 16/9) {
-  .hero-video {
-    width: 100vw;
-    height: 100%;
-  }
-}
-
-/* ?�트???�?�드 ?�면 (21:9 ?�상) */
-@media (min-aspect-ratio: 21/9) {
-  .hero-video {
-    width: 100%;
-    height: auto;
+    object-fit: contain;
     object-position: center center;
   }
 }
 
-/* ?�트?????�면 (매우 좁�? 모바?? */
-@media (max-aspect-ratio: 1/2) {
+/* 모바일 - 세로 화면 (768px 이하) */
+@media (max-width: 768px) {
   .hero-video {
-    width: auto;
-    height: 100%;
+    object-fit: contain; /* 좌우에 레터박스 생기더라도 영상 비율 유지 */
     object-position: center center;
+    width: 100%;
+    height: 100%;
   }
   
   .hero-section {
-    min-height: 80vh;
+    min-height: 100vh; /* 모바일에서 전체 화면 */
+  }
+}
+
+/* 매우 작은 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .hero-video {
+    object-fit: contain;
+    object-position: center center;
+  }
+}
+
+/* 모바일 가로 모드 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero-video {
+    object-fit: contain;
+    object-position: center center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .hero-section {
+    min-height: 100vh;
   }
 }
 
@@ -104,8 +129,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(26, 35, 126, 0.1);
-  backdrop-filter: blur(1px);
+  /* 미묘한 그라데이션 오버레이 - 앰비언트 라이트와 조화 */
+  background: linear-gradient(
+    180deg,
+    rgba(26, 35, 126, 0.05) 0%,    /* 상단: 거의 투명 */
+    rgba(26, 35, 126, 0.08) 50%,   /* 중간: 약간 어둡게 */
+    rgba(15, 23, 70, 0.15) 100%    /* 하단: 조금 더 어둡게 */
+  );
+  backdrop-filter: blur(0.5px);
   z-index: 2;
 }
 
@@ -116,6 +147,10 @@
   color: white;
   max-width: 800px;
   margin: 0 auto;
+  /* 초기 상태: 완전히 숨김 (JavaScript로 제어) */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(30px);
 }
 
 .hero-logo {

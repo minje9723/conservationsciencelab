@@ -1,5 +1,51 @@
 // Home page specific functionality
 
+// Hero Video and Content Animation
+function initHeroVideoAnimation() {
+  const heroVideo = document.getElementById('heroVideo');
+  const heroContent = document.getElementById('heroContent');
+  const heroOverlay = document.querySelector('.hero-overlay');
+  
+  if (!heroVideo || !heroContent) return;
+  
+  // 초기 상태: 컨텐츠 완전히 숨김 (CSS에서 이미 설정되어 있음)
+  heroContent.style.transition = 'opacity 1.5s ease, transform 1.5s ease, visibility 0s 0s';
+  
+  // 비디오 재생 완료 이벤트
+  heroVideo.addEventListener('ended', () => {
+    // 비디오가 끝나면 페이드 아웃
+    heroVideo.style.transition = 'opacity 1s ease';
+    heroVideo.style.opacity = '0';
+    
+    // 오버레이 어둡게
+    if (heroOverlay) {
+      heroOverlay.style.transition = 'background 1s ease';
+      heroOverlay.style.background = 'rgba(26, 35, 126, 0.4)';
+    }
+    
+    // 컨텐츠 페이드 인 (비디오 페이드아웃 시작 후 0.3초 뒤)
+    setTimeout(() => {
+      heroContent.style.visibility = 'visible';
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  });
+  
+  // 비디오 로드 실패 시 바로 컨텐츠 표시
+  heroVideo.addEventListener('error', () => {
+    heroContent.style.visibility = 'visible';
+    heroContent.style.opacity = '1';
+    heroContent.style.transform = 'translateY(0)';
+  });
+  
+  // 비디오가 매우 짧거나 이미 끝난 경우 대비
+  if (heroVideo.ended) {
+    heroContent.style.visibility = 'visible';
+    heroContent.style.opacity = '1';
+    heroContent.style.transform = 'translateY(0)';
+  }
+}
+
 // Counter Animation for Impact Metrics
 function animateCounters() {
   const counters = document.querySelectorAll('.metric-number[data-target], .hero-metric-number[data-target]');
@@ -487,6 +533,7 @@ function initHomePage() {
   // Wait for DOM to be fully loaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
+      initHeroVideoAnimation();
       animateCounters();
       initScrollAnimations();
       animateSectionHeaders();
@@ -497,6 +544,7 @@ function initHomePage() {
       handleHomeContactForm();
     });
   } else {
+    initHeroVideoAnimation();
     animateCounters();
     initScrollAnimations();
     animateSectionHeaders();
