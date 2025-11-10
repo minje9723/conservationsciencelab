@@ -85,36 +85,11 @@
 .director-cards-wrapper {
   flex: 1;
   overflow: hidden;
-}
-
-/* Director Navigation Buttons */
-.director-nav-btn {
-  background: var(--bg-white);
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: var(--shadow-soft);
-  transition: var(--transition-smooth);
-  color: var(--primary-blue);
-  font-size: 1.2rem;
-  z-index: 10;
-  flex-shrink: 0;
-}
-
-.director-nav-btn:hover {
-  background: var(--primary-blue);
-  color: var(--bg-white);
-  transform: scale(1.1);
-  box-shadow: var(--shadow-hover);
-}
-
-.director-nav-btn:active {
-  transform: scale(0.95);
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  min-height: 600px;
 }
 
 /* Director Indicators */
@@ -167,20 +142,26 @@
   align-items: start;
   max-width: 1200px;
   margin: 0 auto;
-  position: relative;
+  position: absolute;
+  width: 100%;
   overflow: hidden;
-  transition: var(--transition-smooth);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateX(-20px);
 }
 
-.professor-card.animate-in {
+.professor-card.active {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
+  position: relative;
+}
+
+.professor-card.fade-out {
+  opacity: 0;
+  transform: translateX(20px);
 }
 
 .professor-card.hovered {
-  transform: translateY(-8px);
   box-shadow: var(--shadow-hover);
 }
 
@@ -840,6 +821,25 @@
     text-align: center;
   }
   
+  /* Mobile Positions Section */
+  .professor-positions {
+    margin-top: 1rem;
+  }
+  
+  .positions-title {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  
+  /* 모바일에서 경력 항목 줄바꿈 허용 */
+  .position-item {
+    font-size: 0.75rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    letter-spacing: -0.5px;
+  }
+  
   /* Mobile Education Section */
   .professor-education {
     margin-top: 1rem;
@@ -851,20 +851,12 @@
   }
   
   .education-item {
-    font-size: 0.95rem;
-    text-align: center;
+    font-size: 0.75rem;
+    text-align: left;
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
-    letter-spacing: normal;
-  }
-  
-  /* 모바일에서 경력 항목 줄바꿈 허용 */
-  .position-item {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
-    letter-spacing: normal;
+    letter-spacing: -0.5px;
   }
   
   .section-title {
@@ -877,13 +869,7 @@
   
   /* Director Slider Mobile */
   .director-slider {
-    gap: 1rem;
-  }
-  
-  .director-nav-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
+    gap: 0;
   }
   
   .director-indicators {
@@ -1040,13 +1026,7 @@
   
   /* Director Slider Mobile Small */
   .director-slider {
-    gap: 0.5rem;
-  }
-  
-  .director-nav-btn {
-    width: 35px;
-    height: 35px;
-    font-size: 0.9rem;
+    gap: 0;
   }
   
   .director-indicators {
