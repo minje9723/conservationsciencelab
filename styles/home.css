@@ -1,5 +1,10 @@
 /* Home Page Specific Styles */
 
+/* 홈페이지는 hero-section이 최상단부터 시작하므로 main의 padding 제거 */
+main {
+  padding-top: 0 !important;
+}
+
 /* BebasNeue Font */
 @font-face {
   font-family: 'Bebas Neue';
@@ -67,28 +72,47 @@
 /* 모바일 - 세로 화면 (768px 이하) */
 @media (max-width: 768px) {
   .hero-video {
-    /* 4:5 비율 영상 - 세로로 화면 꽉 채우기 */
+    /* 레터박스 없이 화면 꽉 채우기 - 영상 비율 유지하며 잘림 */
     object-fit: cover;
     object-position: center center;
-    width: auto;
+    width: 100%;
     height: 100%;
-    min-width: 100%;
   }
   
   .hero-section {
     min-height: 100vh; /* 모바일에서 전체 화면 */
+    /* 화면 최상단부터 시작 */
+    position: relative;
+    z-index: 1; /* 헤더(z-index: 9999)보다 아래 */
+  }
+  
+  .hero-background {
+    /* 배경이 화면 최상단부터 */
+    top: 0;
+    height: 100%;
+  }
+  
+  .hero-overlay {
+    /* 오버레이가 뷰포트 높이에 반응 */
+    top: 0;
+    height: 100vh; /* 창 세로 길이에 반응 */
+  }
+  
+  /* 헤더가 영상 위에 떠있도록 설정 */
+  header.transparent-header {
+    position: fixed;
+    z-index: 9999; /* 영상보다 위에 표시 */
   }
 }
 
 /* 매우 작은 모바일 (480px 이하) */
 @media (max-width: 480px) {
   .hero-video {
-    /* 4:5 비율 영상 유지 */
+    /* 레터박스 없이 화면 꽉 채우기 */
     object-fit: cover;
     object-position: center center;
-    width: auto;
+    width: 100%;
     height: 100%;
-    min-width: 100%;
   }
 }
 

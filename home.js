@@ -9,11 +9,12 @@ function initHeroVideoAnimation() {
   
   if (!heroVideo || !heroContent) return;
   
-  // 헤더 바 초기 숨김
+  // 헤더 바 초기 숨김 (배경 포함)
   if (header) {
     header.style.opacity = '0';
     header.style.visibility = 'hidden';
-    header.style.transition = 'opacity 1s ease, visibility 0s 1s';
+    header.style.background = 'transparent';
+    header.style.transition = 'opacity 1s ease, visibility 0s 1s, background 0s 0s';
   }
   
   // 화면 크기에 따라 적절한 비디오 소스 선택
@@ -71,9 +72,10 @@ function initHeroVideoAnimation() {
     
     // 헤더 바 페이드 인 (비디오 끝나고 바로)
     if (header) {
-      header.style.transition = 'opacity 1s ease, visibility 0s 0s';
+      header.style.transition = 'opacity 1s ease, visibility 0s 0s, background 1s ease';
       header.style.visibility = 'visible';
       header.style.opacity = '1';
+      header.style.background = 'rgba(255, 255, 255, 0.95)';
     }
     
     // 컨텐츠 페이드 인 (비디오 페이드아웃 시작 후 0.3초 뒤)
@@ -89,6 +91,7 @@ function initHeroVideoAnimation() {
     if (header) {
       header.style.visibility = 'visible';
       header.style.opacity = '1';
+      header.style.background = 'rgba(255, 255, 255, 0.95)';
     }
     heroContent.style.visibility = 'visible';
     heroContent.style.opacity = '1';
@@ -100,6 +103,7 @@ function initHeroVideoAnimation() {
     if (header) {
       header.style.visibility = 'visible';
       header.style.opacity = '1';
+      header.style.background = 'rgba(255, 255, 255, 0.95)';
     }
     heroContent.style.visibility = 'visible';
     heroContent.style.opacity = '1';
