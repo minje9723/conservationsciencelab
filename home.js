@@ -79,10 +79,10 @@ function initHeroVideoAnimation() {
     heroVideo.style.transition = 'opacity 1s ease';
     heroVideo.style.opacity = '0';
     
-    // 오버레이 어둡게
+    // 오버레이를 알루미늄 메탈릭 느낌으로
     if (heroOverlay) {
       heroOverlay.style.transition = 'background 1s ease';
-      heroOverlay.style.background = 'rgba(26, 35, 126, 0.4)';
+      heroOverlay.style.background = 'rgba(150, 150, 150, 0.2)';
     }
     
     // 헤더 바 페이드 인 (비디오 끝나고 바로)
