@@ -1412,6 +1412,15 @@ header.transparent-header::before {
 /* Utility classes */
 .lang {
   transition: opacity 0.3s ease;
+  /* Hide all language elements by default to prevent flashing */
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Show language elements after language is determined */
+.lang.lang-visible {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Responsive design */

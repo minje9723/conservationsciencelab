@@ -38,8 +38,10 @@ function setLang(lang, userSelected = false) {
   // 텍스트 다국어 처리
   document.querySelectorAll('.lang').forEach(el => {
     if (el.classList.contains('lang-' + lang)) {
+      el.classList.add('lang-visible');
       el.style.display = '';
     } else {
+      el.classList.remove('lang-visible');
       el.style.display = 'none';
     }
   });

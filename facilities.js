@@ -736,10 +736,12 @@ function renderFacilities() {
   // Apply language visibility after rendering
   const currentLang = getCurrentLanguage();
   document.querySelectorAll('.lang').forEach(el => {
-    if (el.classList.contains('lang-en')) {
-      el.style.display = currentLang === 'en' ? '' : 'none';
-    } else if (el.classList.contains('lang-ko')) {
-      el.style.display = currentLang === 'ko' ? '' : 'none';
+    if (el.classList.contains('lang-' + currentLang)) {
+      el.classList.add('lang-visible');
+      el.style.display = '';
+    } else {
+      el.classList.remove('lang-visible');
+      el.style.display = 'none';
     }
   });
   
