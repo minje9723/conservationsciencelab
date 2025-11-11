@@ -949,6 +949,22 @@
     gap: 1rem;
   }
   
+  .alumni-name {
+    font-size: 1rem; /* 이름 폰트 크기 */
+  }
+  
+  .alumni-current {
+    font-size: 0.8rem; /* 이름보다 작게 (80%) */
+  }
+  
+  .alumni-period {
+    font-size: 0.75rem; /* 기간 표시 */
+  }
+  
+  .alumni-position {
+    font-size: 0.75rem; /* 직책 표시 */
+  }
+  
   .alumni-stats {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
@@ -1022,6 +1038,23 @@
   .team-members,
   .alumni-network {
     padding: 4rem 0;
+  }
+  
+  /* Alumni 카드 작은 모바일 */
+  .alumni-name {
+    font-size: 0.9rem; /* 이름 폰트 크기 */
+  }
+  
+  .alumni-current {
+    font-size: 0.72rem; /* 이름보다 작게 (80%) */
+  }
+  
+  .alumni-period {
+    font-size: 0.68rem; /* 기간 표시 */
+  }
+  
+  .alumni-position {
+    font-size: 0.68rem; /* 직책 표시 */
   }
   
   /* Director Slider Mobile Small */

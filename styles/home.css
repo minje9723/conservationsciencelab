@@ -2970,7 +2970,11 @@ main {
   }
 
   .project-card-title {
-    font-size: 1.3rem;
+    font-size: 0.975rem; /* 0.65rem에서 50% 증가 */
+  }
+  
+  .project-card-description {
+    font-size: 0.78rem; /* 제목보다 작게 (80%) */
   }
 
   .achievements-grid {
@@ -3013,6 +3017,18 @@ main {
   .achievement-card[data-type="patent"] .achievement-card-content {
     border-left-color: transparent;
     border-top-color: #10b981;
+  }
+  
+  .achievement-card-title {
+    font-size: 0.75rem; /* 0.5rem에서 50% 증가 */
+  }
+  
+  .achievement-card-authors {
+    font-size: 0.6rem; /* 제목보다 작게 (80%) */
+  }
+  
+  .achievement-card-journal {
+    font-size: 0.6rem; /* 제목보다 작게 (80%) */
   }
 
   .achievement-card:hover {
@@ -3058,17 +3074,25 @@ main {
   }
 
   .project-card-title {
-    font-size: 1.15rem;
+    font-size: 0.863rem; /* 0.575rem에서 50% 증가 */
   }
 
   .project-card-description {
-    font-size: 0.9rem;
+    font-size: 0.69rem; /* 제목보다 작게 (80%) */
     -webkit-line-clamp: 2;
     line-clamp: 2;
   }
 
   .achievement-card-title {
-    font-size: 1.1rem;
+    font-size: 0.825rem; /* 0.55rem에서 50% 증가 */
+  }
+  
+  .achievement-card-authors {
+    font-size: 0.66rem; /* 제목보다 작게 (80%) */
+  }
+  
+  .achievement-card-journal {
+    font-size: 0.66rem; /* 제목보다 작게 (80%) */
   }
 
   .achievement-card-icon {
