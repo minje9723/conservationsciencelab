@@ -6,6 +6,7 @@ function initHeroVideoAnimation() {
   const heroContent = document.getElementById('heroContent');
   const heroOverlay = document.querySelector('.hero-overlay');
   const header = document.querySelector('header');
+  const loadingIndicator = document.getElementById('videoLoadingIndicator');
   
   if (!heroVideo || !heroContent) return;
   
@@ -16,6 +17,20 @@ function initHeroVideoAnimation() {
     header.style.background = 'transparent';
     header.style.transition = 'opacity 1s ease, visibility 0s 1s, background 0s 0s';
   }
+  
+  // 비디오 로딩 상태 관리
+  function hideLoadingIndicator() {
+    if (loadingIndicator) {
+      loadingIndicator.classList.add('hidden');
+      setTimeout(() => {
+        loadingIndicator.style.display = 'none';
+      }, 500);
+    }
+  }
+  
+  // 비디오가 재생 가능할 때 로딩 인디케이터 숨김
+  heroVideo.addEventListener('canplay', hideLoadingIndicator);
+  heroVideo.addEventListener('loadeddata', hideLoadingIndicator);
   
   // 화면 크기에 따라 적절한 비디오 소스 선택
   function setVideoSource() {
