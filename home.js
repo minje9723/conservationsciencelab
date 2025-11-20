@@ -5,6 +5,7 @@ function initHeroVideoAnimation() {
   const heroVideo = document.getElementById('heroVideo');
   const heroContent = document.getElementById('heroContent');
   const heroOverlay = document.querySelector('.hero-overlay');
+  const heroBackground = document.querySelector('.hero-background');
   const header = document.querySelector('header');
   const loadingIndicator = document.getElementById('videoLoadingIndicator');
   
@@ -79,10 +80,16 @@ function initHeroVideoAnimation() {
     heroVideo.style.transition = 'opacity 1s ease';
     heroVideo.style.opacity = '0';
     
-    // 오버레이를 알루미늄 메탈릭 느낌으로
+    // hero-background 전체를 투명하게 (배경 이미지가 보이도록)
+    if (heroBackground) {
+      heroBackground.style.transition = 'opacity 1s ease';
+      heroBackground.style.opacity = '0';
+    }
+    
+    // 오버레이를 투명하게
     if (heroOverlay) {
-      heroOverlay.style.transition = 'background 1s ease';
-      heroOverlay.style.background = 'rgba(150, 150, 150, 0.2)';
+      heroOverlay.style.transition = 'opacity 1s ease';
+      heroOverlay.style.opacity = '0';
     }
     
     // 헤더 바 페이드 인 (비디오 끝나고 바로)
