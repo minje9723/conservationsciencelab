@@ -1368,11 +1368,6 @@ function createModernProjectCard(project, lang) {
   return `
     <div class="modern-project-card animate-on-scroll" data-category="${project.category}">
       <div class="project-content">
-        <div class="project-category-badge ${project.category}">
-          <span class="category-icon">${categoryIcons[project.category] || '🔬'}</span>
-          <span class="category-text">${getCategoryName(project.category, lang)}</span>
-        </div>
-        
         <h3 class="project-title">${title}</h3>
         
         <div class="project-meta">
@@ -1407,23 +1402,6 @@ function createRevolutionaryProjectCard(project, lang) {
 
   return `
     <div class="revolutionary-project-card animate-on-scroll" data-category="${project.category}">
-      <div class="project-card-header">
-        <div class="category-badge ${project.category}">
-          <span class="category-icon">${categoryIcons[project.category] || '🔬'}</span>
-          <span class="category-text">${getCategoryName(project.category, lang)}</span>
-        </div>
-      </div>
-      
-      <div class="project-visual">
-        <div class="project-gradient ${project.category}"></div>
-        <div class="project-pattern"></div>
-        <div class="floating-elements">
-          <span class="float-element">⚗️</span>
-          <span class="float-element">🧬</span>
-          <span class="float-element">📡</span>
-        </div>
-      </div>
-      
       <div class="project-content">
         <h3 class="project-title">${title}</h3>
         <p class="project-description">${description}</p>

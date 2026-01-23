@@ -399,7 +399,8 @@
   transition: var(--transition-smooth);
   position: relative;
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(40px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out, box-shadow 0.3s ease;
   min-height: auto;
   height: 100%;
 }
@@ -409,8 +410,12 @@
   transform: translateY(0);
 }
 
-.researcher-card.hovered {
+.researcher-card.animate-in.hovered {
   transform: translateY(-10px);
+  box-shadow: var(--shadow-hover);
+}
+
+.researcher-card.hovered {
   box-shadow: var(--shadow-hover);
 }
 
@@ -733,7 +738,14 @@
 }
 
 .animate-on-scroll {
-  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-on-scroll.animate-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Loading States */
