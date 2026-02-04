@@ -1387,24 +1387,33 @@ function initAchievements() {
   // Navigation dropdown filter functionality
   navAchievementFilters.forEach(filter => {
     filter.addEventListener('click', (e) => {
-      e.preventDefault();
+      // achievements.html 페이지 내에서만 preventDefault하고 필터 적용
+      // 다른 페이지에서는 href로 정상 이동
+      const currentPage = window.location.pathname.split('/').pop();
       
-      // Update navigation dropdown active state
-      navAchievementFilters.forEach(f => f.classList.remove('active'));
-      filter.classList.add('active');
-      
-      // Update page filter buttons active state
-      const filterType = filter.getAttribute('data-filter');
-      
-      achievementFilters.forEach(f => {
-        if (f.getAttribute('data-filter') === filterType) {
-          f.classList.add('active');
-        } else {
-          f.classList.remove('active');
+      if (currentPage === 'achievements.html') {
+        e.preventDefault();
+        
+        // Update page filter buttons active state
+        const filterType = filter.getAttribute('data-filter');
+        
+        achievementFilters.forEach(f => {
+          if (f.getAttribute('data-filter') === filterType) {
+            f.classList.add('active');
+          } else {
+            f.classList.remove('active');
+          }
+        });
+        
+        filterAchievements(filterType);
+        
+        // 드롭다운 닫기
+        const dropdownContent = filter.closest('.nav-dropdown-content');
+        if (dropdownContent) {
+          dropdownContent.classList.remove('show');
         }
-      });
-      
-      filterAchievements(filterType);
+      }
+      // 다른 페이지에서는 href 링크로 정상 이동
     });
   });
 
@@ -1415,15 +1424,8 @@ function initAchievements() {
       achievementFilters.forEach(f => f.classList.remove('active'));
       filter.classList.add('active');
       
-      // Update navigation dropdown active state
+      // 네비게이션 드롭다운은 active 상태를 사용하지 않음
       const filterType = filter.getAttribute('data-filter');
-      navAchievementFilters.forEach(f => {
-        if (f.getAttribute('data-filter') === filterType) {
-          f.classList.add('active');
-        } else {
-          f.classList.remove('active');
-        }
-      });
       
       filterAchievements(filterType);
     });
@@ -1449,13 +1451,8 @@ function initAchievements() {
     }
   });
   
-  navAchievementFilters.forEach(f => {
-    if (f.getAttribute('data-filter') === initialFilter) {
-      f.classList.add('active');
-    } else {
-      f.classList.remove('active');
-    }
-  });
+  // 네비게이션 드롭다운의 active 상태는 설정하지 않음 (페이지 로드 시)
+  // navAchievementFilters는 클릭 시에만 active 상태 변경
   
   filterAchievements(initialFilter);
   

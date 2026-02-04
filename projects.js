@@ -1719,27 +1719,27 @@ function initProjects() {
   // Filter functionality
   let currentCategory = categoryParam || 'all';
 
-  // Set initial active state based on URL parameter
-  if (categoryParam) {
-    document.querySelectorAll('[data-category]').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.getAttribute('data-category') === categoryParam) {
-        btn.classList.add('active');
-      }
-    });
-    // Make sure 'all' button is not active if specific category is selected
-    if (categoryParam !== 'all') {
-      const allBtn = document.querySelector('[data-category="all"]');
-      if (allBtn) allBtn.classList.remove('active');
+  // Set initial active state based on URL parameter (네비게이션 드롭다운 제외)
+  document.querySelectorAll('[data-category]:not(.nav-project-filter)').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-category') === currentCategory) {
+      btn.classList.add('active');
     }
+  });
+  
+  // Make sure 'all' button is not active if specific category is selected
+  if (currentCategory !== 'all') {
+    const allBtn = document.querySelector('[data-category="all"]');
+    if (allBtn) allBtn.classList.remove('active');
   }
 
-  // Filter button functionality for category filters
+  // Filter button functionality for category filters (페이지 내 버튼)
   document.querySelectorAll('.filter-btn[data-category]:not(.nav-project-filter)').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       
       const category = btn.getAttribute('data-category');
+      currentCategory = category;
       filterProjects(category, 1);
       
       // Update URL parameter
@@ -1753,8 +1753,48 @@ function initProjects() {
     });
   });
 
-  // Initial render with filter if URL parameter exists
-  renderProjects();
+  // Navigation dropdown filter functionality
+  document.querySelectorAll('.nav-project-filter').forEach(filter => {
+    filter.addEventListener('click', (e) => {
+      // projects.html 페이지 내에서만 preventDefault하고 필터 적용
+      const currentPage = window.location.pathname.split('/').pop();
+      
+      if (currentPage === 'projects.html') {
+        e.preventDefault();
+        
+        const category = filter.getAttribute('data-category');
+        currentCategory = category;
+        filterProjects(category, 1);
+        
+        // Update page filter buttons active state (네비게이션 드롭다운 제외)
+        document.querySelectorAll('.filter-btn[data-category]:not(.nav-project-filter)').forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.getAttribute('data-category') === category) {
+            btn.classList.add('active');
+          }
+        });
+        
+        // Update URL parameter
+        const newUrl = new URL(window.location);
+        if (category === 'all') {
+          newUrl.searchParams.delete('category');
+        } else {
+          newUrl.searchParams.set('category', category);
+        }
+        window.history.replaceState({}, '', newUrl);
+        
+        // 드롭다운 닫기
+        const dropdownContent = filter.closest('.nav-dropdown-content');
+        if (dropdownContent) {
+          dropdownContent.classList.remove('show');
+        }
+      }
+      // 다른 페이지에서는 href 링크로 정상 이동
+    });
+  });
+
+  // Initial render with filter based on URL parameter or default
+  filterProjects(currentCategory, 1);
 }
 
 // Make functions available globally

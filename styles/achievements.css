@@ -746,19 +746,135 @@ body.filtered .achievement-icon {
 }
 
 .achievement-filter:hover {
-  color: #00D2BE;
-  background: rgba(0, 210, 190, 0.05);
+  color: #1a237e;
+  background: transparent;
 }
 
 .achievement-filter.active {
-  color: #00D2BE;
+  color: #1a237e;
   font-weight: 700;
-  border-bottom-color: #00D2BE;
-  background: rgba(0, 210, 190, 0.08);
+  background: transparent;
 }
 
 .achievement-filter.active::before {
   width: 100%;
+}
+
+/* 각 필터 타입별 hover 및 active 색상 */
+/* Publication (논문) */
+.achievement-filter[data-filter="publication"]:hover {
+  color: #1a73e8;
+}
+
+.achievement-filter[data-filter="publication"]:hover::before {
+  background: #1a73e8;
+}
+
+.achievement-filter[data-filter="publication"]:hover .filter-count {
+  background: rgba(26, 115, 232, 0.1);
+  border-color: rgba(26, 115, 232, 0.3);
+  color: #1a73e8;
+}
+
+.achievement-filter[data-filter="publication"].active {
+  color: #1a73e8;
+}
+
+.achievement-filter[data-filter="publication"].active::before {
+  background: #1a73e8;
+}
+
+.achievement-filter[data-filter="publication"].active .filter-count {
+  background: #1a73e8;
+  color: #ffffff;
+  border-color: #1a73e8;
+}
+
+/* Conference (학술발표) */
+.achievement-filter[data-filter="conference"]:hover {
+  color: #34a853;
+}
+
+.achievement-filter[data-filter="conference"]:hover::before {
+  background: #34a853;
+}
+
+.achievement-filter[data-filter="conference"]:hover .filter-count {
+  background: rgba(52, 168, 83, 0.1);
+  border-color: rgba(52, 168, 83, 0.3);
+  color: #34a853;
+}
+
+.achievement-filter[data-filter="conference"].active {
+  color: #34a853;
+}
+
+.achievement-filter[data-filter="conference"].active::before {
+  background: #34a853;
+}
+
+.achievement-filter[data-filter="conference"].active .filter-count {
+  background: #34a853;
+  color: #ffffff;
+  border-color: #34a853;
+}
+
+/* Patent (특허) */
+.achievement-filter[data-filter="patent"]:hover {
+  color: #9c27b0;
+}
+
+.achievement-filter[data-filter="patent"]:hover::before {
+  background: #9c27b0;
+}
+
+.achievement-filter[data-filter="patent"]:hover .filter-count {
+  background: rgba(156, 39, 176, 0.1);
+  border-color: rgba(156, 39, 176, 0.3);
+  color: #9c27b0;
+}
+
+.achievement-filter[data-filter="patent"].active {
+  color: #9c27b0;
+}
+
+.achievement-filter[data-filter="patent"].active::before {
+  background: #9c27b0;
+}
+
+.achievement-filter[data-filter="patent"].active .filter-count {
+  background: #9c27b0;
+  color: #ffffff;
+  border-color: #9c27b0;
+}
+
+/* Award (수상) */
+.achievement-filter[data-filter="award"]:hover {
+  color: #fbbc04;
+}
+
+.achievement-filter[data-filter="award"]:hover::before {
+  background: #fbbc04;
+}
+
+.achievement-filter[data-filter="award"]:hover .filter-count {
+  background: rgba(251, 188, 4, 0.1);
+  border-color: rgba(251, 188, 4, 0.3);
+  color: #fbbc04;
+}
+
+.achievement-filter[data-filter="award"].active {
+  color: #fbbc04;
+}
+
+.achievement-filter[data-filter="award"].active::before {
+  background: #fbbc04;
+}
+
+.achievement-filter[data-filter="award"].active .filter-count {
+  background: #fbbc04;
+  color: #ffffff;
+  border-color: #fbbc04;
 }
 
 /* Responsive styles */

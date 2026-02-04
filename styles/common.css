@@ -303,11 +303,6 @@ header.transparent-header::before {
   color: #3949ab;
 }
 
-.nav-member-filter.active {
-  background: #1a237e;
-  color: #fff;
-}
-
 .nav-project-filter {
   display: block;
   padding: 0.9rem 1.2rem;
@@ -327,11 +322,6 @@ header.transparent-header::before {
 .nav-project-filter:hover {
   background: #f5f7fa;
   color: #3949ab;
-}
-
-.nav-project-filter.active {
-  background: #1a237e;
-  color: #fff;
 }
 
 /* Apply Libre Bodoni to dropdown menu English text */

@@ -230,19 +230,193 @@ main .page-banner.scrolled {
 }
 
 .filter-btn:hover {
-  color: #00D2BE;
-  background: rgba(0, 210, 190, 0.05);
+  color: #1a237e;
+  background: transparent;
 }
 
 .filter-btn.active {
-  color: #00D2BE;
+  color: #1a237e;
   font-weight: 700;
-  border-bottom-color: #00D2BE;
-  background: rgba(0, 210, 190, 0.08);
+  background: transparent;
 }
 
 .filter-btn.active::before {
   width: 100%;
+}
+
+/* 각 필터 타입별 hover 및 active 색상 */
+/* All */
+.filter-btn[data-category="all"]:hover {
+  color: #00D2BE;
+}
+
+.filter-btn[data-category="all"]:hover::before {
+  background: linear-gradient(90deg, #00D2BE, #00AAA0);
+}
+
+.filter-btn[data-category="all"]:hover .filter-count {
+  background: rgba(0, 210, 190, 0.1);
+  border-color: rgba(0, 210, 190, 0.3);
+  color: #00D2BE;
+}
+
+.filter-btn[data-category="all"].active {
+  color: #00D2BE;
+}
+
+.filter-btn[data-category="all"].active::before {
+  background: linear-gradient(90deg, #00D2BE, #00AAA0);
+}
+
+.filter-btn[data-category="all"].active .filter-count {
+  background: #00D2BE;
+  color: #ffffff;
+  border-color: #00D2BE;
+}
+
+/* Excavated Conservation */
+.filter-btn[data-category="excavated-conservation"]:hover {
+  color: #8D6E63;
+}
+
+.filter-btn[data-category="excavated-conservation"]:hover::before {
+  background: #8D6E63;
+}
+
+.filter-btn[data-category="excavated-conservation"]:hover .filter-count {
+  background: rgba(141, 110, 99, 0.1);
+  border-color: rgba(141, 110, 99, 0.3);
+  color: #8D6E63;
+}
+
+.filter-btn[data-category="excavated-conservation"].active {
+  color: #8D6E63;
+}
+
+.filter-btn[data-category="excavated-conservation"].active::before {
+  background: #8D6E63;
+}
+
+.filter-btn[data-category="excavated-conservation"].active .filter-count {
+  background: #8D6E63;
+  color: #ffffff;
+  border-color: #8D6E63;
+}
+
+/* Site Investigation */
+.filter-btn[data-category="site-investigation"]:hover {
+  color: #2196F3;
+}
+
+.filter-btn[data-category="site-investigation"]:hover::before {
+  background: #2196F3;
+}
+
+.filter-btn[data-category="site-investigation"]:hover .filter-count {
+  background: rgba(33, 150, 243, 0.1);
+  border-color: rgba(33, 150, 243, 0.3);
+  color: #2196F3;
+}
+
+.filter-btn[data-category="site-investigation"].active {
+  color: #2196F3;
+}
+
+.filter-btn[data-category="site-investigation"].active::before {
+  background: #2196F3;
+}
+
+.filter-btn[data-category="site-investigation"].active .filter-count {
+  background: #2196F3;
+  color: #ffffff;
+  border-color: #2196F3;
+}
+
+/* Designation Research */
+.filter-btn[data-category="designation-research"]:hover {
+  color: #9C27B0;
+}
+
+.filter-btn[data-category="designation-research"]:hover::before {
+  background: #9C27B0;
+}
+
+.filter-btn[data-category="designation-research"]:hover .filter-count {
+  background: rgba(156, 39, 176, 0.1);
+  border-color: rgba(156, 39, 176, 0.3);
+  color: #9C27B0;
+}
+
+.filter-btn[data-category="designation-research"].active {
+  color: #9C27B0;
+}
+
+.filter-btn[data-category="designation-research"].active::before {
+  background: #9C27B0;
+}
+
+.filter-btn[data-category="designation-research"].active .filter-count {
+  background: #9C27B0;
+  color: #ffffff;
+  border-color: #9C27B0;
+}
+
+/* Preservation Research */
+.filter-btn[data-category="preservation-research"]:hover {
+  color: #4CAF50;
+}
+
+.filter-btn[data-category="preservation-research"]:hover::before {
+  background: #4CAF50;
+}
+
+.filter-btn[data-category="preservation-research"]:hover .filter-count {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: rgba(76, 175, 80, 0.3);
+  color: #4CAF50;
+}
+
+.filter-btn[data-category="preservation-research"].active {
+  color: #4CAF50;
+}
+
+.filter-btn[data-category="preservation-research"].active::before {
+  background: #4CAF50;
+}
+
+.filter-btn[data-category="preservation-research"].active .filter-count {
+  background: #4CAF50;
+  color: #ffffff;
+  border-color: #4CAF50;
+}
+
+/* Restoration Research */
+.filter-btn[data-category="restoration-research"]:hover {
+  color: #FF9800;
+}
+
+.filter-btn[data-category="restoration-research"]:hover::before {
+  background: #FF9800;
+}
+
+.filter-btn[data-category="restoration-research"]:hover .filter-count {
+  background: rgba(255, 152, 0, 0.1);
+  border-color: rgba(255, 152, 0, 0.3);
+  color: #FF9800;
+}
+
+.filter-btn[data-category="restoration-research"].active {
+  color: #FF9800;
+}
+
+.filter-btn[data-category="restoration-research"].active::before {
+  background: #FF9800;
+}
+
+.filter-btn[data-category="restoration-research"].active .filter-count {
+  background: #FF9800;
+  color: #ffffff;
+  border-color: #FF9800;
 }
 
 .filter-category {
