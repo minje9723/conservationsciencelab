@@ -8,7 +8,12 @@
     document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('.lang').forEach(el => {
         if (el.classList.contains('lang-' + savedLang)) {
-          el.style.setProperty('display', 'inline', 'important');
+          // 모바일에서 .nav-text는 숨김 유지
+          if (el.classList.contains('nav-text') && window.innerWidth <= 1002) {
+            el.style.setProperty('display', 'none', 'important');
+          } else {
+            el.style.setProperty('display', 'inline', 'important');
+          }
         } else {
           el.style.setProperty('display', 'none', 'important');
         }
@@ -52,12 +57,26 @@ function setLang(lang, userSelected = false) {
   // Set document language
   document.documentElement.lang = lang;
   
+  // index.html의 동적 스타일 태그 업데이트 (있는 경우)
+  const langStyleOverride = document.getElementById('lang-style-override');
+  if (langStyleOverride) {
+    langStyleOverride.textContent = `
+      .lang { display: none !important; }
+      .lang-${lang} { display: inline !important; }
+    `;
+  }
+  
   // 텍스트 다국어 처리 - 단순하고 확실한 방법
   document.querySelectorAll('.lang').forEach(el => {
     if (el.classList.contains('lang-' + lang)) {
       el.classList.add('lang-visible');
-      // 선택된 언어는 무조건 표시
-      el.style.setProperty('display', 'inline', 'important');
+      // 모바일에서 .nav-text는 숨김 유지
+      if (el.classList.contains('nav-text') && window.innerWidth <= 1002) {
+        el.style.setProperty('display', 'none', 'important');
+      } else {
+        // 선택된 언어는 무조건 표시
+        el.style.setProperty('display', 'inline', 'important');
+      }
     } else {
       el.classList.remove('lang-visible');
       // 선택되지 않은 언어는 무조건 숨김

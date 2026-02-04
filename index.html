@@ -58,6 +58,7 @@
       
       // CSS 스타일을 동적으로 주입하여 즉시 적용
       const style = document.createElement('style');
+      style.id = 'lang-style-override'; // ID 추가하여 나중에 업데이트 가능하게
       style.textContent = `
         .lang { display: none !important; }
         .lang-${savedLang} { display: inline !important; }

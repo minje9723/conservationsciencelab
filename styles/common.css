@@ -594,7 +594,7 @@ header.transparent-header::before {
   }
   
   .nav-links li a .nav-text {
-    display: none;
+    display: none !important;
   }
   
   .nav-links li a::after {
