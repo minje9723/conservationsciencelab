@@ -658,6 +658,8 @@ function initHomePage() {
   // Wait for DOM to be fully loaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
+      updateProjectsCount();
+      updateResearchersCount();
       initHeroVideoAnimation();
       animateCounters();
       initScrollAnimations();
@@ -669,6 +671,8 @@ function initHomePage() {
       handleHomeContactForm();
     });
   } else {
+    updateProjectsCount();
+    updateResearchersCount();
     initHeroVideoAnimation();
     animateCounters();
     initScrollAnimations();
@@ -678,6 +682,54 @@ function initHomePage() {
     loadLatestAchievements();
     loadGalleryPreview();
     handleHomeContactForm();
+  }
+}
+
+// Update projects count from projects.js
+function updateProjectsCount() {
+  // projects.js에서 projects 배열의 길이를 가져옴
+  if (typeof projects !== 'undefined') {
+    const projectsCountElement = document.getElementById('projectsCount');
+    if (projectsCountElement) {
+      const totalProjects = projects.length;
+      projectsCountElement.setAttribute('data-target', totalProjects);
+    }
+  } else {
+    // projects.js가 아직 로드되지 않았다면 짧은 지연 후 재시도
+    setTimeout(() => {
+      if (typeof projects !== 'undefined') {
+        const projectsCountElement = document.getElementById('projectsCount');
+        if (projectsCountElement) {
+          const totalProjects = projects.length;
+          projectsCountElement.setAttribute('data-target', totalProjects);
+        }
+      }
+    }, 100);
+  }
+}
+
+// Update researchers count from members.js (이상옥 교수님 + 현재 연구진)
+function updateResearchersCount() {
+  // members.js에서 teamData의 연구진 수를 가져옴
+  if (typeof teamData !== 'undefined') {
+    const researchersCountElement = document.getElementById('researchersCount');
+    if (researchersCountElement) {
+      // 이상옥 교수님(1명) + researchers 배열의 길이
+      const totalResearchers = 1 + (teamData.researchers ? teamData.researchers.length : 0);
+      researchersCountElement.setAttribute('data-target', totalResearchers);
+    }
+  } else {
+    // members.js가 아직 로드되지 않았다면 짧은 지연 후 재시도
+    setTimeout(() => {
+      if (typeof teamData !== 'undefined') {
+        const researchersCountElement = document.getElementById('researchersCount');
+        if (researchersCountElement) {
+          // 이상옥 교수님(1명) + researchers 배열의 길이
+          const totalResearchers = 1 + (teamData.researchers ? teamData.researchers.length : 0);
+          researchersCountElement.setAttribute('data-target', totalResearchers);
+        }
+      }
+    }, 100);
   }
 }
 
