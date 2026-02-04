@@ -1,5 +1,22 @@
 // Common functionality for all pages
 
+// 즉시 실행: 페이지 로드 전 언어 적용
+(function() {
+  const savedLang = localStorage.getItem('preferred-language');
+  if (savedLang) {
+    // 저장된 언어가 있으면 DOM이 로드되기 전에 즉시 적용
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.lang').forEach(el => {
+        if (el.classList.contains('lang-' + savedLang)) {
+          el.style.setProperty('display', 'inline', 'important');
+        } else {
+          el.style.setProperty('display', 'none', 'important');
+        }
+      });
+    });
+  }
+})();
+
 // IP 기반 국가 감지 및 자동 언어 설정
 async function detectCountryAndSetLanguage() {
   // 이미 사용자가 언어를 선택한 적이 있는지 확인
@@ -35,14 +52,16 @@ function setLang(lang, userSelected = false) {
   // Set document language
   document.documentElement.lang = lang;
   
-  // 텍스트 다국어 처리
+  // 텍스트 다국어 처리 - 단순하고 확실한 방법
   document.querySelectorAll('.lang').forEach(el => {
     if (el.classList.contains('lang-' + lang)) {
       el.classList.add('lang-visible');
-      el.style.display = '';
+      // 선택된 언어는 무조건 표시
+      el.style.setProperty('display', 'inline', 'important');
     } else {
       el.classList.remove('lang-visible');
-      el.style.display = 'none';
+      // 선택되지 않은 언어는 무조건 숨김
+      el.style.setProperty('display', 'none', 'important');
     }
   });
   
@@ -351,34 +370,61 @@ function initCommon() {
     }
   });
 
-  // IP 기반 자동 언어 감지 및 설정
-  detectCountryAndSetLanguage().then(detectedLang => {
-    const savedLang = localStorage.getItem('preferred-language') || detectedLang;
-    const finalLang = savedLang;
+  // 언어 설정 - 즉시 저장된 언어 적용 (IP 감지 전)
+  const savedLang = localStorage.getItem('preferred-language');
+  
+  if (savedLang) {
+    // 저장된 언어가 있으면 즉시 적용
+    setLang(savedLang, false);
     
     // UI 업데이트
-    const langBtn = document.getElementById(`lang-${finalLang}`);
+    const langBtn = document.getElementById(`lang-${savedLang}`);
     if (langBtn) {
       langBtn.classList.add('active');
-      const langCode = langBtn.querySelector('.lang-code').textContent;
-      if (currentLang) {
-        currentLang.textContent = langCode;
+      const langCode = langBtn.querySelector('.lang-code');
+      if (langCode && currentLang) {
+        currentLang.textContent = langCode.textContent;
       }
     }
     
     // 다른 버튼 비활성화
     document.querySelectorAll('.lang-option').forEach(btn => {
-      if (btn.getAttribute('data-lang') !== finalLang) {
+      if (btn.getAttribute('data-lang') !== savedLang) {
         btn.classList.remove('active');
       }
     });
     
-    // 언어 적용
-    setLang(finalLang, false);
-    
     // Initialize tooltips
-    updateNavTooltips(finalLang);
-  });
+    updateNavTooltips(savedLang);
+  } else {
+    // 저장된 언어가 없을 때만 IP 기반 자동 언어 감지
+    detectCountryAndSetLanguage().then(detectedLang => {
+      const finalLang = detectedLang;
+      
+      // 즉시 언어 적용
+      setLang(finalLang, false);
+      
+      // UI 업데이트
+      const langBtn = document.getElementById(`lang-${finalLang}`);
+      if (langBtn) {
+        langBtn.classList.add('active');
+        const langCode = langBtn.querySelector('.lang-code');
+        if (langCode && currentLang) {
+          currentLang.textContent = langCode.textContent;
+        }
+      }
+      
+      // 다른 버튼 비활성화
+      document.querySelectorAll('.lang-option').forEach(btn => {
+        if (btn.getAttribute('data-lang') !== finalLang) {
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Initialize tooltips
+      updateNavTooltips(finalLang);
+    });
+  }
 
   // Contact Modal functionality (for home page)
   const contactBtn = document.getElementById('contactBtn');
