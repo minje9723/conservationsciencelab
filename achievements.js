@@ -4,6 +4,29 @@
 // Publications are sorted by year (newest first)
 const achievements = [
   {
+    id: 45,
+    type: "publication",
+    title_en: "Application of 3D Model-Based Quantification Techniques for Surface Contamination of Outdoor Stone Heritage",
+    title_ko: "옥외석조문화유산 표면오염물의 3D 모델 기반 정량화 기법 적용 평가",
+    authors: "Hae Jun Park, So Yeon Choi, Singi Kim, Hyeon Seok Cha, Won Ju Na, Sang Ok Lee",
+    authors_ko: "박해준, 최소연, 김신기, 차현석, 나원주, 이상옥",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
+    year: 2026,
+    volume: "42",
+    issue: "1",
+    pages: "98-110",
+    summary_en: "Applied 3D model and texture color-based quantification techniques to evaluate surface contaminants on outdoor stone heritage and compared them with conventional 2D methods, demonstrating improved spatial precision and visibility.",
+    summary_ko: "옥외 석조문화유산 표면오염물의 정량 평가를 위해 3D 모델과 텍스처 색상 기반 기법을 적용하고 기존 2D 방법과 비교하여, 오염부 검출 정밀도와 가시성 향상 가능성을 제시한 연구.",
+    link: "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003324946",
+    doi: "",
+    image: "assets/achievements/outdoor stone heritage.jpg",
+    keywords: ["Outdoor heritage", "Stone heritage", "Damage detection", "Three-dimensional model", "Quantification", "Surface contaminant"],
+    keywords_ko: ["옥외문화유산", "석조문화유산", "손상평가", "3D", "정량화", "표면오염물"]
+  },
+  {
     id: 0,
     type: "publication",
     title_en: "Assessment of the Stability of Partial Paint Restoration on Damaged Areas for Outdoor Steel Sculptures",
