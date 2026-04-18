@@ -148,6 +148,7 @@
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   opacity: 0;
   transform: translateX(-20px);
+  box-sizing: border-box;
 }
 
 .professor-card.active {
@@ -787,8 +788,9 @@
 @media (max-width: 768px) {
   .professor-card {
     grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 1.5rem;
+    gap: 1.5rem;
+    padding: 1.2rem 1rem;
+    margin: 0;
   }
   
   .professor-left {
@@ -796,6 +798,11 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    padding: 0;
+  }
+  
+  .professor-right {
+    gap: 1.5rem;
   }
   
   .professor-image {
@@ -971,6 +978,23 @@
 
 /* 600px 이하에서는 2열 유지 */
 @media (max-width: 600px) {
+  .container {
+    padding: 0 0.8rem;
+  }
+  
+  .professor-card {
+    padding: 1.1rem 0.9rem;
+    gap: 1.3rem;
+  }
+  
+  .professor-right {
+    gap: 1.2rem;
+  }
+  
+  .professor-image {
+    max-width: 240px;
+  }
+  
   .team-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;
@@ -1003,13 +1027,25 @@
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+  
   .professor-card {
-    padding: 1.2rem;
-    gap: 1.5rem;
+    padding: 1rem 0.8rem;
+    gap: 1.2rem;
+  }
+  
+  .professor-left {
+    padding: 0;
+  }
+  
+  .professor-right {
+    gap: 1rem;
   }
   
   .professor-image {
-    max-width: 220px;
+    max-width: 200px;
   }
   
   .professor-name {
@@ -1018,6 +1054,24 @@
   
   .professor-title {
     font-size: 1rem;
+  }
+  
+  .professor-header {
+    padding-bottom: 1rem;
+  }
+  
+  .professor-positions {
+    gap: 0.8rem;
+  }
+  
+  .positions-title {
+    font-size: 1rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .position-item {
+    font-size: 0.7rem;
+    white-space: normal;
   }
   
   .professor-contact-info .contact-item {
@@ -1133,6 +1187,14 @@
 
 /* 428px 이하 - 2열 유지 */
 @media screen and (max-width: 428px) {
+  .container {
+    padding: 0 0.6rem;
+  }
+  
+  .professor-card {
+    padding: 0.9rem 0.7rem;
+  }
+  
   .team-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.6rem;
@@ -1221,6 +1283,14 @@
 
 /* 375px 이하 - 2열 유지 */
 @media screen and (max-width: 375px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+  
+  .professor-card {
+    padding: 0.85rem 0.65rem;
+  }
+  
   .team-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
