@@ -357,9 +357,18 @@ function loadFeaturedProjects() {
   // Mobile/Tablet Grid Layout
   if (projectsGrid) {
     // Add click handlers
-    projectsGrid.querySelectorAll('.project-card').forEach(card => {
+    projectsGrid.querySelectorAll('.project-card').forEach((card, index) => {
+      const projectId = card.getAttribute('data-project-id');
+      const project = featuredProjects[index];
+      
       card.addEventListener('click', () => {
-        window.location.href = 'projects.html';
+        if (project && project.link) {
+          // If project has external link, open it
+          window.open(project.link, '_blank');
+        } else {
+          // Otherwise navigate to projects page
+          window.location.href = 'projects.html';
+        }
       });
     });
 
@@ -427,7 +436,13 @@ function loadFeaturedProjects() {
       `;
 
       column.addEventListener('click', () => {
-        window.location.href = 'projects.html';
+        if (project.link) {
+          // If project has external link, open it
+          window.open(project.link, '_blank');
+        } else {
+          // Otherwise navigate to projects page
+          window.location.href = 'projects.html';
+        }
       });
 
       // 타이틀 박스(5번) 앞에 삽입
@@ -660,6 +675,7 @@ function initHomePage() {
     document.addEventListener('DOMContentLoaded', () => {
       updateProjectsCount();
       updateResearchersCount();
+      updateAchievementsCount();
       initHeroVideoAnimation();
       animateCounters();
       initScrollAnimations();
@@ -673,6 +689,7 @@ function initHomePage() {
   } else {
     updateProjectsCount();
     updateResearchersCount();
+    updateAchievementsCount();
     initHeroVideoAnimation();
     animateCounters();
     initScrollAnimations();
@@ -727,6 +744,32 @@ function updateResearchersCount() {
           // 이상옥 교수님(1명) + researchers 배열의 길이
           const totalResearchers = 1 + (teamData.researchers ? teamData.researchers.length : 0);
           researchersCountElement.setAttribute('data-target', totalResearchers);
+        }
+      }
+    }, 100);
+  }
+}
+
+// Update achievements count from achievements.js
+function updateAchievementsCount() {
+  // achievements.js에서 achievements 배열의 publication 개수를 가져옴
+  if (typeof achievements !== 'undefined') {
+    // Publications 개수 계산 (type === "publication")
+    const publicationCount = achievements.filter(a => a.type === 'publication').length;
+    
+    const publicationsElement = document.querySelector('[data-metric="publications"] .hero-metric-number');
+    if (publicationsElement) {
+      publicationsElement.setAttribute('data-target', publicationCount);
+    }
+  } else {
+    // achievements.js가 아직 로드되지 않았다면 짧은 지연 후 재시도
+    setTimeout(() => {
+      if (typeof achievements !== 'undefined') {
+        const publicationCount = achievements.filter(a => a.type === 'publication').length;
+        
+        const publicationsElement = document.querySelector('[data-metric="publications"] .hero-metric-number');
+        if (publicationsElement) {
+          publicationsElement.setAttribute('data-target', publicationCount);
         }
       }
     }, 100);

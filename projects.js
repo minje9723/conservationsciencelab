@@ -282,7 +282,8 @@ const projects = [
     funding_ko: "국가유산청",
     description_en: "Restoration and maintenance planning for cultural heritage in Luxor, Egypt, including the conservation of Ramesseum Pylon gates through international cooperation.",
     description_ko: "국제 협력을 통한 이집트 룩소르 문화유산의 복원 정비계획 수립 및 라메세움 탑문의 보존 작업을 진행합니다.",
-    images: ["assets/projects/egypt-luxor-ramesseum.jpg.png"]
+    images: ["assets/projects/egypt-luxor-ramesseum.jpg.png"],
+    link: "https://knuhoda.kr/"
   },
   {
     id: 139,
@@ -1365,8 +1366,14 @@ function createModernProjectCard(project, lang) {
     'restoration-research': '🔧'
   };
 
+  // If project has external link, handle it
+  const clickHandler = project.link 
+    ? `onclick="window.open('${project.link}', '_blank')"` 
+    : `onclick="viewProjectDetails(${project.id})"`;
+  const cursorStyle = project.link ? 'cursor: pointer;' : '';
+
   return `
-    <div class="modern-project-card animate-on-scroll" data-category="${project.category}">
+    <div class="modern-project-card animate-on-scroll" data-category="${project.category}" ${clickHandler} style="${cursorStyle}">
       <div class="project-content">
         <h3 class="project-title">${title}</h3>
         
@@ -1453,8 +1460,13 @@ function createProjectCard(project, lang) {
 
   const placeholderIcon = categoryIcons[project.category] || '🧪';
 
+  // If project has external link, handle it
+  const clickHandler = project.link 
+    ? `onclick="window.open('${project.link}', '_blank')"` 
+    : `onclick="viewProjectDetails(${project.id})"`;
+
   return `
-    <div class="project-item animate-on-scroll" data-category="${project.category}" data-status="${project.status}" data-id="${project.id}">
+    <div class="project-item animate-on-scroll" data-category="${project.category}" data-status="${project.status}" data-id="${project.id}" style="cursor: ${project.link ? 'pointer' : 'default'};">
       <div class="project-image">
         ${project.images && project.images.length > 0 ? 
           `<img src="${project.images[0]}" alt="${lang === 'ko' ? project.title_ko : project.title_en}" 
@@ -1481,9 +1493,9 @@ function createProjectCard(project, lang) {
           </div>
         ` : ''}
         <div class="project-actions">
-          <button class="view-details-btn" onclick="viewProjectDetails(${project.id})">
-            <span class="lang lang-en">View Details</span>
-            <span class="lang lang-ko" style="display:none;">자세히 보기</span>
+          <button class="view-details-btn" ${clickHandler}>
+            <span class="lang lang-en">${project.link ? '외부 링크 열기' : 'View Details'}</span>
+            <span class="lang lang-ko" style="display:none;">${project.link ? '외부 링크 열기' : '자세히 보기'}</span>
           </button>
         </div>
       </div>

@@ -693,11 +693,6 @@ function createFacilityCard(facility, lang) {
             <span class="lang lang-en">${facility.description_en}</span>
             <span class="lang lang-ko">${facility.description_ko}</span>
           </div>
-          
-          <div class="facility-year">
-            <span class="lang lang-en">Acquired: ${facility.year_acquired}</span>
-            <span class="lang lang-ko">도입연도: ${facility.year_acquired}</span>
-          </div>
         </div>
       </div>
     </li>
