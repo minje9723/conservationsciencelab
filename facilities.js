@@ -9,7 +9,7 @@ const facilities = [
     name_ko: "금속현미경",
     model: "Leica DM4500",
     description_en: "High-resolution digital microscopy system for detailed analysis of material surfaces and structures.",
-    description_ko: "재료 표면과 구조의 세밀한 분석을 위한 고해상도 디지털 현미경 시스템입니다.",
+    description_ko: "재료 표면과 구조를 세밀하게 분석하는 고해상도 디지털 현미경",
     specifications: {
       "Magnification": "40x - 1000x",
       "Resolution": "0.2 μm",
@@ -35,7 +35,7 @@ const facilities = [
     name_ko: "3D 스캐너",
     model: "FARO Focus3D X 130",
     description_en: "Advanced 3D laser scanning system for comprehensive documentation of cultural heritage objects.",
-    description_ko: "문화유산 객체의 종합적인 문서화를 위한 고급 3D 레이저 스캐닝 시스템입니다.",
+    description_ko: "문화유산을 종합적으로 문서화하는 고급 3D 레이저 스캐닝 시스템",
     specifications: {
       "Range": "0.6m - 130m",
       "Accuracy": "±2mm",
@@ -61,7 +61,7 @@ const facilities = [
     name_ko: "3D 프린터",
     model: "Markforged X7",
     description_en: "Industrial-grade 3D printer capable of printing with carbon fiber and metal-filled filaments.",
-    description_ko: "탄소섬유와 금속 충전 필라멘트로 출력 가능한 산업용 3D 프린터입니다.",
+    description_ko: "탄소섬유와 금속 충전 필라멘트로 출력 가능한 산업용 3D 프린터",
     specifications: {
       "Build Volume": "330 × 270 × 200 mm",
       "Layer Resolution": "0.1 - 0.4 mm",
@@ -87,7 +87,7 @@ const facilities = [
     name_ko: "X선 형광 분석기",
     model: "Bruker EZ200",
     description_en: "Portable XRF analyzer for non-destructive elemental analysis of cultural heritage materials.",
-    description_ko: "문화유산 재료의 비파괴 원소 분석을 위한 휴대용 XRF 분석기입니다.",
+    description_ko: "문화유산 재료를 비파괴로 원소 분석하는 휴대용 XRF 분석기",
     specifications: {
       "Detection Range": "Mg to U",
       "Analysis Time": "10-60 seconds",
@@ -113,7 +113,7 @@ const facilities = [
     name_ko: "레이저클리너",
     model: "P-Laser QF-1000",
     description_en: "Advanced laser cleaning system for non-abrasive removal of contaminants and corrosion from cultural heritage objects.",
-    description_ko: "문화유산 객체의 오염물과 부식을 비연마적으로 제거하는 고급 레이저 세척 시스템입니다.",
+    description_ko: "문화유산의 오염물과 부식을 비연마적으로 제거하는 고급 레이저 세척 시스템",
     specifications: {
       "Laser Power": "1000W",
       "Wavelength": "1064 nm",
@@ -139,7 +139,7 @@ const facilities = [
     name_ko: "스팀세척기",
     model: "Kärcher SG 4/4",
     description_en: "High-pressure steam cleaning system for gentle and effective cleaning of heritage surfaces.",
-    description_ko: "문화유산 표면의 부드럽고 효과적인 세척을 위한 고압 스팀 세척 시스템입니다.",
+    description_ko: "문화유산 표면을 부드럽고 효과적으로 세척하는 고압 스팀 세척 시스템",
     specifications: {
       "Steam Pressure": "4 bar",
       "Steam Temperature": "143°C",
@@ -165,7 +165,7 @@ const facilities = [
     name_ko: "FTIR 분광기",
     model: "Nicolet iS50",
     description_en: "Fourier Transform Infrared Spectrometer for molecular structure identification and material analysis.",
-    description_ko: "분자 구조 식별 및 재료 분석을 위한 푸리에 변환 적외선 분광기입니다.",
+    description_ko: "분자 구조를 식별하고 재료를 분석하는 푸리에 변환 적외선 분광기",
     specifications: {
       "Wavelength Range": "7,800 - 350 cm⁻¹",
       "Resolution": "0.09 cm⁻¹",
@@ -191,7 +191,7 @@ const facilities = [
     name_ko: "주사전자현미경-에너지분산분광기",
     model: "JEOL JSM-7100F",
     description_en: "Scanning Electron Microscope with Energy Dispersive Spectroscopy for high-resolution imaging and elemental analysis.",
-    description_ko: "고해상도 이미징 및 원소 분석을 위한 에너지분산분광기가 장착된 주사전자현미경입니다.",
+    description_ko: "고해상도 이미징과 원소 분석을 위한 에너지분산분광기가 장착된 주사전자현미경",
     specifications: {
       "Resolution": "1.0 nm @ 15kV",
       "Magnification": "×25 to ×1,000,000",
@@ -217,7 +217,7 @@ const facilities = [
     name_ko: "X선 회절 분석기",
     model: "Rigaku MiniFlex 600",
     description_en: "X-Ray Diffraction system for crystal structure analysis and phase identification.",
-    description_ko: "결정 구조 분석 및 상 식별을 위한 X선 회절 분석 시스템입니다.",
+    description_ko: "결정 구조와 상을 분석하고 식별하는 X선 회절 시스템",
     specifications: {
       "X-ray Source": "Cu Kα",
       "2θ Range": "2° to 145°",
@@ -243,7 +243,7 @@ const facilities = [
     name_ko: "만능재료시험기",
     model: "Instron 5985",
     description_en: "Dual column testing system for mechanical property evaluation of materials.",
-    description_ko: "재료의 기계적 특성 평가를 위한 이중 컬럼 시험 시스템입니다.",
+    description_ko: "재료의 기계적 특성을 평가하는 이중 컬럼 시험 시스템",
     specifications: {
       "Load Capacity": "250 kN",
       "Crosshead Speed": "0.001 to 500 mm/min",
@@ -269,7 +269,7 @@ const facilities = [
     name_ko: "비커스 경도기",
     model: "Buehler Wilson VH3100",
     description_en: "Digital Vickers hardness tester for precise hardness measurement of materials.",
-    description_ko: "재료의 정밀한 경도 측정을 위한 디지털 비커스 경도기입니다.",
+    description_ko: "재료의 경도를 정밀하게 측정하는 디지털 비커스 경도기",
     specifications: {
       "Load Range": "10 gf to 50 kgf",
       "Magnification": "×100, ×400",
@@ -295,7 +295,7 @@ const facilities = [
     name_ko: "자외선 열화 시험기",
     model: "Q-Lab QUV/se",
     description_en: "Accelerated weathering tester simulating outdoor UV exposure and condensation.",
-    description_ko: "실외 자외선 노출 및 결로를 시뮬레이션하는 가속 열화 시험기입니다.",
+    description_ko: "자외선 노출과 결로를 시뮬레이션하는 가속 열화 시험기",
     specifications: {
       "Irradiance": "0.89 W/m²/nm @ 340 nm",
       "Temperature Range": "40°C to 80°C",
@@ -321,7 +321,7 @@ const facilities = [
     name_ko: "초음파 속도 측정기",
     model: "Proceq Pundit PL-200",
     description_en: "Ultrasonic testing device for assessing concrete quality and detecting defects.",
-    description_ko: "콘크리트 품질 평가 및 결함 검출을 위한 초음파 시험 장비입니다.",
+    description_ko: "콘크리트 품질을 평가하고 결함을 검출하는 초음파 시험 장비",
     specifications: {
       "Frequency": "24 / 54 kHz",
       "Measurement Range": "100 to 9,999 μs",
@@ -347,7 +347,7 @@ const facilities = [
     name_ko: "레이저 입도분석기",
     model: "Malvern Mastersizer 3000",
     description_en: "Laser diffraction particle size analyzer for measuring particle size distribution.",
-    description_ko: "입자 크기 분포 측정을 위한 레이저 회절 입도 분석기입니다.",
+    description_ko: "입자 크기 분포를 측정하는 레이저 회절 입도 분석기",
     specifications: {
       "Measurement Range": "0.01 to 3,500 μm",
       "Light Source": "Red LED & Blue LED",
@@ -373,7 +373,7 @@ const facilities = [
     name_ko: "슈미츠 해머",
     model: "Proceq Original Schmidt",
     description_en: "Non-destructive concrete strength testing instrument for on-site evaluation.",
-    description_ko: "현장 평가를 위한 비파괴 콘크리트 강도 시험 장비입니다.",
+    description_ko: "현장에서 비파괴로 콘크리트 강도를 시험하는 장비",
     specifications: {
       "Impact Energy": "2.207 Nm",
       "Test Direction": "All directions",
@@ -399,7 +399,7 @@ const facilities = [
     name_ko: "시차주사열량계",
     model: "TA Instruments DSC 2500",
     description_en: "Thermal analysis instrument for studying phase transitions and thermal properties.",
-    description_ko: "상 전이 및 열적 특성 연구를 위한 열 분석 장비입니다.",
+    description_ko: "상 전이와 열적 특성을 연구하는 열 분석 장비",
     specifications: {
       "Temperature Range": "-90°C to 550°C",
       "Heating Rate": "0.01 to 500°C/min",
@@ -425,7 +425,7 @@ const facilities = [
     name_ko: "전기로",
     model: "Nabertherm LHT 04/17",
     description_en: "High-temperature electric furnace for heat treatment and material processing.",
-    description_ko: "열처리 및 재료 가공을 위한 고온 전기로입니다.",
+    description_ko: "열처리와 재료 가공을 위한 고온 전기로",
     specifications: {
       "Max Temperature": "1,700°C",
       "Heating Rate": "Up to 10°C/min",
@@ -451,7 +451,7 @@ const facilities = [
     name_ko: "진공 함침기",
     model: "Custom Built System",
     description_en: "Vacuum chamber for impregnating porous materials with consolidants and preservatives.",
-    description_ko: "다공성 재료에 강화제 및 보존제를 함침시키기 위한 진공 챔버입니다.",
+    description_ko: "다공성 재료에 강화제와 보존제를 함침시키는 진공 챔버",
     specifications: {
       "Chamber Size": "600 × 600 × 800 mm",
       "Vacuum Level": "0.1 mbar",
@@ -477,7 +477,7 @@ const facilities = [
     name_ko: "CS분석기",
     model: "Konica Minolta CR-400",
     description_en: "Portable colorimeter for precise color measurement and quality control.",
-    description_ko: "정밀한 색상 측정 및 품질 관리를 위한 휴대용 색차 분석기입니다.",
+    description_ko: "색상을 정밀하게 측정하고 품질을 관리하는 휴대용 색차 분석기",
     specifications: {
       "Illuminant": "C, D65",
       "Observer": "2°, 10°",
@@ -503,7 +503,7 @@ const facilities = [
     name_ko: "마이크로 XRF",
     model: "Bruker M4 Tornado",
     description_en: "Micro X-ray fluorescence spectrometer for high-resolution elemental mapping and analysis.",
-    description_ko: "고해상도 원소 맵핑 및 분석을 위한 마이크로 X선 형광 분광기입니다.",
+    description_ko: "고해상도로 원소를 맵핑하고 분석하는 마이크로 X선 형광 분광기",
     specifications: {
       "Spot Size": "20 μm",
       "Detection Range": "Na to Am",
@@ -529,7 +529,7 @@ const facilities = [
     name_ko: "X-ray",
     model: "Rigaku MiniFlex 600",
     description_en: "X-ray diffraction system for crystal structure analysis and phase identification.",
-    description_ko: "결정 구조 분석 및 상 식별을 위한 X선 회절 시스템입니다.",
+    description_ko: "결정 구조와 상을 분석하고 식별하는 X선 회절 시스템",
     specifications: {
       "X-ray Source": "Cu Kα",
       "2θ Range": "2° to 145°",
@@ -555,7 +555,7 @@ const facilities = [
     name_ko: "염수분무기",
     model: "Ascott S450iP",
     description_en: "Corrosion testing equipment simulating salt spray conditions for material durability assessment.",
-    description_ko: "재료 내구성 평가를 위한 염수분무 조건을 시뮬레이션하는 부식 시험 장비입니다.",
+    description_ko: "염수분무 조건을 시뮬레이션하여 재료 내구성을 평가하는 부식 시험 장비",
     specifications: {
       "Chamber Volume": "450 liters",
       "Temperature Range": "35°C ± 2°C",
@@ -581,7 +581,7 @@ const facilities = [
     name_ko: "시편 연마기",
     model: "Struers LaboPol-5",
     description_en: "Precision grinding and polishing machine for metallographic specimen preparation.",
-    description_ko: "금속조직 시편 준비를 위한 정밀 연삭 및 연마 기계입니다.",
+    description_ko: "금속조직 시편을 정밀하게 연삭하고 연마하는 기계",
     specifications: {
       "Disc Speed": "50-300 rpm",
       "Disc Diameter": "250 mm",
@@ -674,14 +674,31 @@ function getCategoryIcon(category) {
 
 // Create facility card HTML
 function createFacilityCard(facility, lang) {
+  const specs = lang === 'ko' ? facility.specifications_ko : facility.specifications;
+  const apps = lang === 'ko' ? facility.applications_ko : facility.applications;
+  
+  // Create specifications bullet list
+  const specsHtml = specs ? Object.entries(specs).map(([key, value]) => 
+    `<li><strong>${key}:</strong> ${value}</li>`
+  ).join('') : '';
+  
+  // Create applications bullet list
+  const appsHtml = apps ? apps.map(app => 
+    `<li>${app}</li>`
+  ).join('') : '';
+  
+  // Image placeholder text
+  const imageReadyText = lang === 'ko' ? '이미지 준비중' : 'Image Preparing';
+
   return `
     <li data-category="${facility.category}" data-id="${facility.id}" class="animate-on-scroll">
       <div class="facility-card">
-        ${facility.image ? `
-          <div class="facility-image">
-            <img src="${facility.image}" alt="${facility.name_en}" loading="lazy">
-          </div>
-        ` : ''}
+        <div class="facility-image">
+          ${facility.image ? 
+            `<img src="${facility.image}" alt="${facility.name_en}" loading="lazy">` :
+            `<div class="facility-image-placeholder">${imageReadyText}</div>`
+          }
+        </div>
         
         <div class="facility-content">
           <h3>
@@ -693,6 +710,26 @@ function createFacilityCard(facility, lang) {
             <span class="lang lang-en">${facility.description_en}</span>
             <span class="lang lang-ko">${facility.description_ko}</span>
           </div>
+          
+          ${specsHtml ? `
+            <div class="facility-specs">
+              <h4 class="lang lang-en">Specifications</h4>
+              <h4 class="lang lang-ko" style="display:none;">사양</h4>
+              <ul class="specs-list">
+                ${specsHtml}
+              </ul>
+            </div>
+          ` : ''}
+          
+          ${appsHtml ? `
+            <div class="facility-applications">
+              <h4 class="lang lang-en">Applications</h4>
+              <h4 class="lang lang-ko" style="display:none;">활용분야</h4>
+              <ul class="applications-list">
+                ${appsHtml}
+              </ul>
+            </div>
+          ` : ''}
         </div>
       </div>
     </li>
