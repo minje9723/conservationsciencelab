@@ -1,13 +1,22 @@
 /* Portal Page Styles */
 
+/* Page Banner Height Override */
+.page-banner {
+  height: clamp(300px, 35vh, 500px) !important;
+}
+
+.page-banner.scrolled {
+  height: clamp(150px, 20vh, 300px) !important;
+}
+
 .portal-section {
   padding: 80px 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   min-height: calc(100vh - 200px);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -19,200 +28,146 @@
 
 .section-title {
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: #1a3a3a;
   margin-bottom: 16px;
   font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .section-description {
   font-size: 1.125rem;
-  color: #5a6c7d;
-  max-width: 600px;
+  color: #555555;
+  max-width: 700px;
   margin: 0 auto;
+  line-height: 1.6;
 }
 
-/* Services Grid */
-.services-grid {
+/* Journals Grid */
+.journals-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
   margin-bottom: 80px;
 }
 
-/* Service Card Base Styles */
-.service-card {
+/* Journal Card Base Styles */
+.journal-card {
   background: white;
-  border-radius: 0;
-  padding: 28px 20px;
+  border-radius: 8px;
+  padding: 24px;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  border: 1px solid #f0f0f0;
 }
 
-.service-card::before {
+.journal-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  transition: height 0.3s ease;
+  height: 3px;
+  background: linear-gradient(90deg, #2c5282 0%, #2e5090 50%, #1a3a3a 100%);
+  transition: height 0.4s ease;
 }
 
-.service-card:hover {
+.journal-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  border-color: #e0e0e0;
 }
 
-.service-card:hover::before {
-  height: 8px;
+.journal-card:hover::before {
+  height: 5px;
 }
 
-/* Service-specific colors */
-.mail-card::before {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.drive-card::before {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.board-card::before {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.calendar-card::before {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-
-.messenger-card::before {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-}
-
-/* Service Icon */
-.service-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+/* Journal Logo Container */
+.journal-logo-container {
+  width: 100%;
+  height: 120px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-  transition: transform 0.3s ease;
+  margin-bottom: 20px;
+  overflow: hidden;
+  position: relative;
 }
 
-.service-card:hover .service-icon {
-  transform: scale(1.1) rotate(5deg);
+.journal-logo-image {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: transform 0.4s ease;
 }
 
-.service-icon svg {
-  width: 32px;
-  height: 32px;
-  stroke-width: 2;
+.journal-card:hover .journal-logo-image {
+  transform: scale(1.1);
 }
 
-.mail-card .service-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.journal-logo-placeholder {
+  display: none;
 }
 
-.mail-card .service-icon svg {
-  stroke: white;
-}
-
-.drive-card .service-icon {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.drive-card .service-icon svg {
-  stroke: white;
-}
-
-.board-card .service-icon {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.board-card .service-icon svg {
-  stroke: white;
-}
-
-.calendar-card .service-icon {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-
-.calendar-card .service-icon svg {
-  stroke: white;
-}
-
-.messenger-card .service-icon {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-}
-
-.messenger-card .service-icon svg {
-  stroke: white;
-}
-
-/* Service Content */
-.service-title {
-  font-size: 1.125rem;
+/* Journal Content */
+.journal-title {
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #1a3a3a;
   margin-bottom: 8px;
+  line-height: 1.4;
 }
 
-.service-description {
-  font-size: 0.875rem;
-  color: #5a6c7d;
-  margin-bottom: 16px;
-  flex-grow: 1;
-}
-
-.service-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.journal-category {
+  font-size: 0.75rem;
   font-weight: 600;
-  color: #667eea;
-  transition: gap 0.3s ease;
+  color: #2c5282;
+  background: #eff6ff;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
 }
 
-.service-card:hover .service-link {
-  gap: 12px;
-}
-
-.service-link svg {
-  transition: transform 0.3s ease;
-}
-
-.service-card:hover .service-link svg {
-  transform: translateX(4px);
+.journal-description {
+  font-size: 0.875rem;
+  color: #666666;
+  margin-bottom: 0;
+  line-height: 1.5;
+  flex-grow: 1;
 }
 
 /* Quick Guide Section */
 .guide-section {
   background: white;
-  border-radius: 0;
+  border-radius: 8px;
   padding: 48px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
 }
 
 .guide-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #1a3a3a;
   margin-bottom: 32px;
   text-align: center;
 }
 
 .guide-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 32px;
 }
 
@@ -226,7 +181,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2c5282 0%, #1a3a3a 100%);
   color: white;
   display: flex;
   align-items: center;
@@ -239,28 +194,39 @@
 .guide-text h4 {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #1a3a3a;
   margin-bottom: 8px;
+  margin-top: 0;
 }
 
 .guide-text p {
   font-size: 0.9375rem;
-  color: #5a6c7d;
+  color: #666666;
   line-height: 1.6;
+  margin: 0;
 }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-  .services-grid {
+  .journals-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
 }
 
 @media (max-width: 900px) {
-  .services-grid {
+  .journals-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .guide-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 }
 
@@ -270,29 +236,32 @@
   }
 
   .section-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
   .section-description {
     font-size: 1rem;
   }
 
-  .services-grid {
+  .journals-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .service-card {
-    padding: 28px 20px;
+  .journal-card {
+    padding: 20px;
+  }
+
+  .journal-logo-container {
+    height: 100px;
+  }
+
+  .journal-logo-placeholder {
+    font-size: 2rem;
   }
 
   .guide-section {
     padding: 32px 24px;
-  }
-
-  .guide-content {
-    grid-template-columns: 1fr;
-    gap: 24px;
   }
 
   .guide-title {
@@ -301,25 +270,55 @@
 }
 
 @media (max-width: 480px) {
+  .portal-section {
+    padding: 40px 16px;
+  }
+
   .section-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 
-  .service-icon {
-    width: 50px;
-    height: 50px;
+  .section-description {
+    font-size: 0.9375rem;
   }
 
-  .service-icon svg {
-    width: 26px;
-    height: 26px;
-  }
-
-  .service-title {
+  .journal-title {
     font-size: 1rem;
   }
 
-  .service-description {
+  .journal-logo-container {
+    height: 80px;
+    margin-bottom: 16px;
+  }
+
+  .journal-logo-placeholder {
+    font-size: 1.5rem;
+  }
+
+  .journal-description {
     font-size: 0.8125rem;
   }
+
+  .guide-section {
+    padding: 24px 16px;
+  }
+
+  .guide-content {
+    gap: 20px;
+  }
+
+  .guide-item {
+    gap: 12px;
+  }
+
+  .guide-number {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+
+  .guide-title {
+    font-size: 1.25rem;
+  }
 }
+
