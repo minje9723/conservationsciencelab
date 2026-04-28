@@ -1639,51 +1639,23 @@ function renderPagination(totalPages, projectsCurrentPageParam) {
   if (totalPages <= 1) return;
   
   const lang = getCurrentLanguage();
-  const paginationHTML = `
+  const isKo = lang === 'ko';
+  
+  let paginationHTML = `
     <div class="pagination-container">
-      <button class="pagination-btn" id="prevPage" ${projectsCurrentPageParam === 1 ? 'disabled' : ''}>
-        <i class="fas fa-chevron-left"></i>
-        <span class="lang lang-en">Previous</span>
-        <span class="lang lang-ko" style="display:none;">이전</span>
+      <button class="pagination-btn" onclick="filterProjects(currentCategory, ${projectsCurrentPageParam - 1})" ${projectsCurrentPageParam === 1 ? 'disabled' : ''}>
+        ${isKo ? '이전' : 'Previous'}
       </button>
       
-      <div class="pagination-numbers">
-        ${Array.from({ length: totalPages }, (_, i) => i + 1).map(page => `
-          <button class="pagination-number ${page === projectsCurrentPageParam ? 'active' : ''}" data-page="${page}">
-            ${page}
-          </button>
-        `).join('')}
-      </div>
+      <span class="page-info">${projectsCurrentPageParam} / ${totalPages}</span>
       
-      <button class="pagination-btn" id="nextPage" ${projectsCurrentPageParam === totalPages ? 'disabled' : ''}>
-        <span class="lang lang-en">Next</span>
-        <span class="lang lang-ko" style="display:none;">다음</span>
-        <i class="fas fa-chevron-right"></i>
+      <button class="pagination-btn" onclick="filterProjects(currentCategory, ${projectsCurrentPageParam + 1})" ${projectsCurrentPageParam === totalPages ? 'disabled' : ''}>
+        ${isKo ? '다음' : 'Next'}
       </button>
     </div>
   `;
   
   container.insertAdjacentHTML('afterend', paginationHTML);
-  
-  // Add event listeners
-  document.getElementById('prevPage')?.addEventListener('click', () => {
-    if (projectsCurrentPage > 1) {
-      filterProjects(currentCategory, projectsCurrentPage - 1);
-    }
-  });
-  
-  document.getElementById('nextPage')?.addEventListener('click', () => {
-    if (projectsCurrentPage < totalPages) {
-      filterProjects(currentCategory, projectsCurrentPage + 1);
-    }
-  });
-  
-  document.querySelectorAll('.pagination-number').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const page = parseInt(e.target.getAttribute('data-page'));
-      filterProjects(currentCategory, page);
-    });
-  });
 }
 
 // Render all projects with pagination
