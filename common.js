@@ -110,8 +110,58 @@ function setLang(lang, userSelected = false) {
   }
 }
 
-// Get current language
-function getCurrentLanguage() {
+// Accessibility improvements
+function improveAccessibility() {
+  // Add role="presentation" to decorative SVG icons in navigation
+  document.querySelectorAll('.nav-icon').forEach(svg => {
+    if (!svg.getAttribute('role')) {
+      svg.setAttribute('role', 'presentation');
+      svg.setAttribute('aria-hidden', 'true');
+    }
+  });
+  
+  // Add role="presentation" to SVG icons in buttons
+  document.querySelectorAll('button svg').forEach(svg => {
+    if (!svg.getAttribute('role') && svg.parentElement.hasAttribute('aria-label')) {
+      svg.setAttribute('role', 'presentation');
+      svg.setAttribute('aria-hidden', 'true');
+    }
+  });
+  
+  // Ensure all images have alt text
+  document.querySelectorAll('img').forEach(img => {
+    if (!img.getAttribute('alt')) {
+      // Fallback alt text based on src or class
+      const alt = img.getAttribute('data-alt') || 
+                  img.className || 
+                  img.src.split('/').pop().replace(/\.\w+$/, '');
+      img.setAttribute('alt', alt || 'Image');
+    }
+  });
+  
+  // Add aria-label to buttons without labels
+  document.querySelectorAll('button').forEach(btn => {
+    if (!btn.getAttribute('aria-label') && !btn.textContent.trim()) {
+      // If button has only SVG, try to infer label from parent or neighboring elements
+      const parent = btn.parentElement;
+      const label = btn.getAttribute('data-label') || 
+                    (parent && parent.getAttribute('data-label')) || 
+                    btn.className || 
+                    'Button';
+      btn.setAttribute('aria-label', label);
+    }
+  });
+  
+  // Add role="img" to decorative div with background images
+  document.querySelectorAll('[style*="background-image"]').forEach(el => {
+    if (!el.getAttribute('role') && el.getAttribute('aria-label')) {
+      el.setAttribute('role', 'img');
+    }
+  });
+}
+
+// Initialize common functionality
+function initCommon() {
   // Check localStorage first
   const savedLang = localStorage.getItem('preferred-language');
   if (savedLang) return savedLang;
@@ -179,6 +229,9 @@ function updateNavTooltips(lang) {
 
 // Initialize common functionality
 function initCommon() {
+  // Accessibility improvements - add roles and labels to SVG icons
+  improveAccessibility();
+  
   // 스크롤 감지 및 상단바 제어
   const header = document.querySelector('.transparent-header');
   const pageBanner = document.querySelector('.page-banner');
