@@ -30,8 +30,8 @@
 <body>
   <header class="transparent-header">
     <nav class="navbar">
-      <div class="logo" style="display:flex;align-items:center;gap:12px;">
-        <img src="assets/CSL Banner Logo.png" alt="CSL Banner Logo" style="height:48px;width:auto;display:block;" />
+      <div class="logo">
+        <img src="assets/CSL Banner Logo.png" alt="CSL Banner Logo" />
       </div>
       <ul class="nav-links">
         <li><a href="index.html">
@@ -137,11 +137,11 @@
           <span class="lang-text current-lang">EN</span>
         </button>
         <div id="langDropdown" class="lang-dropdown">
-          <button id="lang-en" class="lang-option active" data-lang="en">
+          <button id="lang-en" class="lang-option active" data-lang="en" aria-label="Switch to English">
             <span class="lang-name">English</span>
             <span class="lang-code">EN</span>
           </button>
-          <button id="lang-ko" class="lang-option" data-lang="ko">
+          <button id="lang-ko" class="lang-option" data-lang="ko" aria-label="한국어로 전환">
             <span class="lang-name">한국어</span>
             <span class="lang-code">KR</span>
           </button>
@@ -177,27 +177,27 @@
           <span class="filter-label lang lang-en">Category</span>
           <span class="filter-label lang lang-ko" style="display:none;">카테고리</span>
           <div class="filter-btns">
-            <button class="filter-btn active" data-filter="all">
+            <button class="filter-btn active" data-filter="all" aria-label="Show all photos">
               <span class="lang lang-en">All Photos</span>
               <span class="lang lang-ko" style="display:none;">모든 사진</span>
             </button>
-            <button class="filter-btn" data-filter="research">
+            <button class="filter-btn" data-filter="research" aria-label="Filter by research activities">
               <span class="lang lang-en">Research Activities</span>
               <span class="lang lang-ko" style="display:none;">연구 활동</span>
             </button>
-            <button class="filter-btn" data-filter="laboratory">
+            <button class="filter-btn" data-filter="laboratory" aria-label="Filter by laboratory work">
               <span class="lang lang-en">Laboratory</span>
               <span class="lang lang-ko" style="display:none;">실험실</span>
             </button>
-            <button class="filter-btn" data-filter="fieldwork">
+            <button class="filter-btn" data-filter="fieldwork" aria-label="Filter by fieldwork">
               <span class="lang lang-en">Fieldwork</span>
               <span class="lang lang-ko" style="display:none;">현장 조사</span>
             </button>
-            <button class="filter-btn" data-filter="events">
+            <button class="filter-btn" data-filter="events" aria-label="Filter by events and conferences">
               <span class="lang lang-en">Events & Conferences</span>
               <span class="lang lang-ko" style="display:none;">행사 및 컨퍼런스</span>
             </button>
-            <button class="filter-btn" data-filter="team">
+            <button class="filter-btn" data-filter="team" aria-label="Filter by team activities">
               <span class="lang lang-en">Team Activities</span>
               <span class="lang lang-ko" style="display:none;">팀 활동</span>
             </button>

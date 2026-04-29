@@ -161,10 +161,15 @@ header.transparent-header::before {
   font-weight: bold;
   letter-spacing: 1px;
   justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .logo img {
-  height: clamp(40px, 3.5vw, 50px);
+  height: 48px;
+  width: auto;
+  display: block;
   transition: height 0.3s ease;
 }
 

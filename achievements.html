@@ -30,8 +30,8 @@
 <body>
   <header class="transparent-header">
     <nav class="navbar">
-      <div class="logo" style="display:flex;align-items:center;gap:12px;">
-        <img src="assets/CSL Banner Logo.png" alt="CSL Banner Logo" style="height:48px;width:auto;display:block;" />
+      <div class="logo">
+        <img src="assets/CSL Banner Logo.png" alt="CSL Banner Logo" />
       </div>
       <ul class="nav-links">
         <li><a href="index.html">
@@ -143,11 +143,11 @@
           <span class="lang-text current-lang">EN</span>
         </button>
         <div id="langDropdown" class="lang-dropdown">
-          <button id="lang-en" class="lang-option active" data-lang="en">
+          <button id="lang-en" class="lang-option active" data-lang="en" aria-label="Switch to English">
             <span class="lang-name">English</span>
             <span class="lang-code">EN</span>
           </button>
-          <button id="lang-ko" class="lang-option" data-lang="ko">
+          <button id="lang-ko" class="lang-option" data-lang="ko" aria-label="한국어로 전환">
             <span class="lang-name">한국어</span>
             <span class="lang-code">KR</span>
           </button>
@@ -176,19 +176,19 @@
 
     <section class="section">
       <div class="achievements-filter-container">
-        <button class="achievement-filter active" data-filter="publication">
+        <button class="achievement-filter active" data-filter="publication" aria-label="Filter by Publications">
           <span class="lang lang-en">Publications</span>
           <span class="lang lang-ko" style="display:none;">논문</span>
         </button>
-        <button class="achievement-filter" data-filter="conference">
+        <button class="achievement-filter" data-filter="conference" aria-label="Filter by Conferences">
           <span class="lang lang-en">Conferences</span>
           <span class="lang lang-ko" style="display:none;">학술발표</span>
         </button>
-        <button class="achievement-filter" data-filter="patent">
+        <button class="achievement-filter" data-filter="patent" aria-label="Filter by Patents">
           <span class="lang lang-en">Patents</span>
           <span class="lang lang-ko" style="display:none;">특허</span>
         </button>
-        <button class="achievement-filter" data-filter="award">
+        <button class="achievement-filter" data-filter="award" aria-label="Filter by Awards">
           <span class="lang lang-en">Awards</span>
           <span class="lang lang-ko" style="display:none;">수상</span>
         </button>
