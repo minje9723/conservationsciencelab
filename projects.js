@@ -1303,13 +1303,40 @@ const projects = [
     funding_ko: "인디고"
   }
 
+
 ];
+
+// Optimized project filtering - only load projects for active category
+function getProjectsByCategory(category) {
+  if (!category || category === 'all') {
+    return projects;
+  }
+  return projects.filter(p => p.category === category);
+}
+
+// Cache for category project counts
+const projectCategoryCache = {};
+function getCategoryProjectCount(category) {
+  if (!projectCategoryCache[category]) {
+    projectCategoryCache[category] = getProjectsByCategory(category).length;
+  }
+  return projectCategoryCache[category];
+}
+
+// Get paginated projects for better memory efficiency
+function getPaginatedProjects(category, page = 1, itemsPerPage = 12) {
+  const filtered = getProjectsByCategory(category);
+  const start = (page - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filtered.slice(start, end);
+}
 
 // Add new project function
 function addProject(projectData) {
   const newId = Math.max(...projects.map(p => p.id)) + 1;
   projectData.id = newId;
   projects.push(projectData);
+  projectCountCache = null; // Clear cache
   renderProjects();
 }
 
@@ -1318,6 +1345,7 @@ function updateProject(id, projectData) {
   const index = projects.findIndex(p => p.id === id);
   if (index !== -1) {
     projects[index] = { ...projects[index], ...projectData };
+    projectCountCache = null; // Clear cache
     renderProjects();
   }
 }
@@ -1327,6 +1355,7 @@ function removeProject(id) {
   const index = projects.findIndex(p => p.id === id);
   if (index !== -1) {
     projects.splice(index, 1);
+    projectCountCache = null; // Clear cache
     renderProjects();
   }
 }
@@ -1511,7 +1540,16 @@ const projectsItemsPerPage = 9;
 let currentCategory = 'all';
 
 // Get project counts by category
+let projectCountCache = null;
+let projectCountCacheTime = 0;
+
 function getProjectCounts() {
+  // Cache project counts for 5 minutes to avoid recalculating
+  const now = Date.now();
+  if (projectCountCache && (now - projectCountCacheTime < 300000)) {
+    return projectCountCache;
+  }
+  
   const counts = {
     all: projects.length,
     'site-investigation': 0,
@@ -1527,6 +1565,8 @@ function getProjectCounts() {
     }
   });
   
+  projectCountCache = counts;
+  projectCountCacheTime = now;
   return counts;
 }
 
