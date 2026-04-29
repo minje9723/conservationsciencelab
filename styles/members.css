@@ -1,19 +1,21 @@
 /* ?? Modern Members Page - Clean & Innovative UI */
 /* ? No popup modals, smooth animations, responsive design */
+/* ? Uses variables.css for color system with custom mappings */
 
 :root {
-  --primary-blue: #2563eb;
-  --primary-purple: #7c3aed;
+  /* Color Mappings from variables.css */
+  --primary-blue: var(--color-primary);
+  --primary-purple: var(--color-secondary);
   --primary-red: #dc2626;
-  --accent-color: #f59e0b;
-  --text-dark: #1f2937;
-  --text-light: #6b7280;
-  --bg-light: #f8fafc;
-  --bg-white: #ffffff;
-  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
-  --radius-card: 0;
+  --accent-color: var(--color-accent);
+  --text-dark: var(--color-text-dark);
+  --text-light: var(--color-text-light);
+  --bg-light: var(--color-bg-light);
+  --bg-white: var(--color-white);
+  --shadow-soft: var(--shadow-sm);
+  --shadow-hover: var(--shadow-md);
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius-card: 0;
 }
 
 /* Container and Layout */

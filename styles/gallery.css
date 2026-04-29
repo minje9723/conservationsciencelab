@@ -42,7 +42,7 @@
 
 .gallery-description {
   text-align: center;
-  color: #5c6bc0;
+  color: var(--color-secondary);
   margin-bottom: 2rem;
   max-width: 800px;
   margin-left: auto;
@@ -66,7 +66,7 @@
 .filter-label {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-dark);
   white-space: nowrap;
 }
 
@@ -87,7 +87,7 @@
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.5),
     0 1px 0 0 rgba(255, 255, 255, 0.25);
   
-  color: #2c3e50;
+  color: var(--color-text-dark);
   font-size: 0.9rem;
   font-weight: 500;
   border-radius: 0;

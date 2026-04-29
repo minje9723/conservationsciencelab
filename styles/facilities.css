@@ -93,16 +93,16 @@
   -webkit-backdrop-filter: blur(24px) saturate(200%);
   border-color: rgba(0, 210, 190, 0.5);
   box-shadow: 
-    0 12px 48px 0 rgba(0, 210, 190, 0.25),
+    0 12px 48px 0 rgba(77, 208, 225, 0.25),
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.6),
-    0 2px 4px 0 rgba(0, 210, 190, 0.2);
-  color: #00D2BE;
+    0 2px 4px 0 rgba(77, 208, 225, 0.2);
+  color: var(--color-accent);
   transform: translateY(-2px) scale(1.02);
 }
 
 .facility-filter.active {
   background: linear-gradient(135deg, 
-    rgba(0, 210, 190, 0.9) 0%, 
+    rgba(77, 208, 225, 0.9) 0%, 
     rgba(0, 170, 170, 0.9) 50%,
     rgba(0, 130, 150, 0.9) 100%
   );
@@ -110,10 +110,10 @@
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 
-    0 8px 32px 0 rgba(0, 210, 190, 0.4),
+    0 8px 32px 0 rgba(77, 208, 225, 0.4),
     inset 0 1px 2px 0 rgba(255, 255, 255, 0.3),
-    0 4px 12px 0 rgba(0, 210, 190, 0.3);
-  color: #ffffff;
+    0 4px 12px 0 rgba(77, 208, 225, 0.3);
+  color: var(--color-white);
   transform: scale(1.05);
   font-weight: 600;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);

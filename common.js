@@ -160,8 +160,8 @@ function improveAccessibility() {
   });
 }
 
-// Initialize common functionality
-function initCommon() {
+// Get current language preference
+function getCurrentLanguage() {
   // Check localStorage first
   const savedLang = localStorage.getItem('preferred-language');
   if (savedLang) return savedLang;

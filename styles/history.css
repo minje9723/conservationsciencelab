@@ -30,12 +30,12 @@
 }
 
 .page-title {
-  color: #ffffff !important;
+  color: var(--color-white) !important;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .page-subtitle {
-  color: #ffffff !important;
+  color: var(--color-white) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   opacity: 0.9;
 }
@@ -93,7 +93,7 @@
 
 .innovation-journey .section-subtitle {
   font-size: 1.3rem;
-  color: #94a3b8;
+  color: var(--color-text-light);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
