@@ -1331,26 +1331,6 @@ function removeProject(id) {
   }
 }
 
-// Get current language
-function getCurrentLanguage() {
-  // Check localStorage first
-  const savedLang = localStorage.getItem('preferred-language');
-  if (savedLang) return savedLang;
-  
-  // Check active button
-  const koBtn = document.getElementById('lang-ko');
-  const enBtn = document.getElementById('lang-en');
-  
-  if (koBtn && koBtn.classList.contains('active')) return 'ko';
-  if (enBtn && enBtn.classList.contains('active')) return 'en';
-  
-  // Check document lang attribute
-  const docLang = document.documentElement.lang;
-  if (docLang === 'ko' || docLang === 'en') return docLang;
-  
-  return 'ko'; // default to Korean
-}
-
 // Create modern project card HTML (compact design without placeholder)
 function createModernProjectCard(project, lang) {
   const title = lang === 'ko' ? project.title_ko : project.title_en;

@@ -3540,17 +3540,6 @@ function removeAchievement(id) {
 let achievementsCurrentPage = 1;
 const achievementsItemsPerPage = 12;
 
-// Get current language
-function getCurrentLanguage() {
-  // Check localStorage first, then button state
-  const savedLang = localStorage.getItem('preferred-language');
-  if (savedLang) {
-    return savedLang;
-  }
-  // Default to Korean
-  return document.getElementById('lang-ko') && document.getElementById('lang-ko').classList.contains('active') ? 'ko' : 'ko';
-}
-
 // Get type icon
 function getTypeIcon(type) {
   const icons = {

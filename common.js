@@ -110,6 +110,23 @@ function setLang(lang, userSelected = false) {
   }
 }
 
+// Get current language
+function getCurrentLanguage() {
+  // Check localStorage first
+  const savedLang = localStorage.getItem('preferred-language');
+  if (savedLang) return savedLang;
+  
+  // Check active button
+  const koBtn = document.getElementById('lang-ko');
+  const enBtn = document.getElementById('lang-en');
+  
+  if (koBtn && koBtn.classList.contains('active')) return 'ko';
+  if (enBtn && enBtn.classList.contains('active')) return 'en';
+  
+  // Default to English
+  return 'en';
+}
+
 // Update navigation tooltips based on language
 function updateNavTooltips(lang) {
   const tooltips = {
