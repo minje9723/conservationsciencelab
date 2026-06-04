@@ -197,6 +197,15 @@ function updateNavTooltips(lang) {
       'achievements': '연구성과',
       'facilities': '시설장비',
       'gallery': '갤러리'
+    },
+    'ja': {
+      'home': 'ホーム',
+      'history': '沿革',
+      'members': '研究チーム',
+      'projects': 'プロジェクト',
+      'achievements': '研究成果',
+      'facilities': '施設・設備',
+      'gallery': 'ギャラリー'
     }
   };
   
