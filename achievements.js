@@ -4,6 +4,29 @@
 // Publications are sorted by year (newest first)
 const achievements = [
   {
+    id: 46,
+    type: "publication",
+    title_en: "Classification of Corrosion Types in Excavated Cast Cu-Sn-Pb Ternary Bronze Artifacts Based on Corrosion Characteristics",
+    title_ko: "출토 Cu-Sn-Pb 삼원 청동유물의 부식특성을 기반으로 한 부식유형의 분류",
+    authors: "Go-Woon Bae",
+    authors_ko: "배고운",
+    journal: "Korean Journal of Metals and Materials",
+    journal_ko: "대한금속재료학회지",
+    journal_abbr: "Korean J. Met. Mater.",
+    indexing: "SCI",
+    year: 2026,
+    volume: "64",
+    issue: "5",
+    pages: "457-468",
+    summary_en: "This study proposes a classification for the corrosion characteristics of cast ternary (Cu-Sn-Pb) bronze artifacts excavated from the same archaeological site, based on the structural formation of corrosion layers and the types of corrosion products present in each layer. Five bronze samples were selected for analysis, and the morphological characteristics of the corrosion layer structures and corrosion products were examined. The types and chemical compositions of corrosion products in each layer were identified, and the structural formation of corrosion layers were classified into two main types.",
+    summary_ko: "동일 고고학 유적에서 출토된 주조 3원(Cu-Sn-Pb) 청동유물의 부식특성을 부식층의 구조 형성과 각 층에 존재하는 부식생성물의 종류를 기반으로 분류하는 방법을 제시한 연구. 5개의 청동 시편을 선택하여 분석하였으며, 부식층 구조와 부식생성물의 형태학적 특성을 조사하였습니다.",
+    link: "https://kjmm.org/kjmm/ArticleDetail/RD_R/452164",
+    doi: "https://doi.org/10.3365/KJMM.2026.64.5.457",
+    image: "assets/achievements/bronze-corrosion-sem-eds.jpg",
+    keywords: ["Bronze artifacts", "Corrosion Characteristics", "Corrosion type", "Corrosion layer", "Corrosion product"],
+    keywords_ko: ["청동유물", "부식특성", "부식유형", "부식층", "부식생성물"]
+  },
+  {
     id: 45,
     type: "publication",
     title_en: "Application of 3D Model-Based Quantification Techniques for Surface Contamination of Outdoor Stone Heritage",
