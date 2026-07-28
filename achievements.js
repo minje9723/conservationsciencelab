@@ -4,6 +4,88 @@
 // Publications are sorted by year (newest first)
 const achievements = [
   {
+    id: 49,
+    type: "publication",
+    title_en: "Identification and conservation of gunshot marks from the 1980 South Korean pro-democracy movement",
+    title_ko: "1980년 한국 민주화운동 총탄 흔적의 동정과 보존",
+    title_ja: "1980年韓国民主化運動における銃痕の同定と保存",
+    authors: "Min-Je Kim, Go-Woon Bae, Yang-Ho Choi, Jong-Soo Lim, Sang-Ok Lee",
+    authors_ko: "김민제, 배고운, 최양호, 임종수, 이상옥",
+    authors_ja: "キム・ミンジェ, ペ・ゴウン, チェ・ヤンホ, イム・ジョンス, イ・サンオク",
+    journal: "npj Heritage Science",
+    journal_ko: "npj 헤리티지 사이언스",
+    journal_ja: "npjヘリテージ・サイエンス",
+    journal_abbr: "npj Herit. Sci.",
+    indexing: "SCI",
+    year: 2026,
+    published_online: "2026-07-03",
+    summary_en: "Scientific investigation of gunshot marks associated with the 1980 South Korean pro-democracy movement, focusing on identification and conservation implications.",
+    summary_ko: "1980년 한국 민주화운동과 관련된 총탄 흔적의 동정과 보존적 의미를 중심으로 한 과학적 조사 연구.",
+    summary_ja: "1980年韓国民主化運動に関連する銃痕について、同定と保存上の意義を中心に科学的に調査した研究。",
+    link: "https://www.nature.com/articles/s40494-026-02763-6",
+    doi: "10.1038/s40494-026-02763-6",
+    image: "assets/achievements/1980.png",
+    keywords: ["Gunshot marks", "South Korean pro-democracy movement", "Identification", "Conservation", "Heritage science"],
+    keywords_ko: ["총탄 흔적", "한국 민주화운동", "동정", "보존", "문화유산과학"],
+    keywords_ja: ["銃痕", "韓国民主化運動", "同定", "保存", "文化遺産科学"]
+  },
+  {
+    id: 48,
+    type: "publication",
+    title_en: "Study on the Applicability of Deep Learning for the Identification of Yellow Organic Pigments",
+    title_ko: "딥러닝을 활용한 황색 계열 유기안료 동정 적용성 연구",
+    title_ja: "黄色系有機顔料の同定に対する深層学習の適用性研究",
+    authors: "Sin Gi Kim, Sang Ok Lee",
+    authors_ko: "김신기, 이상옥",
+    authors_ja: "キム・シンギ, イ・サンオク",
+    journal: "Journal of Conservation Science",
+    journal_ko: "보존과학회지",
+    journal_ja: "保存科学会誌",
+    journal_abbr: "J. Conserv. Sci.",
+    indexing: "KCI",
+    year: 2026,
+    volume: "42",
+    issue: "2",
+    pages: "197-208",
+    summary_en: "Evaluated deep-learning-based pigment identification using microscopic images, colorimetric values, and FT-IR spectra for gamboge, gardenia, and lead white samples on silk.",
+    summary_ko: "견에 채색한 등황, 치자, 연백 시료의 현미경 이미지, 색도, FT-IR 스펙트럼을 활용하여 딥러닝 기반 안료 동정 적용 가능성을 검토한 연구.",
+    summary_ja: "絹上に彩色した雌黄・梔子・鉛白試料の顕微鏡画像、色度、FT-IRスペクトルを用いて、深層学習による顔料同定の適用可能性を検証した研究。",
+    link: "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003359262",
+    doi: "",
+    image: "assets/achievements/deep learning.png",
+    keywords: ["Deep learning", "Multimodal", "Organic pigment", "XAI", "Painted cultural heritage"],
+    keywords_ko: ["딥러닝", "멀티모달", "유기안료", "XAI", "채색문화유산"],
+    keywords_ja: ["深層学習", "マルチモーダル", "有機顔料", "XAI", "彩色文化遺産"]
+  },
+  {
+    id: 47,
+    type: "publication",
+    title_en: "Analysis of Calcining and Slaking Characteristics of Oyster Shell Lime Produced by Reproduction Experimentation",
+    title_ko: "재현실험을 통한 굴 패각 패회의소성·소화 특성 분석",
+    title_ja: "再現実験によるカキ殻灰の焼成・消化特性分析",
+    authors: "Gyu Ri Choi, Hae Youn Hur, Sang Ok Lee",
+    authors_ko: "최규리, 허예니, 이상옥",
+    authors_ja: "チェ・ギュリ, ホ・イェニ, イ・サンオク",
+    journal: "Heritage: History and Science",
+    journal_ko: "헤리티지:역사와 과학",
+    journal_ja: "ヘリテージ:歴史と科学",
+    journal_abbr: "Heritage: Hist. Sci.",
+    indexing: "KCI",
+    year: 2026,
+    volume: "59",
+    issue: "2",
+    pages: "116-129",
+    summary_en: "Scientific analysis of oyster shell lime calcining and slaking properties through reproduction experiments to verify traditional production methods recorded in historical documents.",
+    summary_ko: "고문헌에 기록된 패회 제작 방식을 검증하기 위해 재현실험을 통해 굴 패각 패회의 소성 및 소화 특성을 과학적으로 분석한 연구.",
+    summary_ja: "古文献に記録された貝灰製作法を検証するため、再現実験を通じてカキ殻灰の焼成および消化特性を科学的に分析した研究。",
+    link: "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003349373",
+    doi: "10.22755/kjchs.2026.59.2.116",
+    image: "assets/achievements/oystershell.png",
+    keywords: ["Shell Lime", "Oyster Shell", "Calcining and Slaking", "Physical Property Analysis", "Reproduction Experiment"],
+    keywords_ko: ["패회(貝灰)", "굴 패각", "소성·소화", "물성 분석", "재현실험"],
+    keywords_ja: ["貝灰", "カキ殻", "焼成・消化", "物性分析", "再現実験"]
+  },
+  {
     id: 46,
     type: "publication",
     title_en: "Classification of Corrosion Types in Excavated Cast Cu-Sn-Pb Ternary Bronze Artifacts Based on Corrosion Characteristics",
@@ -3582,11 +3664,21 @@ function getTypeIcon(type) {
 // Create achievement card HTML
 function createAchievementCard(achievement, lang) {
   let metaInfo = '';
+  const isKorean = lang === 'ko';
+  const isJapanese = lang === 'ja';
   
   switch (achievement.type) {
     case 'publication':
-      const authors = lang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
-      const journal = lang === 'ko' ? (achievement.journal_ko || achievement.journal) : achievement.journal;
+      const authors = isKorean
+        ? (achievement.authors_ko || achievement.authors)
+        : isJapanese
+          ? (achievement.authors_ja || achievement.authors)
+          : achievement.authors;
+      const journal = isKorean
+        ? (achievement.journal_ko || achievement.journal)
+        : isJapanese
+          ? (achievement.journal_ja || achievement.journal)
+          : achievement.journal;
       metaInfo = `
         <div class="meta-row">${authors}</div>
         <div class="meta-row achievement-journal">${journal}</div>
@@ -3594,9 +3686,9 @@ function createAchievementCard(achievement, lang) {
       `;
       break;
     case 'conference':
-      const event = lang === 'ko' ? (achievement.event_ko || achievement.event) : achievement.event;
-      const presentationType = lang === 'ko' ? (achievement.presentation_type_ko || achievement.presentation_type) : achievement.presentation_type;
-      const confAuthors = lang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
+      const event = isKorean ? (achievement.event_ko || achievement.event) : achievement.event;
+      const presentationType = isKorean ? (achievement.presentation_type_ko || achievement.presentation_type) : achievement.presentation_type;
+      const confAuthors = isKorean ? (achievement.authors_ko || achievement.authors) : achievement.authors;
       metaInfo = `
         <div class="meta-row">${confAuthors}</div>
         <div class="achievement-journal">${event} ${presentationType ? presentationType : ''}</div>
@@ -3604,14 +3696,14 @@ function createAchievementCard(achievement, lang) {
       `;
       break;
     case 'award':
-      const organization = lang === 'ko' ? (achievement.organization_ko || achievement.organization) : achievement.organization;
+      const organization = isKorean ? (achievement.organization_ko || achievement.organization) : achievement.organization;
       metaInfo = `
         <span>${organization}</span>
         <span class="achievement-year">${achievement.year}</span>
       `;
       break;
     case 'patent':
-      const patent_office = lang === 'ko' ? (achievement.patent_office_ko || achievement.patent_office) : achievement.patent_office;
+      const patent_office = isKorean ? (achievement.patent_office_ko || achievement.patent_office) : achievement.patent_office;
       metaInfo = `
         <span>${patent_office}</span>
         <span class="achievement-year">${achievement.year}</span>
@@ -3622,7 +3714,7 @@ function createAchievementCard(achievement, lang) {
   // Special layout for awards with images
   if (achievement.type === 'award' && achievement.award_image) {
     const title = lang === 'ko' ? achievement.title_ko : achievement.title_en;
-    const enlargeText = lang === 'ko' ? '클릭하여 확대' : 'Click to enlarge';
+    const enlargeText = lang === 'ko' ? '클릭하여 확대' : lang === 'ja' ? 'クリックして拡大' : 'Click to enlarge';
     return `
       <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll award-with-image">
         <div class="achievement-icon">
@@ -3651,9 +3743,17 @@ function createAchievementCard(achievement, lang) {
   }
 
   // Default layout for other types
-  const title = lang === 'ko' ? achievement.title_ko : achievement.title_en;
-  const summary = lang === 'ko' ? achievement.summary_ko : achievement.summary_en;
-  const linkText = lang === 'ko' ? '세부 정보 보기' : 'View Details';
+  const title = isKorean
+    ? achievement.title_ko
+    : isJapanese
+      ? (achievement.title_ja || achievement.title_en)
+      : achievement.title_en;
+  const summary = isKorean
+    ? achievement.summary_ko
+    : isJapanese
+      ? (achievement.summary_ja || achievement.summary_en)
+      : achievement.summary_en;
+  const linkText = lang === 'ko' ? '세부 정보 보기' : lang === 'ja' ? '詳細を見る' : 'View Details';
   
   // Create indexing badge for publications
   let indexingBadge = '';
@@ -3724,8 +3824,10 @@ function renderAchievements() {
         </div>
         <h3 class="notice-title lang lang-en">Patent Applications in Preparation</h3>
         <h3 class="notice-title lang lang-ko" style="display:none;">특허 출원 준비 중</h3>
+        <h3 class="notice-title lang lang-ja" style="display:none;">特許出願準備中</h3>
         <p class="notice-description lang lang-en">We are currently preparing patent applications for our innovative conservation technologies and methodologies. Please check back soon for updates.</p>
         <p class="notice-description lang lang-ko" style="display:none;">현재 혁신적인 보존 기술 및 방법론에 대한 특허 출원을 준비하고 있습니다. 곧 업데이트될 예정이니 다시 방문해 주세요.</p>
+        <p class="notice-description lang lang-ja" style="display:none;">革新的な保存技術と方法論に関する特許出願を現在準備しています。更新までしばらくお待ちください。</p>
       </div>
     `;
     
@@ -3804,14 +3906,15 @@ function renderPaginationButtons(container, totalPages, achievementsCurrentPageP
   
   const lang = getCurrentLanguage();
   const isKo = lang === 'ko';
+  const isJa = lang === 'ja';
   
   let buttonsHTML = `
     <button class="pagination-btn" ${achievementsCurrentPageParam === 1 ? 'disabled' : ''} onclick="changePage(${achievementsCurrentPageParam - 1})">
-      ${isKo ? '이전' : 'Previous'}
+      ${isKo ? '이전' : isJa ? '前へ' : 'Previous'}
     </button>
     <span class="page-info">${achievementsCurrentPageParam} / ${totalPages}</span>
     <button class="pagination-btn" ${achievementsCurrentPageParam === totalPages ? 'disabled' : ''} onclick="changePage(${achievementsCurrentPageParam + 1})">
-      ${isKo ? '다음' : 'Next'}
+      ${isKo ? '다음' : isJa ? '次へ' : 'Next'}
     </button>
   `;
   
@@ -3850,8 +3953,9 @@ function sortAchievements(criteria = 'year', order = 'desc') {
         comparison = a.type.localeCompare(b.type);
         break;
       case 'title':
-        const titleA = getCurrentLanguage() === 'ko' ? a.title_ko : a.title_en;
-        const titleB = getCurrentLanguage() === 'ko' ? b.title_ko : b.title_en;
+        const currentSortLang = getCurrentLanguage();
+        const titleA = currentSortLang === 'ko' ? a.title_ko : currentSortLang === 'ja' ? (a.title_ja || a.title_en) : a.title_en;
+        const titleB = currentSortLang === 'ko' ? b.title_ko : currentSortLang === 'ja' ? (b.title_ja || b.title_en) : b.title_en;
         comparison = titleA.localeCompare(titleB);
         break;
     }

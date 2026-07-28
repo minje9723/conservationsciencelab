@@ -474,10 +474,10 @@ function loadLatestAchievements() {
   };
 
   const typeNames = {
-    'publication': { en: 'Publication', ko: '논문' },
-    'conference': { en: 'Conference', ko: '학회' },
-    'award': { en: 'Award', ko: '수상' },
-    'patent': { en: 'Patent', ko: '특허' }
+    'publication': { en: 'Publication', ko: '논문', ja: '論文' },
+    'conference': { en: 'Conference', ko: '학회', ja: '学会' },
+    'award': { en: 'Award', ko: '수상', ja: '受賞' },
+    'patent': { en: 'Patent', ko: '특허', ja: '特許' }
   };
 
   // Category-specific gradients for placeholders
@@ -491,9 +491,21 @@ function loadLatestAchievements() {
   // Mobile/Tablet Grid Layout
   if (achievementsGrid) {
     achievementsGrid.innerHTML = latestAchievements.map(achievement => {
-      const title = currentLang === 'ko' ? achievement.title_ko : achievement.title_en;
-      const authors = currentLang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
-      const journal = currentLang === 'ko' ? (achievement.journal_ko || achievement.journal || achievement.event_ko || achievement.event) : (achievement.journal || achievement.event);
+      const title = currentLang === 'ko'
+        ? achievement.title_ko
+        : currentLang === 'ja'
+          ? (achievement.title_ja || achievement.title_en)
+          : achievement.title_en;
+      const authors = currentLang === 'ko'
+        ? (achievement.authors_ko || achievement.authors)
+        : currentLang === 'ja'
+          ? (achievement.authors_ja || achievement.authors)
+          : achievement.authors;
+      const journal = currentLang === 'ko'
+        ? (achievement.journal_ko || achievement.journal || achievement.event_ko || achievement.event)
+        : currentLang === 'ja'
+          ? (achievement.journal_ja || achievement.journal || achievement.event_ja || achievement.event)
+          : (achievement.journal || achievement.event);
 
       // Use image if available, otherwise use gradient placeholder with icon
       const imageHtml = achievement.image
@@ -533,10 +545,22 @@ function loadLatestAchievements() {
     existingImageColumns.forEach(col => col.remove());
 
     latestAchievements.forEach((achievement, index) => {
-      const title = currentLang === 'ko' ? achievement.title_ko : achievement.title_en;
-      const authors = currentLang === 'ko' ? (achievement.authors_ko || achievement.authors) : achievement.authors;
-      const journal = currentLang === 'ko' ? (achievement.journal_ko || achievement.journal || achievement.event_ko || achievement.event) : (achievement.journal || achievement.event);
-      const typeName = typeNames[achievement.type][currentLang];
+      const title = currentLang === 'ko'
+        ? achievement.title_ko
+        : currentLang === 'ja'
+          ? (achievement.title_ja || achievement.title_en)
+          : achievement.title_en;
+      const authors = currentLang === 'ko'
+        ? (achievement.authors_ko || achievement.authors)
+        : currentLang === 'ja'
+          ? (achievement.authors_ja || achievement.authors)
+          : achievement.authors;
+      const journal = currentLang === 'ko'
+        ? (achievement.journal_ko || achievement.journal || achievement.event_ko || achievement.event)
+        : currentLang === 'ja'
+          ? (achievement.journal_ja || achievement.journal || achievement.event_ja || achievement.event)
+          : (achievement.journal || achievement.event);
+      const typeName = typeNames[achievement.type][currentLang] || typeNames[achievement.type].en;
 
       // Use achievement image if available, otherwise use gradient placeholder
       const backgroundStyle = achievement.image
