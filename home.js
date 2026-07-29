@@ -286,11 +286,11 @@ function loadFeaturedProjects() {
   if ((!projectsGrid && !desktopLayout) || typeof projects === 'undefined') return;
 
   // Featured Project IDs - 주요 연구 프로젝트 4개
-  // 138: 이집트 룩소르 문화유산 복원 (2024)
-  // 142: 구미 하이테크밸리 6차 출토 금속 유물 보존처리 (2025)
-  // 143: 관북리 출토 등자의 금속 PLA 3D 프린팅 복원 연구 (2025)
-  // 144: 안성 내장리 회곽묘 모르타르 분석 (2025)
-  const featuredProjectIds = [138, 142, 143, 144];
+  // 138: 이집트 룩소르 문화유산 복원 (2024~)
+  // 152: 정림사지 기록화 사업_2차년도 (2026)
+  // 157: 서산 개심사 목조아미타여래좌상 국보 승격 연구 (2025)
+  // 148: 서초 관현사 목조관음보살좌상 개금층 층위 분석 (2026)
+  const featuredProjectIds = [138, 152, 157, 148];
 
   // Get featured projects by IDs, or fall back to first 4 if IDs not found
   let featuredProjects = featuredProjectIds
@@ -311,7 +311,8 @@ function loadFeaturedProjects() {
       'site-investigation': currentLang === 'ko' ? '현장조사' : 'Investigation',
       'designation-research': currentLang === 'ko' ? '지정연구' : 'Designation',
       'preservation-research': currentLang === 'ko' ? '보존연구' : 'Preservation',
-      'restoration-research': currentLang === 'ko' ? '복원연구' : 'Restoration'
+      'restoration-research': currentLang === 'ko' ? '복원연구' : 'Restoration',
+      'digital-archiving': currentLang === 'ko' ? '아카이빙' : 'Archiving'
     };
 
     // Use project image if available, otherwise use placeholder with category-specific icon
@@ -319,13 +320,17 @@ function loadFeaturedProjects() {
       'excavated-conservation': '🏺',
       'site-investigation': '🔍',
       'designation-research': '📋',
-      'preservation-research': '🛡️'
+      'preservation-research': '🛡️',
+      'restoration-research': '🔧',
+      'digital-archiving': '💾'
     };
     const categoryGradients = {
       'excavated-conservation': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       'site-investigation': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
       'designation-research': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      'preservation-research': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+      'preservation-research': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      'restoration-research': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      'digital-archiving': 'linear-gradient(135deg, #fbbc04 0%, #f9a825 100%)'
     };
 
     const imageHtml = project.images && project.images.length > 0
@@ -336,7 +341,6 @@ function loadFeaturedProjects() {
       <div class="project-card" data-project-id="${project.id}">
         <div class="project-card-image">
           ${imageHtml}
-          <span class="project-card-category">${categoryNames[project.category] || project.category}</span>
         </div>
         <div class="project-card-content">
           <h3 class="project-card-title">${title}</h3>
@@ -387,7 +391,8 @@ function loadFeaturedProjects() {
       'site-investigation': currentLang === 'ko' ? '현장조사' : 'Investigation',
       'designation-research': currentLang === 'ko' ? '지정연구' : 'Designation',
       'preservation-research': currentLang === 'ko' ? '보존연구' : 'Preservation',
-      'restoration-research': currentLang === 'ko' ? '복원연구' : 'Restoration'
+      'restoration-research': currentLang === 'ko' ? '복원연구' : 'Restoration',
+      'digital-archiving': currentLang === 'ko' ? '아카이빙' : 'Archiving'
     };
 
     const categoryGradients = {
@@ -395,7 +400,8 @@ function loadFeaturedProjects() {
       'site-investigation': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
       'designation-research': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
       'preservation-research': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-      'restoration-research': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+      'restoration-research': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      'digital-archiving': 'linear-gradient(135deg, #fbbc04 0%, #f9a825 100%)'
     };
 
     const categoryIcons = {
@@ -403,7 +409,8 @@ function loadFeaturedProjects() {
       'site-investigation': '🔍',
       'designation-research': '📋',
       'preservation-research': '🛡️',
-      'restoration-research': '🔧'
+      'restoration-research': '🔧',
+      'digital-archiving': '💾'
     };
 
     // 타이틀 박스를 마지막에 추가하기 위해 headerColumn 참조 저장
@@ -412,7 +419,6 @@ function loadFeaturedProjects() {
     featuredProjects.forEach((project, index) => {
       const title = currentLang === 'ko' ? project.title_ko : project.title_en;
       const description = currentLang === 'ko' ? project.description_ko : project.description_en;
-      const categoryName = categoryNames[project.category] || project.category;
 
       // Use project image if available, otherwise use gradient placeholder
       const backgroundStyle = project.images && project.images.length > 0
@@ -428,7 +434,6 @@ function loadFeaturedProjects() {
         <div class="project-column-background" style="${backgroundStyle}">${iconHtml}</div>
         <div class="project-column-overlay"></div>
         <div class="project-column-content">
-          <div class="project-category-badge">${categoryName}</div>
           <h3 class="project-column-title">${title}</h3>
           <p class="project-column-description">${description}</p>
           <p class="project-column-duration">${project.duration}</p>

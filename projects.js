@@ -8,19 +8,11 @@ const projects = [
     title_ko: "정림사지 기록화 사업_2차년도",
     category: "digital-archiving",
     duration: "2026",
-    funding: "Buyeo County Office, Jeongnimsa Temple Site Museum",
-    funding_ko: "부여군청, 정림사지박물관",
-    badge_en: "Digital Archiving",
-    badge_ko: "문화유산 아카이빙"
-  },
-  {
-    id: 151,
-    title_en: "Documentation Project of Jeongnimsa Temple Site - Year 1",
-    title_ko: "정림사지 기록화 사업_1차년도",
-    category: "digital-archiving",
-    duration: "2025",
-    funding: "Buyeo County Office, Jeongnimsa Temple Site Museum",
-    funding_ko: "부여군청, 정림사지박물관",
+    funding: "Buyeo County Office",
+    funding_ko: "부여군청",
+    description_en: "Second-year digital documentation project for Jeongnimsa Temple Site, building precise records of the site through 3D scanning and photogrammetry.",
+    description_ko: "정림사지의 디지털 기록화를 위한 2차년도 사업으로, 3D 스캔 및 사진측량을 통해 유적의 정밀 기록을 구축합니다.",
+    images: ["assets/projects/jeongrimsaji.jpg"],
     badge_en: "Digital Archiving",
     badge_ko: "문화유산 아카이빙"
   },
@@ -49,7 +41,10 @@ const projects = [
     category: "site-investigation",
     duration: "2026",
     funding: "Hanchem Cultural Heritage Conservation Research Institute",
-    funding_ko: "한켐문화재보존연구소"
+    funding_ko: "한켐문화재보존연구소",
+    description_en: "Scientific stratigraphic analysis of the gilt layers on the Wooden Seated Avalokitesvara Bodhisattva at Seocho Gwanhyeonsa Temple to identify its manufacturing and re-gilding history.",
+    description_ko: "서초 관현사 목조관음보살좌상의 개금층 층위를 과학적으로 분석하여 제작 및 개금 이력을 규명합니다.",
+    images: ["assets/projects/seocho.png"]
   },
   {
     id: 147,
@@ -68,6 +63,212 @@ const projects = [
     duration: "2026",
     funding: "Georim Cultural Heritage",
     funding_ko: "거림문화유산"
+  },
+  {
+    id: 173,
+    title_en: "Re-conservation Treatment of Metal Artifacts Excavated from the 9th Excavation at Buyeo Royal Tombs",
+    title_ko: "부여 왕릉원 9차 발굴조사 출토 금속유물 재보존처리",
+    category: "excavated-conservation",
+    duration: "2025",
+    funding: "Archaeological Research Institute, Korea National University of Heritage",
+    funding_ko: "한국전통문화대학교 고고학연구소"
+  },
+  {
+    id: 172,
+    title_en: "Conservation Treatment of Metal Artifacts Excavated from the Hyomunhwa Ppuri Village Development Site, Daejeon",
+    title_ko: "대전 효문화뿌리마을 조성사업부지 내 유적 출토 금속 유물 보존처리",
+    category: "excavated-conservation",
+    duration: "2025",
+    funding: "Goeun Cultural Heritage Research Institute",
+    funding_ko: "고운문화유산연구원"
+  },
+  {
+    id: 171,
+    title_en: "Conservation Treatment of Metal Artifacts Excavated from the Ssanggyesa Temple Improvement Project Site, Nonsan",
+    title_ko: "논산 쌍계사 정비사업 부지 내 유적 출토 금속 유물 보존처리",
+    category: "excavated-conservation",
+    duration: "2025",
+    funding: "Goeun Cultural Heritage Research Institute",
+    funding_ko: "고운문화유산연구원"
+  },
+  {
+    id: 170,
+    title_en: "Research on Non-destructive Diagnostic Analysis Technology for Ancient Metal Cultural Heritage - Year 2",
+    title_ko: "고대 금속 문화유산의 비파괴 진단분석 기술 연구_2차년도",
+    category: "preservation-research",
+    duration: "2025",
+    funding: "Korea National University of Heritage",
+    funding_ko: "한국전통문화대학교"
+  },
+  {
+    id: 169,
+    title_en: "Buyeo Royal Tomb Conservation Environment Research - Year 4",
+    title_ko: "부여 왕릉원 고분 보존환경 연구_4차년도",
+    category: "preservation-research",
+    duration: "2025",
+    funding: "Buyeo County Office",
+    funding_ko: "부여군청"
+  },
+  {
+    id: 168,
+    title_en: "Compositional Analysis of the Iron Coffin of Gwon O-seol",
+    title_ko: "권오설 철관 성분 분석",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Gyeongsangbuk-do Patriots and Veterans Foundation",
+    funding_ko: "(재)경상북도호국보훈재단"
+  },
+  {
+    id: 167,
+    title_en: "Conservation State and Scientific Investigation of the Myeongnyang Naval Battle Monument, Haenam",
+    title_ko: "해남 명량대첩비 보존상태 및 과학적 조사",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Daedeok Cultural Heritage",
+    funding_ko: "대덕문화유산"
+  },
+  {
+    id: 166,
+    title_en: "Pigment Analysis at Yaksajeon Hall, Ganghwa Jeondeungsa Temple",
+    title_ko: "강화 전등사 약사전 안료 분석",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Temple Cultural Heritage Conservation Research Institute",
+    funding_ko: "(사)사찰문화재보존연구소"
+  },
+  {
+    id: 165,
+    title_en: "Precision Diagnostic Investigation of the Bronze Bell at Yangpyeong Sangwonsa Temple",
+    title_ko: "양평 상원사 동종 정밀 진단",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Daesan Cultural Heritage Conservation",
+    funding_ko: "대산문화재보존"
+  },
+  {
+    id: 164,
+    title_en: "Manufacturing Technique Analysis of the Gilt-bronze Seated Amitabha Buddha at Mungyeong Daeseungsa Temple",
+    title_ko: "문경 대승사 금동아미타여래좌상 제작기법 분석",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "",
+    funding_ko: ""
+  },
+  {
+    id: 163,
+    title_en: "Infrared Thermographic Investigation of the Chungnyeol Tomb Stele, Tongyeong",
+    title_ko: "통영 충렬묘비 적외선 열화상 조사",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Hotan Cultural Heritage Research Institute",
+    funding_ko: "호탄문화재연구소"
+  },
+  {
+    id: 162,
+    title_en: "Conservation State Investigation of the Yeongsanhoesang Mural at Andong Bongjeongsa Temple",
+    title_ko: "안동 봉정사 영산회상벽화 보존 상태 조사",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Duyeong Cultural Heritage Conservation",
+    funding_ko: "두영문화유산보존"
+  },
+  {
+    id: 161,
+    title_en: "Scientific Analysis of Hongdukkae Clay at Bogwangmyeonjeon Hall, Wanju Wibongsa Temple",
+    title_ko: "완주 위봉사 보광면전 홍두깨 흙 과학적 분석",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Heritage Outreach Research Institute",
+    funding_ko: "국가유산아웃리치연구소"
+  },
+  {
+    id: 160,
+    title_en: "Conservation State Investigation of the Gilt-bronze Standing Bodhisattva at Busan Metropolitan Museum",
+    title_ko: "부산시립박물관 소장 금동보살입상 보존 상태 조사",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Duyeong Cultural Heritage Conservation",
+    funding_ko: "두영문화유산보존"
+  },
+  {
+    id: 159,
+    title_en: "Conservation State Investigation of Murals at Sungseonjeon Shrine, Royal Tomb of King Suro, Gimhae",
+    title_ko: "김해 수로왕릉 숭선전 벽화 보존 상태 조사",
+    category: "site-investigation",
+    duration: "2025",
+    funding: "Hotan Cultural Heritage Research Institute",
+    funding_ko: "호탄문화재연구소"
+  },
+  {
+    id: 158,
+    title_en: "Academic Seminar for Promotion of Wooden Seated Amitabha Buddha at Seosan Gaesimsa Temple to National Treasure Status",
+    title_ko: "서산 개심사 목조아미타여래좌상 국보 승격 학술세미나 개최",
+    category: "designation-research",
+    duration: "2025",
+    funding: "Seosan City Office, Gaesimsa Temple",
+    funding_ko: "서산시청, 개심사",
+    images: ["assets/projects/seosan.png"]
+  },
+  {
+    id: 157,
+    title_en: "Research for Promotion of Wooden Seated Amitabha Buddha at Seosan Gaesimsa Temple to National Treasure Status",
+    title_ko: "서산 개심사 목조아미타여래좌상 국보 승격 연구",
+    category: "designation-research",
+    duration: "2025",
+    funding: "Seosan City Office, Gaesimsa Temple",
+    funding_ko: "서산시청, 개심사",
+    description_en: "Academic research establishing the scholarly value of the Wooden Seated Amitabha Buddha at Seosan Gaesimsa Temple to support its promotion to National Treasure status.",
+    description_ko: "서산 개심사 목조아미타여래좌상의 국보 승격을 위한 학술적 가치 규명 및 조사 연구를 진행합니다.",
+    images: ["assets/projects/seosan.png"]
+  },
+  {
+    id: 156,
+    title_en: "Research on Heritage Designation of the Attendant Buddhas at Daeungjeon Hall, Seosan Gaesimsa Temple",
+    title_ko: "서산 개심사 대웅전 협시불 문화유산 지정 연구",
+    category: "designation-research",
+    duration: "2025",
+    funding: "Seosan City Office, Gaesimsa Temple",
+    funding_ko: "서산시청, 개심사",
+    images: ["assets/projects/seosan.png"]
+  },
+  {
+    id: 155,
+    title_en: "International Academic Forum on Conservation Management for World Heritage Inscription of the Stone Buddhas and Pagodas at Hwasun Unjusa Temple",
+    title_ko: "화순 운주사 석불석탑군 세계유산 등재 보존관리 국제학술포럼 개최",
+    category: "designation-research",
+    duration: "2025",
+    funding: "Hwasun County Office",
+    funding_ko: "화순군청"
+  },
+  {
+    id: 154,
+    title_en: "Investigation for Promotion of the Wooden Seated Bodhisattva at Buyeo Daejosa Temple to Treasure Status",
+    title_ko: "부여 대조사 목조보살좌상 보물 승격 조사",
+    category: "designation-research",
+    duration: "2025",
+    funding: "Buyeo County Office, Daejosa Temple",
+    funding_ko: "부여군청, 대조사"
+  },
+  {
+    id: 153,
+    title_en: "Academic Seminar for Promotion of the Stone Standing Maitreya Bodhisattva at Buyeo Daejosa Temple to National Treasure Status",
+    title_ko: "부여 대조사 석조미륵보살입상 국보 승격 학술세미나 개최",
+    category: "designation-research",
+    duration: "2025",
+    funding: "Buyeo County Office, Daejosa Temple",
+    funding_ko: "부여군청, 대조사"
+  },
+  {
+    id: 151,
+    title_en: "Documentation Project of Jeongnimsa Temple Site - Year 1",
+    title_ko: "정림사지 기록화 사업_1차년도",
+    category: "digital-archiving",
+    duration: "2025",
+    funding: "Buyeo County Office",
+    funding_ko: "부여군청",
+    images: ["assets/projects/jeongrimsaji.jpg"],
+    badge_en: "Digital Archiving",
+    badge_ko: "문화유산 아카이빙"
   },
   {
     id: 145,
@@ -353,7 +554,7 @@ const projects = [
     title_en: "Egypt ODA Project",
     title_ko: "이집트 룩소르 문화유산 복원 정비계획 및 라메세움 탑문 보수정비",
     category: "restoration-research",
-    duration: "2024",
+    duration: "2024~",
     funding: "Korea Heritage Service",
     funding_ko: "국가유산청",
     description_en: "Restoration and maintenance planning for cultural heritage in Luxor, Egypt, including the conservation of Ramesseum Pylon gates through international cooperation.",
@@ -1378,8 +1579,6 @@ const projects = [
     funding: "Indigo",
     funding_ko: "인디고"
   }
-
-
 ];
 
 // Optimized project filtering - only load projects for active category
@@ -1602,7 +1801,7 @@ function getCategoryName(category, lang) {
   const categories = {
     "excavated-conservation": { en: "Excavated Artifact Conservation", ko: "문화유산 보존처리" },
     "site-investigation": { en: "Site Survey & Manufacturing Analysis", ko: "문화유산 현장 조사 및 제작기법 분석" },
-    "designation-research": { en: "Heritage Designation Research", ko: "국가유산 지정 및 승격 연구" },
+    "designation-research": { en: "Heritage Designation Research", ko: "문화유산 지정·승격 연구" },
     "preservation-research": { en: "Preservation Strategy Research", ko: "보존환경·기술 연구" },
     "restoration-research": { en: "Cultural Heritage Restoration Research", ko: "문화유산 보존 복원 연구" },
     "digital-archiving": { en: "Digital Archiving", ko: "문화유산 아카이빙" }
