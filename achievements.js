@@ -7,7 +7,7 @@ const achievements = [
     id: 49,
     type: "publication",
     title_en: "Identification and conservation of gunshot marks from the 1980 South Korean pro-democracy movement",
-    title_ko: "1980년 한국 민주화운동 총탄 흔적의 동정과 보존",
+    title_ko: "1980년 한국 민주화운동 탄흔의 동정과 보존",
     title_ja: "1980年韓国民主化運動における銃痕の同定と保存",
     authors: "Min-Je Kim, Go-Woon Bae, Yang-Ho Choi, Jong-Soo Lim, Sang-Ok Lee",
     authors_ko: "김민제, 배고운, 최양호, 임종수, 이상옥",
@@ -20,13 +20,13 @@ const achievements = [
     year: 2026,
     published_online: "2026-07-03",
     summary_en: "Scientific investigation of gunshot marks associated with the 1980 South Korean pro-democracy movement, focusing on identification and conservation implications.",
-    summary_ko: "1980년 한국 민주화운동과 관련된 총탄 흔적의 동정과 보존적 의미를 중심으로 한 과학적 조사 연구.",
+    summary_ko: "1980년 한국 민주화운동과 관련된 탄흔의 동정과 보존적 의미를 중심으로 한 과학적 조사 연구.",
     summary_ja: "1980年韓国民主化運動に関連する銃痕について、同定と保存上の意義を中心に科学的に調査した研究。",
     link: "https://www.nature.com/articles/s40494-026-02763-6",
     doi: "10.1038/s40494-026-02763-6",
     image: "assets/achievements/1980.png",
     keywords: ["Gunshot marks", "South Korean pro-democracy movement", "Identification", "Conservation", "Heritage science"],
-    keywords_ko: ["총탄 흔적", "한국 민주화운동", "동정", "보존", "문화유산과학"],
+    keywords_ko: ["탄흔", "한국 민주화운동", "동정", "보존", "문화유산과학"],
     keywords_ja: ["銃痕", "韓国民主化運動", "同定", "保存", "文化遺産科学"]
   },
   {
@@ -325,6 +325,7 @@ const achievements = [
     journal: "The Journal of Study on Korean Traditional Culture",
     journal_ko: "한국전통문화연구",
     journal_abbr: "J. Study Korean Trad. Cult.",
+    indexing: "KCI",
     year: 2023,
     summary_en: "Applicability research of Cu-PLA filament with patination technique for bronze cultural heritage restoration material.",
     summary_ko: "Cu-PLA 필라멘트와 파티네이션을 활용한 청동 문화재 복원재료 적용 가능성 연구.",
@@ -921,6 +922,44 @@ const achievements = [
     category_ko: "학술대회",
     keywords: ["Oral Presentation", "3D Printing", "Cu-PLA", "Metal Conservation"],
     keywords_ko: ["구두발표", "3D 프린팅", "Cu-PLA", "금속보존"]
+  },
+  {
+    id: 19,
+    type: "award",
+    title_en: "Excellence in Oral Presentation Award",
+    title_ko: "우수구두발표상",
+    recipient: "Lee Seo Hyeon, Jeong Kwang Yong",
+    recipient_ko: "이서현, 정광용",
+    organization: "Korean Society of Conservation Science for Cultural Heritage - 60th Autumn Conference",
+    organization_ko: "(사)한국문화재보존과학회 제60회 추계학술대회",
+    year: 2024,
+    summary_en: "Award for outstanding oral presentation on the metallurgical analysis of slag excavated from the Gayeon-ri site in Haman and its implications for site characteristics.",
+    summary_ko: "함안 가연리 출토 슬래그의 금속학적 분석을 통한 유적 특성 연구 발표로 우수구두발표상 수상.",
+    link: "",
+    award_image: "assets/awards/oral-excellence-2024.JPG",
+    category: "Conference Presentation",
+    category_ko: "학술발표",
+    keywords: ["Oral Presentation", "Slag", "Metallurgical analysis", "Site characteristics"],
+    keywords_ko: ["우수구두발표상", "슬래그", "금속학적 분석", "유적 특성"]
+  },
+  {
+    id: 20,
+    type: "award",
+    title_en: "Excellence in Oral Presentation Award",
+    title_ko: "우수구두발표상",
+    recipient: "",
+    recipient_ko: "",
+    organization: "The 63rd Spring Conference of Korean Society of Conservation Science for Cultural Heritage",
+    organization_ko: "(사)한국문화유산보존과학회 제63회 춘계학술대회",
+    year: 2026,
+    summary_en: "",
+    summary_ko: "",
+    link: "",
+    award_image: "assets/awards/oral-excellence-2026.png",
+    category: "Conference Presentation",
+    category_ko: "학술발표",
+    keywords: ["Oral Presentation"],
+    keywords_ko: ["우수구두발표상"]
   }
   // Patents - Temporarily Disabled (In Preparation)
   // {
@@ -1065,6 +1104,102 @@ const newConferenceAchievements = [
     link: "",
     keywords: ["Wooden sculpture", "Conservation state", "Haeinsa", "Poster presentation"],
     keywords_ko: ["목조상", "보존상태", "해인사", "포스터발표"]
+  },
+  {
+    id: 1001,
+    type: "conference",
+    title_en: "Analysis of Surface Treatment Techniques for Mirror-Finished Bronze Mirrors of the Goryeo Dynasty",
+    title_ko: "고려시대 동경의 경면 표면처리 기법 분석",
+    title_ja: "高麗時代の銅鏡における鏡面表面処理技法の分析",
+    authors: "Chae Rin Kim, Sang Ok Lee",
+    authors_ko: "김채린, 이상옥",
+    authors_ja: "キム・チェリン, イ・サンオク",
+    event: "The 62nd Autumn Conference of the Korean Society of Conservation Science for Cultural Heritage",
+    event_ko: "(사)한국문화유산보존과학회 제62회 추계학술대회",
+    event_ja: "第62回 韓国文化遺産保存科学会 秋季学術大会",
+    year: 2025,
+    presentation_type: "Oral Presentation",
+    presentation_type_ko: "구두발표",
+    presentation_type_ja: "口頭発表",
+    summary_en: "Oral presentation on surface treatment techniques applied to mirror-finished bronze mirrors from the Goryeo Dynasty.",
+    summary_ko: "고려시대 동경의 경면에 적용된 표면처리 기법을 분석한 구두발표.",
+    summary_ja: "高麗時代の銅鏡の鏡面に適用された表面処理技法を分析した口頭発表。",
+    link: "",
+    keywords: ["Goryeo Dynasty", "Bronze mirror", "Surface treatment", "Mirror finish"],
+    keywords_ko: ["고려시대", "동경", "표면처리", "경면"],
+    keywords_ja: ["高麗時代", "銅鏡", "表面処理", "鏡面"]
+  },
+  {
+    id: 1002,
+    type: "conference",
+    title_en: "Evaluation of Cleaning Effectiveness of Stone Cultural Heritage in Jeju through 3D Shape Analysis",
+    title_ko: "3차원 형상 분석을 통한 제주도 소재 석조문화유산의 클리닝 효과성 평가",
+    title_ja: "3次元形状分析による済州島所在石造文化遺産のクリーニング効果評価",
+    authors: "Gyu Ri Choi, Sin Gi Kim, Hae Jun Park, Choi Don Won, Oh Dong Nyeok, Sang Ok Lee",
+    authors_ko: "최규리, 김신기, 박해준, 최돈원, 오동녘, 이상옥",
+    authors_ja: "チェ・ギュリ, キム・シンギ, パク・ヘジュン, チェ・ドンウォン, オ・ドンニョク, イ・サンオク",
+    event: "The 62nd Autumn Conference of the Korean Society of Conservation Science for Cultural Heritage",
+    event_ko: "(사)한국문화유산보존과학회 제62회 추계학술대회",
+    event_ja: "第62回 韓国文化遺産保存科学会 秋季学術大会",
+    year: 2025,
+    presentation_type: "Poster Presentation",
+    presentation_type_ko: "포스터발표",
+    presentation_type_ja: "ポスター発表",
+    summary_en: "Poster presentation evaluating the cleaning effectiveness of stone cultural heritage in Jeju using 3D shape analysis.",
+    summary_ko: "3차원 형상 분석을 활용하여 제주도 소재 석조문화유산의 클리닝 효과성을 평가한 포스터발표.",
+    summary_ja: "3次元形状分析を活用し、済州島所在石造文化遺産のクリーニング効果を評価したポスター発表。",
+    link: "",
+    keywords: ["3D shape analysis", "Stone cultural heritage", "Cleaning effectiveness", "Jeju"],
+    keywords_ko: ["3차원 형상 분석", "석조문화유산", "클리닝 효과성", "제주도"],
+    keywords_ja: ["3次元形状分析", "石造文化遺産", "クリーニング効果", "済州島"]
+  },
+  {
+    id: 1003,
+    type: "conference",
+    title_en: "Restoration Study of Excavated Stirrups from Gwanbuk-ri Using Metal PLA 3D Printing",
+    title_ko: "금속 PLA 3D 프린팅 기법을 활용한 관북리 출토 등자 복원 연구",
+    title_ja: "金属PLA 3Dプリンティング技術を活用した官北里出土鐙の復元研究",
+    authors: "Sin Gi Kim, Jung Yeon Kim, Min Je Kim, Cho Yun Sang, Lee Eun Ji, Jang Jun Hyeok, Sang Ok Lee",
+    authors_ko: "김신기, 김정연, 김민제, 조윤상, 이은지, 장준혁, 이상옥",
+    authors_ja: "キム・シンギ, キム・ジョンヨン, キム・ミンジェ, チョ・ユンサン, イ・ウンジ, チャン・ジュンヒョク, イ・サンオク",
+    event: "The 62nd Autumn Conference of the Korean Society of Conservation Science for Cultural Heritage",
+    event_ko: "(사)한국문화유산보존과학회 제62회 추계학술대회",
+    event_ja: "第62回 韓国文化遺産保存科学会 秋季学術大会",
+    year: 2025,
+    presentation_type: "Poster Presentation",
+    presentation_type_ko: "포스터발표",
+    presentation_type_ja: "ポスター発表",
+    summary_en: "Poster presentation on restoration of excavated stirrups from Gwanbuk-ri using metal PLA 3D printing techniques.",
+    summary_ko: "금속 PLA 3D 프린팅 기법을 활용한 관북리 출토 등자 복원 연구 포스터발표.",
+    summary_ja: "金属PLA 3Dプリンティング技術を活用した官北里出土鐙の復元研究に関するポスター発表。",
+    link: "",
+    keywords: ["Metal PLA", "3D printing", "Gwanbuk-ri", "Stirrup restoration"],
+    keywords_ko: ["금속 PLA", "3D 프린팅", "관북리", "등자 복원"],
+    keywords_ja: ["金属PLA", "3Dプリンティング", "官北里", "鐙復元"]
+  },
+  {
+    id: 1004,
+    type: "conference",
+    title_en: "Study on Producing a Replica of Iron Stirrups Using Digital Technology",
+    title_ko: "디지털 기술을 활용한 철제 등자의 복제품 제작 연구",
+    title_ja: "デジタル技術を活用した鉄製鐙の複製制作研究",
+    authors: "Sin Gi Kim, Min Je Kim, Jung Yeon Kim, Cho Yun Sang, Lee Eun Ji, Jang Jun Hyeok, Sang Ok Lee",
+    authors_ko: "김신기, 김민제, 김정연, 조윤상, 이은지, 장준혁, 이상옥",
+    authors_ja: "キム・シンギ, キム・ミンジェ, キム・ジョンヨン, チョ・ユンサン, イ・ウンジ, チャン・ジュンヒョク, イ・サンオク",
+    event: "The 63rd Spring Conference of the Korean Society of Conservation Science for Cultural Heritage",
+    event_ko: "(사)한국문화유산보존과학회 제63회 춘계학술대회",
+    event_ja: "第63回 韓国文化遺産保存科学会 春季学術大会",
+    year: 2026,
+    presentation_type: "Oral Presentation",
+    presentation_type_ko: "구두발표",
+    presentation_type_ja: "口頭発表",
+    summary_en: "Oral presentation on producing replicas of iron stirrups using digital technologies.",
+    summary_ko: "디지털 기술을 활용한 철제 등자 복제품 제작 연구 구두발표.",
+    summary_ja: "デジタル技術を活用した鉄製鐙の複製制作研究に関する口頭発表。",
+    link: "",
+    keywords: ["Digital technology", "Iron stirrup", "Replica production", "Conservation"],
+    keywords_ko: ["디지털 기술", "철제 등자", "복제품 제작", "보존"],
+    keywords_ja: ["デジタル技術", "鉄製鐙", "複製制作", "保存"]
   },
   {
     id: 50,
@@ -3650,6 +3785,42 @@ function removeAchievement(id) {
 let achievementsCurrentPage = 1;
 const achievementsItemsPerPage = 12;
 
+function getConferenceSeasonOrder(achievement) {
+  const eventText = `${achievement.event_ko || ''} ${achievement.event || ''}`;
+  if (eventText.includes('추계')) {
+    return 0;
+  }
+  if (eventText.includes('춘계')) {
+    return 1;
+  }
+  return 2;
+}
+
+function getConferenceRoundOrder(achievement) {
+  const eventText = `${achievement.event_ko || ''} ${achievement.event || ''}`;
+  const match = eventText.match(/제\s*(\d+)회|The\s*(\d+)(?:st|nd|rd|th)?/i);
+  const roundNumber = match ? Number(match[1] || match[2]) : 0;
+  return Number.isFinite(roundNumber) ? roundNumber : 0;
+}
+
+function getConferenceSeasonOrderSafe(achievement) {
+  const eventText = `${achievement.event_ko || ''} ${achievement.event || ''}`;
+  if (eventText.includes('\uCD98\uACC4')) {
+    return 0;
+  }
+  if (eventText.includes('\uCD94\uACC4')) {
+    return 1;
+  }
+  return 2;
+}
+
+function getConferenceRoundOrderSafe(achievement) {
+  const eventText = `${achievement.event_ko || ''} ${achievement.event || ''}`;
+  const match = eventText.match(/\uC81C\s*(\d+)\uD68C/i) || eventText.match(/The\s*(\d+)(?:st|nd|rd|th)?/i);
+  const roundNumber = match ? Number(match[1] || match[2]) : 0;
+  return Number.isFinite(roundNumber) ? roundNumber : 0;
+}
+
 // Get type icon
 function getTypeIcon(type) {
   const icons = {
@@ -3658,6 +3829,24 @@ function getTypeIcon(type) {
     patent: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>',
     award: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>'
   };
+
+  function getConferenceSeasonOrder(achievement) {
+    const eventText = `${achievement.event_ko || ''} ${achievement.event || ''}`;
+    if (eventText.includes('추계')) {
+      return 0;
+    }
+    if (eventText.includes('춘계')) {
+      return 1;
+    }
+    return 2;
+  }
+
+  function getConferenceRoundOrder(achievement) {
+    const eventText = `${achievement.event_ko || ''} ${achievement.event || ''}`;
+    const match = eventText.match(/제\s*(\d+)회|The\s*(\d+)(?:st|nd|rd|th)?/i);
+    const roundNumber = match ? Number(match[1] || match[2]) : 0;
+    return Number.isFinite(roundNumber) ? roundNumber : 0;
+  }
   return icons[type] || '';
 }
 
@@ -3855,8 +4044,27 @@ function renderAchievements() {
   // Filter achievements based on current filter
   let filteredAchievements = achievements.filter(achievement => achievement.type === currentFilter);
   
-  // Sort by year (newest first)
-  filteredAchievements.sort((a, b) => b.year - a.year);
+  // Sort by year (newest first), then conference season so autumn appears before spring within the same year
+  filteredAchievements.sort((a, b) => {
+    const yearDiff = b.year - a.year;
+    if (yearDiff !== 0) {
+      return yearDiff;
+    }
+
+    if (currentFilter === 'conference') {
+      const roundDiff = getConferenceRoundOrderSafe(b) - getConferenceRoundOrderSafe(a);
+      if (roundDiff !== 0) {
+        return roundDiff;
+      }
+
+      const seasonDiff = getConferenceSeasonOrderSafe(a) - getConferenceSeasonOrderSafe(b);
+      if (seasonDiff !== 0) {
+        return seasonDiff;
+      }
+    }
+
+    return b.id - a.id;
+  });
   
   // Calculate pagination
   const totalItems = filteredAchievements.length;
