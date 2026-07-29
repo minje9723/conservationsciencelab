@@ -3,6 +3,82 @@
 // Projects data - 실제 프로젝트 사례
 const projects = [
   {
+    id: 152,
+    title_en: "Documentation Project of Jeongnimsa Temple Site - Year 2",
+    title_ko: "정림사지 기록화 사업_2차년도",
+    category: "digital-archiving",
+    duration: "2026",
+    funding: "Buyeo County Office, Jeongnimsa Temple Site Museum",
+    funding_ko: "부여군청, 정림사지박물관",
+    badge_en: "Digital Archiving",
+    badge_ko: "문화유산 아카이빙"
+  },
+  {
+    id: 151,
+    title_en: "Documentation Project of Jeongnimsa Temple Site - Year 1",
+    title_ko: "정림사지 기록화 사업_1차년도",
+    category: "digital-archiving",
+    duration: "2025",
+    funding: "Buyeo County Office, Jeongnimsa Temple Site Museum",
+    funding_ko: "부여군청, 정림사지박물관",
+    badge_en: "Digital Archiving",
+    badge_ko: "문화유산 아카이빙"
+  },
+  {
+    id: 150,
+    title_en: "Cross-sectional Analysis of Dancheong Pigment Layers at Gyeonggijeon Shrine, Jeonju",
+    title_ko: "전주 경기전 단청 안료층 단면 분석",
+    category: "site-investigation",
+    duration: "2026",
+    funding: "Taeseon Co., Ltd.",
+    funding_ko: "(주)태선"
+  },
+  {
+    id: 149,
+    title_en: "Manufacturing Technique and Conservation State Analysis of Incheon Dapdong Cathedral",
+    title_ko: "인천 답동성당 제작기법 및 보존상태 분석",
+    category: "site-investigation",
+    duration: "2026",
+    funding: "Songnim General Construction Co., Ltd.",
+    funding_ko: "(주)송림종합건설"
+  },
+  {
+    id: 148,
+    title_en: "Gilt Layer Stratigraphic Analysis of Wooden Seated Avalokitesvara Bodhisattva at Seocho Gwanhyeonsa Temple",
+    title_ko: "서초 관현사 목조관음보살좌상 개금층 층위 분석",
+    category: "site-investigation",
+    duration: "2026",
+    funding: "Hanchem Cultural Heritage Conservation Research Institute",
+    funding_ko: "한켐문화재보존연구소"
+  },
+  {
+    id: 147,
+    title_en: "Re-conservation Treatment of Excavated Metal Artifacts from the 2nd Phase (Haepyeong-myeon) Site Excavation at Gumi Hi-Tech Valley",
+    title_ko: "구미 하이테크밸리 2단계(해평면) 내 유적 발굴조사 출토 금속유물 재보존처리",
+    category: "excavated-conservation",
+    duration: "2026",
+    funding: "Korea Cultural Heritage Research Institute",
+    funding_ko: "한국문화재연구원"
+  },
+  {
+    id: 146,
+    title_en: "Conservation State Diagnosis and Metallurgical Analysis of Bronze Bell at Buan Naesosa Temple",
+    title_ko: "부안 내소사 동종 보존상태진단 및 금속학적 분석",
+    category: "site-investigation",
+    duration: "2026",
+    funding: "Georim Cultural Heritage",
+    funding_ko: "거림문화유산"
+  },
+  {
+    id: 145,
+    title_en: "Conservation Treatment of the Preservation Zone at the Main Building of Tanggwang Cultural Park",
+    title_ko: "탄광문화공원 본관동 보존구역 보존처리",
+    category: "excavated-conservation",
+    duration: "2025",
+    funding: "Daol Conservation",
+    funding_ko: "다올보존"
+  },
+  {
     id: 142,
     title_en: "Conservation Treatment of Metal Artifacts Excavated from Gumi Hi-Tech Valley 6th District",
     title_ko: "구미 하이테크밸리 6차 출토 금속 유물 보존처리",
@@ -1361,7 +1437,7 @@ function removeProject(id) {
 }
 
 // Create modern project card HTML (compact design without placeholder)
-function createModernProjectCard(project, lang) {
+function createModernProjectCard(project, lang, activeCategory = 'all') {
   const title = lang === 'ko' ? project.title_ko : project.title_en;
   const description = lang === 'ko' ? project.description_ko : project.description_en;
   const funding = lang === 'ko' ? (project.funding_ko || project.funding) : project.funding;
@@ -1372,20 +1448,27 @@ function createModernProjectCard(project, lang) {
     'site-investigation': '🔍',
     'designation-research': '📜',
     'preservation-research': '🛡️',
-    'restoration-research': '🔧'
+    'restoration-research': '🔧',
+    'digital-archiving': '💾'
   };
 
   // If project has external link, handle it
-  const clickHandler = project.link 
-    ? `onclick="window.open('${project.link}', '_blank')"` 
+  const clickHandler = project.link
+    ? `onclick="window.open('${project.link}', '_blank')"`
     : `onclick="viewProjectDetails(${project.id})"`;
   const cursorStyle = project.link ? 'cursor: pointer;' : '';
+
+  const badgeText = (lang === 'ko' ? project.badge_ko : project.badge_en) || getCategoryName(project.category, lang);
+  const badgeHtml = activeCategory === 'all'
+    ? `<span class="project-badge project-badge-${project.category}">${badgeText}</span>`
+    : '';
 
   return `
     <div class="modern-project-card animate-on-scroll" data-category="${project.category}" ${clickHandler} style="${cursorStyle}">
       <div class="project-content">
+        ${badgeHtml}
         <h3 class="project-title">${title}</h3>
-        
+
         <div class="project-meta">
           <div class="meta-item">
             <i class="fa fa-calendar"></i>
@@ -1413,7 +1496,8 @@ function createRevolutionaryProjectCard(project, lang) {
     'site-investigation': '🔍',
     'designation-research': '📜',
     'preservation-research': '🛡️',
-    'restoration-research': '🔧'
+    'restoration-research': '🔧',
+    'digital-archiving': '💾'
   };
 
   return `
@@ -1464,7 +1548,8 @@ function createProjectCard(project, lang) {
     'site-investigation': '🔍',
     'designation-research': '📜',
     'preservation-research': '🛡️',
-    'restoration-research': '🔧'
+    'restoration-research': '🔧',
+    'digital-archiving': '💾'
   };
 
   const placeholderIcon = categoryIcons[project.category] || '🧪';
@@ -1515,11 +1600,12 @@ function createProjectCard(project, lang) {
 // Get category display name
 function getCategoryName(category, lang) {
   const categories = {
-    "excavated-conservation": { en: "Excavated Artifact Conservation", ko: "출토 유물 보존처리" },
+    "excavated-conservation": { en: "Excavated Artifact Conservation", ko: "문화유산 보존처리" },
     "site-investigation": { en: "Site Survey & Manufacturing Analysis", ko: "문화유산 현장 조사 및 제작기법 분석" },
     "designation-research": { en: "Heritage Designation Research", ko: "국가유산 지정 및 승격 연구" },
     "preservation-research": { en: "Preservation Strategy Research", ko: "보존환경·기술 연구" },
-    "restoration-research": { en: "Cultural Heritage Restoration Research", ko: "문화유산 보존 복원 연구" }
+    "restoration-research": { en: "Cultural Heritage Restoration Research", ko: "문화유산 보존 복원 연구" },
+    "digital-archiving": { en: "Digital Archiving", ko: "문화유산 아카이빙" }
   };
   return categories[category] ? categories[category][lang] : category;
 }
@@ -1556,7 +1642,8 @@ function getProjectCounts() {
     'excavated-conservation': 0,
     'designation-research': 0,
     'preservation-research': 0,
-    'restoration-research': 0
+    'restoration-research': 0,
+    'digital-archiving': 0
   };
   
   projects.forEach(project => {
@@ -1637,7 +1724,7 @@ function renderProjectsPage(projectsToShow) {
   
   container.innerHTML = `
     <div class="modern-projects-grid">
-      ${projectsToShow.map(project => createModernProjectCard(project, lang)).join('')}
+      ${projectsToShow.map(project => createModernProjectCard(project, lang, currentCategory)).join('')}
     </div>
   `;
   

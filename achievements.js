@@ -850,8 +850,8 @@ const achievements = [
   {
     id: 15,
     type: "award",
-    title_en: "Excellence in Oral Presentation Award (Excellence Award)",
-    title_ko: "우수구두발표상 (우수상)",
+    title_en: "Excellence in Oral Presentation Award",
+    title_ko: "우수구두발표상",
     recipient: "Gyu Ri Choi, Sang Ok Lee",
     recipient_ko: "최규리, 이상옥",
     organization: "Korean Society of Conservation Science for Cultural Heritage - 58th Spring Conference",

@@ -419,6 +419,35 @@ main .page-banner.scrolled {
   border-color: #FF9800;
 }
 
+/* Digital Archiving (문화유산 아카이빙) */
+.filter-btn[data-category="digital-archiving"]:hover {
+  color: #fbbc04;
+}
+
+.filter-btn[data-category="digital-archiving"]:hover::before {
+  background: #fbbc04;
+}
+
+.filter-btn[data-category="digital-archiving"]:hover .filter-count {
+  background: rgba(251, 188, 4, 0.1);
+  border-color: rgba(251, 188, 4, 0.3);
+  color: #fbbc04;
+}
+
+.filter-btn[data-category="digital-archiving"].active {
+  color: #fbbc04;
+}
+
+.filter-btn[data-category="digital-archiving"].active::before {
+  background: #fbbc04;
+}
+
+.filter-btn[data-category="digital-archiving"].active .filter-count {
+  background: #fbbc04;
+  color: #ffffff;
+  border-color: #fbbc04;
+}
+
 .filter-category {
   margin-bottom: 2.5rem;
 }
@@ -1239,10 +1268,68 @@ main .page-banner.scrolled {
   border-top: 4px solid #FF9800;
 }
 
+.modern-project-card[data-category="digital-archiving"] {
+  border-top: 4px solid #fbbc04;
+}
+
 .modern-project-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 210, 190, 0.12);
   border-color: #00D2BE;
+}
+
+.project-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  margin-bottom: 0.6rem;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 카테고리별 뱃지 색상 - 반투명 배경 + 사각 테두리 (상단 컬러 라인과 동일 계열) */
+.project-badge-excavated-conservation {
+  color: #6d5349;
+  background: rgba(141, 110, 99, 0.12);
+  border-color: rgba(141, 110, 99, 0.5);
+}
+
+.project-badge-site-investigation {
+  color: #1769aa;
+  background: rgba(33, 150, 243, 0.12);
+  border-color: rgba(33, 150, 243, 0.5);
+}
+
+.project-badge-designation-research {
+  color: #74027e;
+  background: rgba(156, 39, 176, 0.12);
+  border-color: rgba(156, 39, 176, 0.5);
+}
+
+.project-badge-preservation-research {
+  color: #357a38;
+  background: rgba(76, 175, 80, 0.12);
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.project-badge-restoration-research {
+  color: #c66900;
+  background: rgba(255, 152, 0, 0.12);
+  border-color: rgba(255, 152, 0, 0.5);
+}
+
+.project-badge-digital-archiving {
+  color: #b8860b;
+  background: rgba(251, 188, 4, 0.15);
+  border-color: rgba(251, 188, 4, 0.5);
 }
 
 .project-content {
