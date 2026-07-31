@@ -337,37 +337,13 @@ function initCommon() {
   const currentLang = document.querySelector('.current-lang');
 
   if (langToggle && langDropdown && currentLang) {
-    // 모바일에서는 바로 언어 전환, 데스크톱에서는 드롭다운
+    // 모바일/데스크톱 공통: 드롭다운으로 언어 선택 (en/ko/ja 모두 노출)
     langToggle.addEventListener('click', (e) => {
       e.stopPropagation();
-      
-      // 모바일 화면 감지 (1002px 이하)
-      const isMobile = window.innerWidth <= 1002;
-      
-      if (isMobile) {
-        // 모바일: 바로 언어 전환
-        const currentLanguage = localStorage.getItem('preferred-language') || 'en';
-        const newLanguage = currentLanguage === 'en' ? 'ko' : 'en';
-        
-        // 언어 변경 (사용자가 직접 선택)
-        setLang(newLanguage, true);
-        
-        // 활성 버튼 업데이트
-        document.querySelectorAll('.lang-option').forEach(btn => {
-          if (btn.getAttribute('data-lang') === newLanguage) {
-            btn.classList.add('active');
-            currentLang.textContent = btn.querySelector('.lang-code').textContent;
-          } else {
-            btn.classList.remove('active');
-          }
-        });
-      } else {
-        // 데스크톱: 드롭다운 표시
-        langDropdown.classList.toggle('show');
-      }
+      langDropdown.classList.toggle('show');
     });
 
-    // 언어 선택 이벤트 (데스크톱용)
+    // 언어 선택 이벤트
     document.querySelectorAll('.lang-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -381,11 +357,9 @@ function initCommon() {
       });
     });
 
-    // 외부 클릭시 드롭다운 닫기 (데스크톱용)
+    // 외부 클릭시 드롭다운 닫기
     document.addEventListener('click', () => {
-      if (window.innerWidth > 1002) {
-        langDropdown.classList.remove('show');
-      }
+      langDropdown.classList.remove('show');
     });
     
     // 창 크기 변경 시 드롭다운 닫기

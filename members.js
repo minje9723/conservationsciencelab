@@ -372,6 +372,8 @@ let currentDirectorIndex = 0;
 // Director Card Creation (with slider)
 function createDirectorCard(director, lang) {
   const isKo = lang === 'ko';
+  const positionsTitle = lang === 'ko' ? '주요 경력' : lang === 'ja' ? '主な経歴' : 'Career History';
+  const educationTitle = lang === 'ko' ? '학력' : lang === 'ja' ? '学歴' : 'Education';
 
   return `
     <div class="professor-card" data-director-id="${director.id}">
@@ -387,7 +389,7 @@ function createDirectorCard(director, lang) {
           <p class="director-period">${isKo ? director.period_ko : director.period_en}</p>
         </div>
         <div class="professor-positions">
-          <h3 class="positions-title">${isKo ? '주요 경력' : 'Career History'}</h3>
+          <h3 class="positions-title">${positionsTitle}</h3>
           <div class="positions-list">
             ${director.positions.map(pos => `
               <div class="position-item">
@@ -398,7 +400,7 @@ function createDirectorCard(director, lang) {
         </div>
         ${director.education ? `
         <div class="professor-education">
-          <h3 class="education-title">${isKo ? '학력' : 'Education'}</h3>
+          <h3 class="education-title">${educationTitle}</h3>
           <div class="education-list">
             ${director.education.map(edu => `
               <div class="education-item">
@@ -433,8 +435,8 @@ function renderDirectors() {
     <div class="director-indicators">
       ${directors.map((_, index) => `
         <button class="director-indicator ${index === currentDirectorIndex ? 'active' : ''}" 
-                data-index="${index}" 
-                aria-label="${lang === 'ko' ? `소장 ${index + 1}` : `Director ${index + 1}`}">
+                data-index="${index}"
+                aria-label="${lang === 'ko' ? `소장 ${index + 1}` : lang === 'ja' ? `所長 ${index + 1}` : `Director ${index + 1}`}">
         </button>
       `).join('')}
     </div>
@@ -577,6 +579,7 @@ function setupDirectorSliderControls() {
 // Professor Card Creation
 function createProfessorCard(professor, lang) {
   const isKo = lang === 'ko';
+  const positionsTitle = lang === 'ko' ? '역임 직책' : lang === 'ja' ? '主な経歴' : 'Career History';
 
   return `
     <div class="professor-card animate-on-scroll">
@@ -591,7 +594,7 @@ function createProfessorCard(professor, lang) {
           <p class="professor-title">${isKo ? professor.title_ko : professor.title_en}</p>
         </div>
         <div class="professor-positions">
-          <h3 class="positions-title">${isKo ? '역임 직책' : 'Career History'}</h3>
+          <h3 class="positions-title">${positionsTitle}</h3>
           <div class="positions-list">
             ${professor.positions.map(position => `
               <div class="position-item">
@@ -709,15 +712,17 @@ function updateAlumniPagination(currentPage) {
     document.querySelector('#alumniGrid').parentNode.appendChild(paginationContainer);
   }
 
-  const isKo = getCurrentLanguage() === 'ko';
+  const paginationLang = getCurrentLanguage();
+  const prevLabel = paginationLang === 'ko' ? '이전' : paginationLang === 'ja' ? '前へ' : 'Previous';
+  const nextLabel = paginationLang === 'ko' ? '다음' : paginationLang === 'ja' ? '次へ' : 'Next';
 
   let paginationHTML = `
     <button class="pagination-btn" onclick="changeAlumniPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-      ${isKo ? '이전' : 'Previous'}
+      ${prevLabel}
     </button>
     <span class="page-info">${currentPage} / ${totalPages}</span>
     <button class="pagination-btn" onclick="changeAlumniPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-      ${isKo ? '다음' : 'Next'}
+      ${nextLabel}
     </button>
   `;
 

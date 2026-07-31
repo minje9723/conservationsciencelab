@@ -704,16 +704,11 @@ header.transparent-header::before {
     margin: 0;
   }
   
-  /* 모바일에서는 드롭다운 숨김 */
-  .lang-dropdown {
-    display: none !important;
-  }
-  
   .lang-option {
     padding: 0.65rem 0.9rem;
     font-size: 0.9rem;
   }
-  
+
   .lang-code {
     font-size: 0.8rem;
   }
@@ -797,10 +792,6 @@ header.transparent-header::before {
     height: clamp(18px, 4vw, 20px);
   }
   
-  /* 모바일에서는 드롭다운 숨김 */
-  .lang-dropdown {
-    display: none !important;
-  }
 }
 
 /* Section styles */
