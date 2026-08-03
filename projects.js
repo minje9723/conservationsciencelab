@@ -15,7 +15,8 @@ const projects = [
     images: ["assets/projects/jeongrimsaji.jpg"],
     badge_en: "Digital Archiving",
     badge_ko: "문화유산 아카이빙",
-    badge_ja: "デジタルアーカイビング"
+    badge_ja: "デジタルアーカイビング",
+    badge_uz: "Raqamli arxivlash"
   },
   {
     id: 150,
@@ -270,7 +271,8 @@ const projects = [
     images: ["assets/projects/jeongrimsaji.jpg"],
     badge_en: "Digital Archiving",
     badge_ko: "문화유산 아카이빙",
-    badge_ja: "デジタルアーカイビング"
+    badge_ja: "デジタルアーカイビング",
+    badge_uz: "Raqamli arxivlash"
   },
   {
     id: 145,
@@ -1659,7 +1661,7 @@ function createModernProjectCard(project, lang, activeCategory = 'all') {
     : `onclick="viewProjectDetails(${project.id})"`;
   const cursorStyle = project.link ? 'cursor: pointer;' : '';
 
-  const badgeOverride = lang === 'ko' ? project.badge_ko : lang === 'ja' ? (project.badge_ja || project.badge_en) : project.badge_en;
+  const badgeOverride = lang === 'ko' ? project.badge_ko : lang === 'ja' ? (project.badge_ja || project.badge_en) : lang === 'uz' ? (project.badge_uz || project.badge_en) : project.badge_en;
   const badgeText = badgeOverride || getCategoryName(project.category, lang);
   const badgeHtml = activeCategory === 'all'
     ? `<span class="project-badge project-badge-${project.category}">${badgeText}</span>`
@@ -1802,12 +1804,12 @@ function createProjectCard(project, lang) {
 // Get category display name
 function getCategoryName(category, lang) {
   const categories = {
-    "excavated-conservation": { en: "Excavated Artifact Conservation", ko: "문화유산 보존처리", ja: "文化遺産保存処理" },
-    "site-investigation": { en: "Site Survey & Manufacturing Analysis", ko: "문화유산 현장 조사 및 제작기법 분석", ja: "遺跡調査と製作技法分析" },
-    "designation-research": { en: "Heritage Designation Research", ko: "문화유산 지정·승격 연구", ja: "国家遺産指定研究" },
-    "preservation-research": { en: "Preservation Strategy Research", ko: "보존환경·기술 연구", ja: "保存環境・技術研究" },
-    "restoration-research": { en: "Cultural Heritage Restoration Research", ko: "문화유산 보존 복원 연구", ja: "文化遺産保存復元研究" },
-    "digital-archiving": { en: "Digital Archiving", ko: "문화유산 아카이빙", ja: "デジタルアーカイビング" }
+    "excavated-conservation": { en: "Excavated Artifact Conservation", ko: "문화유산 보존처리", ja: "文化遺産保存処理", uz: "Madaniy meros konservatsiyasi" },
+    "site-investigation": { en: "Site Survey & Manufacturing Analysis", ko: "문화유산 현장 조사 및 제작기법 분석", ja: "遺跡調査と製作技法分析", uz: "Joyni tekshirish va ishlab chiqarish texnologiyasi tahlili" },
+    "designation-research": { en: "Heritage Designation Research", ko: "문화유산 지정·승격 연구", ja: "国家遺産指定研究", uz: "Meros maqomini belgilash tadqiqoti" },
+    "preservation-research": { en: "Preservation Strategy Research", ko: "보존환경·기술 연구", ja: "保存環境・技術研究", uz: "Saqlash muhiti va texnologiyasi tadqiqoti" },
+    "restoration-research": { en: "Cultural Heritage Restoration Research", ko: "문화유산 보존 복원 연구", ja: "文化遺産保存復元研究", uz: "Madaniy merosni tiklash tadqiqoti" },
+    "digital-archiving": { en: "Digital Archiving", ko: "문화유산 아카이빙", ja: "デジタルアーカイビング", uz: "Raqamli arxivlash" }
   };
   return categories[category] ? (categories[category][lang] || categories[category].en) : category;
 }
@@ -1948,8 +1950,8 @@ function renderPagination(totalPages, projectsCurrentPageParam) {
   if (totalPages <= 1) return;
   
   const lang = getCurrentLanguage();
-  const prevLabel = lang === 'ko' ? '이전' : lang === 'ja' ? '前へ' : 'Previous';
-  const nextLabel = lang === 'ko' ? '다음' : lang === 'ja' ? '次へ' : 'Next';
+  const prevLabel = lang === 'ko' ? '이전' : lang === 'ja' ? '前へ' : lang === 'uz' ? 'Oldingi' : 'Previous';
+  const nextLabel = lang === 'ko' ? '다음' : lang === 'ja' ? '次へ' : lang === 'uz' ? 'Keyingi' : 'Next';
 
   let paginationHTML = `
     <div class="pagination-container">

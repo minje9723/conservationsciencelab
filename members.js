@@ -372,8 +372,8 @@ let currentDirectorIndex = 0;
 // Director Card Creation (with slider)
 function createDirectorCard(director, lang) {
   const isKo = lang === 'ko';
-  const positionsTitle = lang === 'ko' ? '주요 경력' : lang === 'ja' ? '主な経歴' : 'Career History';
-  const educationTitle = lang === 'ko' ? '학력' : lang === 'ja' ? '学歴' : 'Education';
+  const positionsTitle = lang === 'ko' ? '주요 경력' : lang === 'ja' ? '主な経歴' : lang === 'uz' ? 'Asosiy faoliyat' : 'Career History';
+  const educationTitle = lang === 'ko' ? '학력' : lang === 'ja' ? '学歴' : lang === 'uz' ? 'Ta\'lim' : 'Education';
 
   return `
     <div class="professor-card" data-director-id="${director.id}">
@@ -436,7 +436,7 @@ function renderDirectors() {
       ${directors.map((_, index) => `
         <button class="director-indicator ${index === currentDirectorIndex ? 'active' : ''}" 
                 data-index="${index}"
-                aria-label="${lang === 'ko' ? `소장 ${index + 1}` : lang === 'ja' ? `所長 ${index + 1}` : `Director ${index + 1}`}">
+                aria-label="${lang === 'ko' ? `소장 ${index + 1}` : lang === 'ja' ? `所長 ${index + 1}` : lang === 'uz' ? `Direktor ${index + 1}` : `Director ${index + 1}`}">
         </button>
       `).join('')}
     </div>
@@ -579,7 +579,7 @@ function setupDirectorSliderControls() {
 // Professor Card Creation
 function createProfessorCard(professor, lang) {
   const isKo = lang === 'ko';
-  const positionsTitle = lang === 'ko' ? '역임 직책' : lang === 'ja' ? '主な経歴' : 'Career History';
+  const positionsTitle = lang === 'ko' ? '역임 직책' : lang === 'ja' ? '主な経歴' : lang === 'uz' ? 'Asosiy faoliyat' : 'Career History';
 
   return `
     <div class="professor-card animate-on-scroll">
@@ -713,8 +713,8 @@ function updateAlumniPagination(currentPage) {
   }
 
   const paginationLang = getCurrentLanguage();
-  const prevLabel = paginationLang === 'ko' ? '이전' : paginationLang === 'ja' ? '前へ' : 'Previous';
-  const nextLabel = paginationLang === 'ko' ? '다음' : paginationLang === 'ja' ? '次へ' : 'Next';
+  const prevLabel = paginationLang === 'ko' ? '이전' : paginationLang === 'ja' ? '前へ' : paginationLang === 'uz' ? 'Oldingi' : 'Previous';
+  const nextLabel = paginationLang === 'ko' ? '다음' : paginationLang === 'ja' ? '次へ' : paginationLang === 'uz' ? 'Keyingi' : 'Next';
 
   let paginationHTML = `
     <button class="pagination-btn" onclick="changeAlumniPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
