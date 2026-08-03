@@ -22,34 +22,18 @@
   }
 })();
 
-// IP 기반 국가 감지 및 자동 언어 설정
+// 최초 접속 언어 결정 (기본값: 한국어)
 async function detectCountryAndSetLanguage() {
   // 이미 사용자가 언어를 선택한 적이 있는지 확인
   const userSelectedLanguage = localStorage.getItem('user-selected-language');
-  
+
   if (userSelectedLanguage) {
     // 사용자가 직접 선택한 언어가 있으면 그것을 사용
     return userSelectedLanguage;
   }
-  
-  try {
-    // IP 기반 지리적 위치 감지 (ipapi.co 무료 API 사용)
-    const response = await fetch('https://ipapi.co/json/');
-    const data = await response.json();
-    
-    // 한국(KR)에서 접속한 경우 한국어로 설정
-    if (data.country_code === 'KR') {
-      console.log('한국 IP 감지: 한국어로 자동 설정');
-      return 'ko';
-    } else {
-      console.log(`${data.country_code} IP 감지: 영어로 설정`);
-      return 'en';
-    }
-  } catch (error) {
-    console.log('IP 감지 실패, 기본 언어(영어) 사용:', error);
-    // API 호출 실패 시 기본 언어(영어) 사용
-    return 'en';
-  }
+
+  // 최초 접속 시 기본 언어는 한국어
+  return 'ko';
 }
 
 // Language switching functionality
@@ -172,9 +156,9 @@ function getCurrentLanguage() {
   
   if (koBtn && koBtn.classList.contains('active')) return 'ko';
   if (enBtn && enBtn.classList.contains('active')) return 'en';
-  
-  // Default to English
-  return 'en';
+
+  // Default to Korean
+  return 'ko';
 }
 
 // Update navigation tooltips based on language

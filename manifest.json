@@ -3,7 +3,7 @@
   "short_name": "CSL",
   "description": "한국전통문화대학교 보존과학연구실 - 문화재 보존과학 연구 및 교육",
   "start_url": "/",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#ffffff",
   "theme_color": "#1a237e",
   "orientation": "portrait-primary",
