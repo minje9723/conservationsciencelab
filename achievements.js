@@ -3903,7 +3903,7 @@ function createAchievementCard(achievement, lang) {
   // Special layout for awards with images
   if (achievement.type === 'award' && achievement.award_image) {
     const title = lang === 'ko' ? achievement.title_ko : achievement.title_en;
-    const enlargeText = lang === 'ko' ? '클릭하여 확대' : lang === 'ja' ? 'クリックして拡大' : 'Click to enlarge';
+    const enlargeText = lang === 'ko' ? '클릭하여 확대' : lang === 'ja' ? 'クリックして拡大' : lang === 'uz' ? 'Kattalashtirish uchun bosing' : 'Click to enlarge';
     return `
       <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll award-with-image">
         <div class="achievement-icon">
@@ -3942,7 +3942,7 @@ function createAchievementCard(achievement, lang) {
     : isJapanese
       ? (achievement.summary_ja || achievement.summary_en)
       : achievement.summary_en;
-  const linkText = lang === 'ko' ? '세부 정보 보기' : lang === 'ja' ? '詳細を見る' : 'View Details';
+  const linkText = lang === 'ko' ? '세부 정보 보기' : lang === 'ja' ? '詳細を見る' : lang === 'uz' ? 'Batafsil ko\'rish' : 'View Details';
   
   // Create indexing badge for publications
   let indexingBadge = '';
@@ -4115,14 +4115,15 @@ function renderPaginationButtons(container, totalPages, achievementsCurrentPageP
   const lang = getCurrentLanguage();
   const isKo = lang === 'ko';
   const isJa = lang === 'ja';
-  
+  const isUz = lang === 'uz';
+
   let buttonsHTML = `
     <button class="pagination-btn" ${achievementsCurrentPageParam === 1 ? 'disabled' : ''} onclick="changePage(${achievementsCurrentPageParam - 1})">
-      ${isKo ? '이전' : isJa ? '前へ' : 'Previous'}
+      ${isKo ? '이전' : isJa ? '前へ' : isUz ? 'Oldingi' : 'Previous'}
     </button>
     <span class="page-info">${achievementsCurrentPageParam} / ${totalPages}</span>
     <button class="pagination-btn" ${achievementsCurrentPageParam === totalPages ? 'disabled' : ''} onclick="changePage(${achievementsCurrentPageParam + 1})">
-      ${isKo ? '다음' : isJa ? '次へ' : 'Next'}
+      ${isKo ? '다음' : isJa ? '次へ' : isUz ? 'Keyingi' : 'Next'}
     </button>
   `;
   

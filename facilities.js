@@ -688,43 +688,51 @@ function createFacilityCard(facility, lang) {
   ).join('') : '';
   
   // Image placeholder text
-  const imageReadyText = lang === 'ko' ? '이미지 준비중' : 'Image Preparing';
+  const imageReadyText = lang === 'ko' ? '이미지 준비중' : lang === 'ja' ? '画像準備中' : lang === 'uz' ? 'Rasm tayyorlanmoqda' : 'Image Preparing';
 
   return `
     <li data-category="${facility.category}" data-id="${facility.id}" class="animate-on-scroll">
       <div class="facility-card">
         <div class="facility-image">
-          ${facility.image ? 
+          ${facility.image ?
             `<img src="${facility.image}" alt="${facility.name_en}" loading="lazy">` :
             `<div class="facility-image-placeholder">${imageReadyText}</div>`
           }
         </div>
-        
+
         <div class="facility-content">
           <h3>
             <span class="lang lang-en">${facility.name_en}</span>
             <span class="lang lang-ko">${facility.name_ko}</span>
+            <span class="lang lang-ja" style="display:none;">${facility.name_en}</span>
+            <span class="lang lang-uz" style="display:none;">${facility.name_en}</span>
           </h3>
-          
+
           <div class="facility-description">
             <span class="lang lang-en">${facility.description_en}</span>
             <span class="lang lang-ko">${facility.description_ko}</span>
+            <span class="lang lang-ja" style="display:none;">${facility.description_en}</span>
+            <span class="lang lang-uz" style="display:none;">${facility.description_en}</span>
           </div>
-          
+
           ${specsHtml ? `
             <div class="facility-specs">
               <h4 class="lang lang-en">Specifications</h4>
               <h4 class="lang lang-ko" style="display:none;">사양</h4>
+              <h4 class="lang lang-ja" style="display:none;">仕様</h4>
+              <h4 class="lang lang-uz" style="display:none;">Xususiyatlari</h4>
               <ul class="specs-list">
                 ${specsHtml}
               </ul>
             </div>
           ` : ''}
-          
+
           ${appsHtml ? `
             <div class="facility-applications">
               <h4 class="lang lang-en">Applications</h4>
               <h4 class="lang lang-ko" style="display:none;">활용분야</h4>
+              <h4 class="lang lang-ja" style="display:none;">活用分野</h4>
+              <h4 class="lang lang-uz" style="display:none;">Qo'llanilishi</h4>
               <ul class="applications-list">
                 ${appsHtml}
               </ul>
