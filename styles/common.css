@@ -1412,7 +1412,8 @@ header.transparent-header::before {
 /* Responsive design */
 @media (max-width: 900px) {
   header.transparent-header {
-    position: static;
+    position: relative;
+    z-index: 9999;
     width: 100%;
     background: #fff;
     color: #1a237e;

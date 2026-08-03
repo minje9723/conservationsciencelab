@@ -479,10 +479,10 @@ function loadLatestAchievements() {
   };
 
   const typeNames = {
-    'publication': { en: 'Publication', ko: '논문', ja: '論文' },
-    'conference': { en: 'Conference', ko: '학회', ja: '学会' },
-    'award': { en: 'Award', ko: '수상', ja: '受賞' },
-    'patent': { en: 'Patent', ko: '특허', ja: '特許' }
+    'publication': { en: 'Publication', ko: '논문', ja: '論文', uz: 'Nashr' },
+    'conference': { en: 'Conference', ko: '학회', ja: '学会', uz: 'Konferensiya' },
+    'award': { en: 'Award', ko: '수상', ja: '受賞', uz: 'Mukofot' },
+    'patent': { en: 'Patent', ko: '특허', ja: '特許', uz: 'Patent' }
   };
 
   // Category-specific gradients for placeholders
