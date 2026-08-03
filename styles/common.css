@@ -1317,11 +1317,11 @@ header.transparent-header::before {
 }
 
 .footer-content {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 0 2rem;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1.6fr;
   gap: 4rem;
 }
 
@@ -1379,6 +1379,10 @@ header.transparent-header::before {
   gap: 1rem;
   margin-bottom: 1rem;
   color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-contact-info p:first-child {
+  white-space: nowrap;
 }
 
 .footer-contact-info i {
@@ -1467,6 +1471,10 @@ header.transparent-header::before {
 
   .footer-contact-info p {
     justify-content: center;
+  }
+
+  .footer-contact-info p:first-child {
+    white-space: normal;
   }
   
   .modal-content {
