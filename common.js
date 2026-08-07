@@ -190,6 +190,24 @@ function updateNavTooltips(lang) {
       'achievements': '研究成果',
       'facilities': '施設・設備',
       'gallery': 'ギャラリー'
+    },
+    'fr': {
+      'home': 'Accueil',
+      'history': 'Historique',
+      'members': 'Équipe',
+      'projects': 'Projets',
+      'achievements': 'Réalisations',
+      'facilities': 'Installations',
+      'gallery': 'Galerie'
+    },
+    'ar': {
+      'home': 'الرئيسية',
+      'history': 'تاريخنا',
+      'members': 'الفريق',
+      'projects': 'المشاريع',
+      'achievements': 'الإنجازات',
+      'facilities': 'المرافق',
+      'gallery': 'المعرض'
     }
   };
   

@@ -706,6 +706,8 @@ function createFacilityCard(facility, lang) {
             <span class="lang lang-ko">${facility.name_ko}</span>
             <span class="lang lang-ja" style="display:none;">${facility.name_en}</span>
             <span class="lang lang-uz" style="display:none;">${facility.name_en}</span>
+            <span class="lang lang-fr" style="display:none;">${facility.name_en}</span>
+            <span class="lang lang-ar" style="display:none;">${facility.name_en}</span>
           </h3>
 
           <div class="facility-description">
@@ -713,6 +715,8 @@ function createFacilityCard(facility, lang) {
             <span class="lang lang-ko">${facility.description_ko}</span>
             <span class="lang lang-ja" style="display:none;">${facility.description_en}</span>
             <span class="lang lang-uz" style="display:none;">${facility.description_en}</span>
+            <span class="lang lang-fr" style="display:none;">${facility.description_en}</span>
+            <span class="lang lang-ar" style="display:none;">${facility.description_en}</span>
           </div>
 
           ${specsHtml ? `
@@ -721,6 +725,8 @@ function createFacilityCard(facility, lang) {
               <h4 class="lang lang-ko" style="display:none;">사양</h4>
               <h4 class="lang lang-ja" style="display:none;">仕様</h4>
               <h4 class="lang lang-uz" style="display:none;">Xususiyatlari</h4>
+              <h4 class="lang lang-fr" style="display:none;">Spécifications</h4>
+              <h4 class="lang lang-ar" style="display:none;">المواصفات</h4>
               <ul class="specs-list">
                 ${specsHtml}
               </ul>
@@ -733,6 +739,8 @@ function createFacilityCard(facility, lang) {
               <h4 class="lang lang-ko" style="display:none;">활용분야</h4>
               <h4 class="lang lang-ja" style="display:none;">活用分野</h4>
               <h4 class="lang lang-uz" style="display:none;">Qo'llanilishi</h4>
+              <h4 class="lang lang-fr" style="display:none;">Applications</h4>
+              <h4 class="lang lang-ar" style="display:none;">التطبيقات</h4>
               <ul class="applications-list">
                 ${appsHtml}
               </ul>
