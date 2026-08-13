@@ -56,20 +56,20 @@ const teamData = {
       period_en: "2004 - 2024",
       period_ko: "2004 - 2024",
       positions: [
-        { year: "2003.4 - 2011.4", title_en: "Member, Cultural Heritage Committee, Cultural Heritage Administration", title_ko: "문화재청 문화재위원회위원" },
-        { year: "2004.12 - 2011.3", title_en: "Assistant Professor, KNUH", title_ko: "한국전통문화대학교 조교수" },
-        { year: "2008.3 - 2012.2", title_en: "Head, Department of Conservation Science, KNUCH", title_ko: "한국전통문화대학교 보존과학과장" },
-        { year: "2011.3 - 2015.12", title_en: "President, Korean Society of Conservation Science for Cultural Heritage", title_ko: "한국문화재보존과학회 회장" },
-        { year: "2011.4 - 2016.3", title_en: "Associate Professor, KNUH", title_ko: "한국전통문화대학교 부교수" },
-        { year: "2013.5 - 2017.4", title_en: "Member, Cultural Heritage Committee, Cultural Heritage Administration", title_ko: "문화재청 문화재위원회위원" },
-        { year: "2015.2 - 2016.1", title_en: "Head, Department of Conservation Science, KNUCH", title_ko: "한국전통문화대학교 보존과학과장" },
-        { year: "2016.4 - 2025.02", title_en: "Professor, KNUH", title_ko: "한국전통문화대학교 교수" },
-        { year: "2019.1 - 2023.12", title_en: "Head, Department of Heritage Conservation Science, KNUCH", title_ko: "한국전통문화대학교 문화재보존과학과장" },
-        { year: "2020.1 - 2022.12", title_en: "Dean, College of Technology and Science, KNUCH", title_ko: "한국전통문화대학교 기술과학대학 학장" },
-        { year: "2021.7 - Present", title_en: "Cultural Heritage Repair Technician, Cultural Heritage Administration", title_ko: "문화재청 문화재수리기술위원" },
-        { year: "2023.1 - 2024.12", title_en: "Director, Museum, KNUH", title_ko: "한국전통문화대학교 박물관장" },
-        { year: "2023.5 - Present", title_en: "Member, Cultural Heritage Committee (Built Heritage Division), Cultural Heritage Administration", title_ko: "문화재청 문화재위원회 건조문화재분과" },
-        { year: "2024.1 - 2025.02", title_en: "Dean, College of Technology and Science, KNUCH", title_ko: "한국전통문화대학교 기술과학대학 학장" }
+        { year: "2003 - 2011", title_en: "Member, Cultural Heritage Committee, Cultural Heritage Administration", title_ko: "문화재청 문화재위원회위원" },
+        { year: "2004 - 2011", title_en: "Assistant Professor, KNUH", title_ko: "한국전통문화대학교 조교수" },
+        { year: "2008 - 2012", title_en: "Head, Department of Conservation Science, KNUCH", title_ko: "한국전통문화대학교 보존과학과장" },
+        { year: "2011 - 2015", title_en: "President, Korean Society of Conservation Science for Cultural Heritage", title_ko: "한국문화재보존과학회 회장" },
+        { year: "2011 - 2016", title_en: "Associate Professor, KNUH", title_ko: "한국전통문화대학교 부교수" },
+        { year: "2013 - 2017", title_en: "Member, Cultural Heritage Committee, Cultural Heritage Administration", title_ko: "문화재청 문화재위원회위원" },
+        { year: "2015 - 2016", title_en: "Head, Department of Conservation Science, KNUCH", title_ko: "한국전통문화대학교 보존과학과장" },
+        { year: "2016 - 2025", title_en: "Professor, KNUH", title_ko: "한국전통문화대학교 교수" },
+        { year: "2019 - 2023", title_en: "Head, Department of Heritage Conservation Science, KNUCH", title_ko: "한국전통문화대학교 문화재보존과학과장" },
+        { year: "2020 - 2022", title_en: "Dean, College of Technology and Science, KNUCH", title_ko: "한국전통문화대학교 기술과학대학 학장" },
+        { year: "2021 - Present", title_en: "Cultural Heritage Repair Technician, Cultural Heritage Administration", title_ko: "문화재청 문화재수리기술위원" },
+        { year: "2023 - 2024", title_en: "Director, Museum, KNUH", title_ko: "한국전통문화대학교 박물관장" },
+        { year: "2023 - Present", title_en: "Member, Cultural Heritage Committee (Built Heritage Division), Cultural Heritage Administration", title_ko: "문화재청 문화재위원회 건조문화재분과" },
+        { year: "2024 - 2025", title_en: "Dean, College of Technology and Science, KNUCH", title_ko: "한국전통문화대학교 기술과학대학 학장" }
       ],
       photo: "assets/members/card-photos/KYJ.jpg"
     }
@@ -154,22 +154,6 @@ const teamData = {
       photo: "assets/members/card-photos/gyuri-choi-card1.png",
       photo2: "assets/members/card-photos/gyuri-choi-card2.png",
       level: "senior"
-    },
-    {
-      name_en: "Hae Jun Park",
-      name_ko: "박해준",
-      title_en: "Researcher / M.Sc. student",
-      title_ko: "연구원 / 석사과정",
-      specialization_en: "Digital Documentation",
-      specialization_ko: "디지털기록화",
-      expertise: ["Digital Technology", "3D Scanning & Surveying"],
-      expertise_ko: ["디지털기술", "3D 스캔 및 실측"],
-      status_en: "Building comprehensive digital archives of cultural heritage sites",
-      status_ko: "저는 박가 해준이라 하옵니다.",
-      email: "961126mrp@csllso.co.kr",
-      photo: "assets/members/card-photos/haejun-park-card1.png",
-      photo2: "assets/members/card-photos/haejun-park-card2.png",
-      level: "mid"
     },
     {
       name_en: "Hyo Jung Kim",
@@ -422,19 +406,33 @@ function renderDirectors() {
   if (!container) return;
 
   const directors = teamData.directors;
+  const showArrows = directors.length > 1;
 
-  // Create slider wrapper (no buttons, touch-based)
+  const prevLabel = lang === 'ko' ? '이전 소장' : lang === 'ja' ? '前の所長' : lang === 'uz' ? 'Oldingi direktor' : 'Previous director';
+  const nextLabel = lang === 'ko' ? '다음 소장' : lang === 'ja' ? '次の所長' : lang === 'uz' ? 'Keyingi direktor' : 'Next director';
+
+  // Create slider wrapper (touch-based + arrow buttons when there's more than one director)
   container.innerHTML = `
     <div class="director-slider">
+      ${showArrows ? `
+      <button class="director-nav-arrow prev" aria-label="${prevLabel}">
+        <span class="director-nav-arrow-icon"></span>
+      </button>
+      ` : ''}
       <div class="director-cards-wrapper">
         ${directors.map((director, index) =>
     createDirectorCard(director, lang)
   ).join('')}
       </div>
+      ${showArrows ? `
+      <button class="director-nav-arrow next" aria-label="${nextLabel}">
+        <span class="director-nav-arrow-icon"></span>
+      </button>
+      ` : ''}
     </div>
     <div class="director-indicators">
       ${directors.map((_, index) => `
-        <button class="director-indicator ${index === currentDirectorIndex ? 'active' : ''}" 
+        <button class="director-indicator ${index === currentDirectorIndex ? 'active' : ''}"
                 data-index="${index}"
                 aria-label="${lang === 'ko' ? `소장 ${index + 1}` : lang === 'ja' ? `所長 ${index + 1}` : lang === 'uz' ? `Direktor ${index + 1}` : `Director ${index + 1}`}">
         </button>
@@ -491,10 +489,23 @@ function updateDirectorSlider() {
   previousDirectorIndex = currentDirectorIndex;
 }
 
-// Setup Director Slider Controls (Touch Swipe)
+// Move to the previous (-1) or next (1) director
+function goToDirector(direction) {
+  const total = teamData.directors.length;
+  if (total <= 1) return;
+  currentDirectorIndex = (currentDirectorIndex + direction + total) % total;
+  updateDirectorSlider();
+}
+
+// Setup Director Slider Controls (Touch Swipe + Arrows)
 function setupDirectorSliderControls() {
   const cardsWrapper = document.querySelector('.director-cards-wrapper');
   const indicators = document.querySelectorAll('.director-indicator');
+  const prevArrow = document.querySelector('.director-nav-arrow.prev');
+  const nextArrow = document.querySelector('.director-nav-arrow.next');
+
+  if (prevArrow) prevArrow.addEventListener('click', () => goToDirector(-1));
+  if (nextArrow) nextArrow.addEventListener('click', () => goToDirector(1));
 
   let touchStartX = 0;
   let touchEndX = 0;
@@ -545,14 +556,8 @@ function setupDirectorSliderControls() {
     const diff = touchStartX - touchEndX;
 
     if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        // Swiped left - go to next
-        currentDirectorIndex = (currentDirectorIndex + 1) % teamData.directors.length;
-      } else {
-        // Swiped right - go to previous
-        currentDirectorIndex = (currentDirectorIndex - 1 + teamData.directors.length) % teamData.directors.length;
-      }
-      updateDirectorSlider();
+      // Swiped left -> next, swiped right -> previous
+      goToDirector(diff > 0 ? 1 : -1);
     }
   }
 
@@ -567,11 +572,9 @@ function setupDirectorSliderControls() {
   // Keyboard navigation
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') {
-      currentDirectorIndex = (currentDirectorIndex - 1 + teamData.directors.length) % teamData.directors.length;
-      updateDirectorSlider();
+      goToDirector(-1);
     } else if (e.key === 'ArrowRight') {
-      currentDirectorIndex = (currentDirectorIndex + 1) % teamData.directors.length;
-      updateDirectorSlider();
+      goToDirector(1);
     }
   });
 }
@@ -659,18 +662,17 @@ const alumniPerPage = 20;
 
 function createAlumniCard(alumni, lang, index) {
   const isKo = lang === 'ko';
-  const delay = (index % alumniPerPage) * 50;
 
-  // 졸업 연도에 따른 컬러 그룹 설정
-  const endYear = parseInt(alumni.period.split('-')[1]);
+  // 입학 연도에 따른 컬러 그룹 설정
+  const startYear = parseInt(alumni.period.split('-')[0]);
   let colorClass = 'recent';
-  if (endYear >= 2020) colorClass = 'recent';
-  else if (endYear >= 2015) colorClass = 'mid-period';
-  else if (endYear >= 2010) colorClass = 'early-period';
+  if (startYear >= 2020) colorClass = 'recent';
+  else if (startYear >= 2015) colorClass = 'mid-period';
+  else if (startYear >= 2010) colorClass = 'early-period';
   else colorClass = 'pioneer';
 
   return `
-    <div class="alumni-card ${colorClass} animate-on-scroll" style="animation-delay: ${delay}ms">
+    <div class="alumni-card ${colorClass}">
       <h4 class="alumni-name">${isKo ? alumni.name_ko : alumni.name_en}</h4>
       <p class="alumni-period">${alumni.period}</p>
       <p class="alumni-current">${isKo ? alumni.current_org : alumni.current_org_en}</p>
@@ -695,11 +697,6 @@ function renderAlumni(lang, page = 1) {
 
   // Update pagination
   updateAlumniPagination(page);
-
-  // Re-initialize animations for new cards
-  setTimeout(() => {
-    initAnimations();
-  }, 100);
 }
 
 function updateAlumniPagination(currentPage) {

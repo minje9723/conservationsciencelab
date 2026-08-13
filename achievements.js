@@ -193,7 +193,7 @@ const achievements = [
     year: 2025,
     summary_en: "Feasibility study of metal PLA 3D printing and reverse casting for heritage restoration using royal seal data.",
     summary_ko: "어보 데이터를 활용한 금속 PLA 3D 프린팅 기반 역주조 공법의 문화유산 복원 적용 가능성 연구.",
-    link: "https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART003218035",
+    link: "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003218035",
     doi: "",
     image: "assets/achievements/reverse-casting.jpg",
     keywords: ["3D Printing", "Heritage Restoration", "Metal Casting"],
@@ -671,7 +671,7 @@ const achievements = [
     year: 2023,
     summary_en: "Development of condition report and evaluation methods for outdoor painted sculptures through comparative analysis of original and alternative paints.",
     summary_ko: "야외 페인팅 조각 작품의 원본 페인트 및 대체 페인트 물성 비교를 통한 상태조사표 개발 및 평가방법 연구.",
-    link: "http://journal.conservation.or.kr/journal/article.php?code=94225&cID=",
+    link: "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002980942",
     doi: "https://doi.org/10.12654/JCS.2023.39.2.02",
     keywords: ["Outdoor Painted Sculpture", "Public Artworks Conservation", "Condition report"],
     keywords_ko: ["야외 페인팅 조각", "공공미술품 보존", "재도장 평가 상태조사표"]

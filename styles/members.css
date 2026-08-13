@@ -94,6 +94,53 @@
   min-height: 600px;
 }
 
+/* Director Nav Arrows - hints that there is another card to swipe to */
+.director-nav-arrow {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 0;
+  z-index: 2;
+}
+
+.director-nav-arrow:hover {
+  transform: scale(1.15);
+}
+
+/* Arrow glyph painted with the same live gradient as .section-title, via mask */
+.director-nav-arrow-icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple), var(--primary-red));
+  background-size: 200% 200%;
+  animation: gradientFlow 6s ease-in-out infinite;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.director-nav-arrow.prev .director-nav-arrow-icon {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='15 18 9 12 15 6'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='15 18 9 12 15 6'/%3E%3C/svg%3E");
+}
+
+.director-nav-arrow.next .director-nav-arrow-icon {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'/%3E%3C/svg%3E");
+}
+
 /* Director Indicators */
 .director-indicators {
   display: flex;
@@ -635,8 +682,6 @@
   transition: var(--transition-smooth);
   position: relative;
   border-left: 4px solid var(--accent-color);
-  opacity: 0;
-  transform: translateY(20px);
 }
 
 .alumni-card.recent {
@@ -653,11 +698,6 @@
 
 .alumni-card.pioneer {
   border-left: 4px solid #10b981;
-}
-
-.alumni-card.animate-in {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .alumni-card:hover {
@@ -873,6 +913,10 @@
   /* Director Slider Mobile */
   .director-slider {
     gap: 0;
+  }
+
+  .director-nav-arrow {
+    display: none;
   }
   
   .director-indicators {
