@@ -196,8 +196,8 @@ function updateNavTooltips(lang) {
       'history': 'Historique',
       'members': 'Équipe',
       'projects': 'Projets',
-      'achievements': 'Réalisations',
-      'facilities': 'Installations',
+      'achievements': 'Résultats de recherche',
+      'facilities': 'Installations et équipements',
       'gallery': 'Galerie'
     },
     'ar': {
@@ -205,8 +205,8 @@ function updateNavTooltips(lang) {
       'history': 'تاريخنا',
       'members': 'الفريق',
       'projects': 'المشاريع',
-      'achievements': 'الإنجازات',
-      'facilities': 'المرافق',
+      'achievements': 'نتائج البحث',
+      'facilities': 'المرافق والمعدات',
       'gallery': 'المعرض'
     }
   };
