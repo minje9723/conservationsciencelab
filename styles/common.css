@@ -128,6 +128,7 @@ header.transparent-header {
   left: 0;
   width: 100vw;
   z-index: 9999;
+  isolation: isolate;
   background: rgba(255, 255, 255, 0.95);
   color: #222;
   transition: all 0.3s ease;
@@ -262,6 +263,7 @@ header.transparent-header::before {
 
 .nav-dropdown-content {
   display: none;
+  flex-direction: column;
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
@@ -270,13 +272,39 @@ header.transparent-header::before {
   max-width: 400px;
   box-shadow: 0 4px 20px rgba(26,35,126,0.15);
   border-radius: 0;
-  z-index: 1000;
+  z-index: 10000;
   border: 1px solid #e0e6ed;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .nav-dropdown-content.show {
-  display: block;
+  display: flex;
+}
+
+/* Keep project dropdowns in the same order as the project page filters. */
+.nav-project-filter[data-category="site-investigation"] {
+  order: 1;
+}
+
+.nav-project-filter[data-category="excavated-conservation"] {
+  order: 2;
+}
+
+.nav-project-filter[data-category="designation-research"] {
+  order: 3;
+}
+
+.nav-project-filter[data-category="preservation-research"] {
+  order: 4;
+}
+
+.nav-project-filter[data-category="restoration-research"] {
+  order: 5;
+}
+
+.nav-project-filter[data-category="digital-archiving"] {
+  order: 6;
 }
 
 .nav-achievement-filter {
@@ -284,15 +312,18 @@ header.transparent-header::before {
   padding: 0.9rem 1.2rem;
   color: #1a237e;
   text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: calc(0.9rem - 2px);
+  font-weight: 400;
   transition: background-color 0.2s ease;
   border: none;
   width: 100%;
+  box-sizing: border-box;
   text-align: left;
   white-space: normal;
   line-height: 1.4;
-  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .nav-achievement-filter:hover {
@@ -310,15 +341,18 @@ header.transparent-header::before {
   padding: 0.9rem 1.2rem;
   color: #1a237e;
   text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: calc(0.9rem - 2px);
+  font-weight: 400;
   transition: background-color 0.2s ease;
   border: none;
   width: 100%;
+  box-sizing: border-box;
   text-align: left;
   white-space: normal;
   line-height: 1.4;
-  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .nav-member-filter:hover {
@@ -331,15 +365,18 @@ header.transparent-header::before {
   padding: 0.9rem 1.2rem;
   color: #1a237e;
   text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: calc(0.9rem - 2px);
+  font-weight: 400;
   transition: background-color 0.2s ease;
   border: none;
   width: 100%;
+  box-sizing: border-box;
   text-align: left;
   white-space: normal;
   line-height: 1.4;
-  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .nav-project-filter:hover {
@@ -347,14 +384,14 @@ header.transparent-header::before {
   color: #3949ab;
 }
 
-/* Apply Libre Bodoni to dropdown menu English text */
+/* Keep every dropdown language on the same font and size */
 .nav-project-filter .lang-en,
 .nav-achievement-filter .lang-en,
 .nav-member-filter .lang-en {
-  font-family: 'Libre Bodoni', serif;
-  font-weight: 500;
+  font-family: inherit;
+  font-weight: 400;
   letter-spacing: 0.3px;
-  font-size: 0.9rem;
+  font-size: calc(0.9rem - 2px);
 }
 
 /* Language Switcher */
