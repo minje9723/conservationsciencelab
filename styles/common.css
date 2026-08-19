@@ -151,9 +151,11 @@ header.transparent-header::before {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 2rem;
-  max-width: 1300px;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 1rem max(0.5rem, env(safe-area-inset-right)) 1rem max(0.5rem, env(safe-area-inset-left));
 }
 
 .logo {
@@ -182,10 +184,26 @@ header.transparent-header::before {
   justify-content: flex-end;
 }
 
+/* Keep the main navigation centered independently of the logo and language button. */
+@media (min-width: 1003px) {
+  .navbar {
+    position: relative;
+  }
+
+  .nav-links {
+    position: absolute;
+    left: 50%;
+    width: max-content;
+    transform: translateX(-50%);
+    justify-content: center;
+  }
+}
+
 .nav-links li a {
   color: #222;
   text-decoration: none;
   font-weight: 500;
+  font-size: calc(1rem + 2px);
   position: relative;
   padding-bottom: 4px;
   transition: color 0.3s ease;
@@ -200,7 +218,7 @@ header.transparent-header::before {
   font-family: 'Libre Bodoni', serif;
   font-weight: 600;
   letter-spacing: 0.5px;
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + 2px);
 }
 
 .nav-links li a .nav-icon {

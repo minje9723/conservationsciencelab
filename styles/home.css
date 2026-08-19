@@ -17,9 +17,8 @@ main {
 /* Hero Section - Enhanced Responsive */
 .hero-section {
   position: relative;
-  /* ?�면 비율???�라 ?�적?�로 ?�이 조정 */
-  height: 100vh;
-  min-height: clamp(500px, 100vh, 1200px);
+  /* 모든 해상도에서 일관된 높이 설정 */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -112,11 +111,10 @@ main {
 /* 데스크톱 - 가로 화면 (일반 PC, 태블릿 가로) */
 @media (min-width: 769px) {
   .hero-video {
-    /* 좌우 폭 기준으로 비율 조정, 상하 여백 허용 */
+    /* 배너 영역을 빈 공간 없이 채움 */
     width: 100%;
-    height: auto;
-    min-height: 100%;
-    object-fit: contain; /* 영상 비율 유지하며 좌우 폭에 맞춤 */
+    height: 100%;
+    object-fit: cover;
     object-position: center center;
   }
 }
@@ -171,12 +169,11 @@ main {
 /* 모바일 가로 모드 */
 @media (max-width: 768px) and (orientation: landscape) {
   .hero-video {
-    /* 가로 모드에서는 너비 기준으로 꽉 채우기 */
+    /* 가로 모드에서도 빈 공간 없이 채우도록 */
     object-fit: cover;
     object-position: center center;
     width: 100%;
-    height: auto;
-    min-height: 100%;
+    height: 100%;
   }
   
   .hero-section {

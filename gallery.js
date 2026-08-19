@@ -29,7 +29,7 @@ const galleryItems = [
     date: "2024-02-28",
     location: "Conservation Science Lab",
     location_ko: "보존과학연구소",
-    photographer: "Min Je Kim",
+    photographer: "Min-Je Kim",
     photographer_ko: "김민제",
     tags: ["Microscopy", "Analysis", "Equipment"],
     tags_ko: ["현미경", "분석", "장비"]

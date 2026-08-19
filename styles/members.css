@@ -250,6 +250,7 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  min-width: 0;
 }
 
 .professor-header {
@@ -274,6 +275,8 @@
   font-weight: 600;
   margin: 0;
   white-space: pre-line;
+  overflow-wrap: anywhere;
+  word-break: normal;
   line-height: 1.5;
 }
 
@@ -304,9 +307,9 @@
   color: var(--text-dark);
   line-height: 1.6;
   font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .position-item strong {
@@ -362,9 +365,9 @@
   color: var(--text-dark);
   line-height: 1.6;
   font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .education-item strong {
