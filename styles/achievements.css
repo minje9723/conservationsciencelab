@@ -220,6 +220,20 @@
   align-items: center;
 }
 
+.patent-preparation-notice .notice-status {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgba(0, 210, 190, 0.35);
+  border-radius: 999px;
+  background: rgba(0, 210, 190, 0.1);
+  color: #008f82;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .patent-preparation-notice .notice-icon svg {
   width: 64px;
   height: 64px;

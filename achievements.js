@@ -4000,23 +4000,32 @@ function renderAchievements() {
   const lang = getCurrentLanguage();
   const currentFilter = document.querySelector('.achievement-filter.active')?.getAttribute('data-filter') || 'publication';
   
-  // Special handling for patent filter (temporarily in preparation)
+  // Special handling for patent filter while applications are in progress
   if (currentFilter === 'patent') {
     achievementsList.innerHTML = `
       <div class="patent-preparation-notice">
         <div class="notice-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            <path d="M12 2v4"></path>
+            <path d="M12 18v4"></path>
+            <path d="m4.93 4.93 2.83 2.83"></path>
+            <path d="m16.24 16.24 2.83 2.83"></path>
+            <path d="M2 12h4"></path>
+            <path d="M18 12h4"></path>
+            <path d="m4.93 19.07 2.83-2.83"></path>
+            <path d="m16.24 7.76 2.83-2.83"></path>
+            <circle cx="12" cy="12" r="3"></circle>
           </svg>
         </div>
-        <h3 class="notice-title lang lang-en">Patent Applications in Preparation</h3>
-        <h3 class="notice-title lang lang-ko" style="display:none;">특허 출원 준비 중</h3>
-        <h3 class="notice-title lang lang-ja" style="display:none;">特許出願準備中</h3>
-        <p class="notice-description lang lang-en">We are currently preparing patent applications for our innovative conservation technologies and methodologies. Please check back soon for updates.</p>
-        <p class="notice-description lang lang-ko" style="display:none;">현재 혁신적인 보존 기술 및 방법론에 대한 특허 출원을 준비하고 있습니다. 곧 업데이트될 예정이니 다시 방문해 주세요.</p>
-        <p class="notice-description lang lang-ja" style="display:none;">革新的な保存技術と方法論に関する特許出願を現在準備しています。更新までしばらくお待ちください。</p>
+        <div class="notice-status lang lang-en">Application in progress</div>
+        <div class="notice-status lang lang-ko" style="display:none;">특허 출원 진행 중</div>
+        <div class="notice-status lang lang-ja" style="display:none;">特許出願中</div>
+        <h3 class="notice-title lang lang-en">Patent Applications in Progress</h3>
+        <h3 class="notice-title lang lang-ko" style="display:none;">특허 출원중</h3>
+        <h3 class="notice-title lang lang-ja" style="display:none;">特許出願を進行中</h3>
+        <p class="notice-description lang lang-en">Patent applications for our innovative conservation technologies and methodologies are currently in progress.</p>
+        <p class="notice-description lang lang-ko" style="display:none;">혁신적인 보존 기술 및 방법론에 대한 특허 출원이 진행 중입니다.</p>
+        <p class="notice-description lang lang-ja" style="display:none;">革新的な保存技術と方法論に関する特許出願を進めています。</p>
       </div>
     `;
     
@@ -4024,8 +4033,10 @@ function renderAchievements() {
     achievementsList.querySelectorAll('.lang').forEach(el => {
       if (el.classList.contains('lang-' + lang)) {
         el.style.display = '';
+        el.classList.add('lang-visible');
       } else {
         el.style.display = 'none';
+        el.classList.remove('lang-visible');
       }
     });
     

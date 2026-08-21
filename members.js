@@ -350,6 +350,16 @@ function getCurrentLanguage() {
   return activeBtn ? activeBtn.dataset.lang : 'ko';
 }
 
+function setupProfileImageProtection() {
+  document.addEventListener('contextmenu', (event) => {
+    if (event.target.closest('.profile-image')) {
+      event.preventDefault();
+    }
+  });
+}
+
+setupProfileImageProtection();
+
 // Director Slider State
 let currentDirectorIndex = 0;
 
@@ -363,7 +373,7 @@ function createDirectorCard(director, lang) {
     <div class="professor-card" data-director-id="${director.id}">
       <div class="professor-left">
         <div class="professor-image">
-          <img src="${director.photo}" alt="${isKo ? director.name_ko : director.name_en}" loading="lazy">
+          <img class="profile-image" src="${director.photo}" alt="${isKo ? director.name_ko : director.name_en}" loading="lazy">
         </div>
       </div>
       <div class="professor-right">
@@ -588,7 +598,7 @@ function createProfessorCard(professor, lang) {
     <div class="professor-card animate-on-scroll">
       <div class="professor-left">
         <div class="professor-image">
-          <img src="${professor.photo}" alt="${isKo ? professor.name_ko : professor.name_en}" loading="lazy">
+          <img class="profile-image" src="${professor.photo}" alt="${isKo ? professor.name_ko : professor.name_en}" loading="lazy">
         </div>
       </div>
       <div class="professor-right">
@@ -629,7 +639,7 @@ function createResearcherCard(researcher, lang, index) {
   return `
     <div class="researcher-card ${researcher.level} animate-on-scroll" style="animation-delay: ${delay}ms">
       <div class="researcher-image">
-        <img class="researcher-img-primary" src="${researcher.photo2 || researcher.photo}" alt="${isKo ? researcher.name_ko : researcher.name_en}" loading="lazy">
+        <img class="profile-image researcher-img-primary" src="${researcher.photo2 || researcher.photo}" alt="${isKo ? researcher.name_ko : researcher.name_en}" loading="lazy">
       </div>
       <div class="researcher-details">
         <h3 class="researcher-name">${isKo ? researcher.name_ko : researcher.name_en}</h3>
