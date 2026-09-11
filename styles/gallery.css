@@ -180,6 +180,16 @@
   margin-right: auto;
 }
 
+@media (min-width: 1025px) and (max-width: 1200px) and (orientation: landscape) {
+  .gallery-section {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 .gallery-item {
   position: relative;
   border-radius: 0;

@@ -1091,6 +1091,34 @@ header.transparent-header::before {
   }
 }
 
+/* iPad Pro 11-inch landscape: keep viewport-width media inside the page. */
+@media (min-width: 1025px) and (max-width: 1200px) and (orientation: landscape) {
+  .navbar {
+    gap: 1rem;
+  }
+
+  .nav-links {
+    gap: 1.1rem;
+  }
+
+  .logo img {
+    height: 42px;
+  }
+
+  .page-banner {
+    box-sizing: border-box;
+  }
+
+  .page-banner-background {
+    width: 100%;
+  }
+
+  .page-banner-image,
+  .page-banner-video {
+    width: 100%;
+  }
+}
+
 /* ?�트???�?�드 ?�면 (21:9 ?�상) */
 @media (min-aspect-ratio: 21/9) {
   .page-banner-image,

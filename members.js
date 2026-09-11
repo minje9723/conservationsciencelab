@@ -218,6 +218,26 @@ const teamData = {
       photo: "assets/members/card-photos/jieun-hyun-card1.png",
       photo2: "assets/members/card-photos/jieun-hyun-card2.png",
       level: "mid"
+    },
+    {
+      name_en: "Jae-Gi Shin",
+      name_ko: "신재기",
+      title_en: "Researcher / Undergraduate student",
+      title_ko: "연구원 / 학사과정",
+      expertise: [],
+      expertise_ko: [],
+      photo: "assets/members/card-photos/gowoon-bae.png",
+      level: "junior"
+    },
+    {
+      name_en: "Seo-Yeong Lee",
+      name_ko: "이서영",
+      title_en: "Researcher / Undergraduate student",
+      title_ko: "연구원 / 학사과정",
+      expertise: [],
+      expertise_ko: [],
+      photo: "assets/members/card-photos/gowoon-bae.png",
+      level: "junior"
     }
   ],
 
@@ -248,12 +268,12 @@ const teamData = {
     // 17학번 (2021-2024)
     { name_en: "Bo-Gyeong Kim", name_ko: "김보경", period: "2021-2024", current_org: "국립현대미술관", current_org_en: "National Museum of Modern and Contemporary Art, Korea", position: "연구원", position_en: "Researcher" },
     { name_en: "Sun Park", name_ko: "박선", period: "2021-2024", current_org: "국립경주박물관", current_org_en: "Gyeongju National Museum", position: "연구원", position_en: "Researcher" },
-    { name_en: "Ji-Hyeon Yang", name_ko: "양지현", period: "2021-2024", current_org: "국립중원문화유산연구소", current_org_en: "Jungwon National Research Institute of Cultural Heritage", position: "연구원", position_en: "Researcher" },
+    { name_en: "Ji-Hyeon Yang", name_ko: "양지현", period: "2021-2024", current_org: "국립중원문화유산연구소", current_org_en: "Jungwon National Research Institute of Cultural Heritage", position: "연구원", position_en: "Researcher", hidden: true },
     { name_en: "Ye-Ji Park", name_ko: "박예지", period: "2023-2025", current_org: "국가유산수리재료센터", current_org_en: "National Heritage Repair Materials Center", position: "연구원", position_en: "Researcher" },
     { name_en: "Ji-Eun Choi", name_ko: "최지은", period: "2023-2025", current_org: "국가유산수리재료센터", current_org_en: "National Heritage Repair Materials Center", position: "연구원", position_en: "Researcher" },
 
     // 16학번 (2018-2022)
-    { name_en: "Min-Je Kim", name_ko: "김민제", period: "2019-", current_org: "한국전통문화대학교 보존과학연구소", current_org_en: "Conservation Science Lab, KNUH", position: "연구실 1짱 / 박사과정", position_en: "Head Researcher / Ph.D. student" },
+    { name_en: "Min-Je Kim", name_ko: "김민제", period: "2021-", current_org: "한국전통문화대학교 보존과학연구소", current_org_en: "Conservation Science Lab, KNUH", position: "연구실 1짱 / 박사과정", position_en: "Head Researcher / Ph.D. student" },
     { name_en: "Gyeong-Seo Choi", name_ko: "최경서", period: "2018-2022", current_org: "국립김해박물관", current_org_en: "Gimhae National Museum", position: "연구원", position_en: "Researcher" },
 
     // 15학번 (2018-2022)
@@ -293,7 +313,7 @@ const teamData = {
     // 07학번 (2008-2010)
     { name_en: "Mi-Sol Do", name_ko: "도미솔", period: "2008-2010", current_org: "", current_org_en: "", position: "", position_en: "" },
     { name_en: "Jae-Hyeong Park", name_ko: "박재형", period: "2008-2010", current_org: "", current_org_en: "", position: "", position_en: "" },
-    { name_en: "Go-Woon Bae", name_ko: "배고운", period: "2008-2025", current_org: "한국전통문화대학교 보존과학연구소", current_org_en: "Conservation Science Lab, KNUH", position: "선임연구원", position_en: "Senior Researcher" },
+    { name_en: "Go-Woon Bae", name_ko: "배고운", period: "2008-", current_org: "한국전통문화대학교 보존과학연구소", current_org_en: "Conservation Science Lab, KNUH", position: "선임연구원", position_en: "Senior Researcher" },
     { name_en: "Jae-Hyeok Shin", name_ko: "신재혁", period: "2008-2010", current_org: "국가유산수리재료센터", current_org_en: "National Heritage Repair Materials Center", position: "수급기획팀 팀장", position_en: "Team Leader, Supply Planning Team" },
     { name_en: "Sang-Ok Lee", name_ko: "이상옥", period: "2008-2019", current_org: "한국전통문화대학교 보존과학과", current_org_en: "Dept. of Conservation Science, KNUH", position: "전임교원", position_en: "Professor" },
 
@@ -635,11 +655,19 @@ function createProfessorCard(professor, lang) {
 function createResearcherCard(researcher, lang, index) {
   const isKo = lang === 'ko';
   const delay = (index + 1) * 150;
+  const image = researcher.photo2 || researcher.photo
+    ? `<img class="profile-image researcher-img-primary" src="${researcher.photo2 || researcher.photo}" alt="${isKo ? researcher.name_ko : researcher.name_en}" loading="lazy">`
+    : `<div class="researcher-image-placeholder" role="img" aria-label="${isKo ? researcher.name_ko : researcher.name_en}">${isKo ? researcher.name_ko : researcher.name_en}</div>`;
+  const email = researcher.email ? `
+        <div class="researcher-email">
+          <i class="fas fa-envelope"></i>
+          <a href="mailto:${researcher.email}">${researcher.email}</a>
+        </div>` : '';
 
   return `
     <div class="researcher-card ${researcher.level} animate-on-scroll" style="animation-delay: ${delay}ms">
       <div class="researcher-image">
-        <img class="profile-image researcher-img-primary" src="${researcher.photo2 || researcher.photo}" alt="${isKo ? researcher.name_ko : researcher.name_en}" loading="lazy">
+        ${image}
       </div>
       <div class="researcher-details">
         <h3 class="researcher-name">${isKo ? researcher.name_ko : researcher.name_en}</h3>
@@ -649,10 +677,7 @@ function createResearcherCard(researcher, lang, index) {
     `<span class="skill-tag">${skill}</span>`
   ).join('')}
         </div>
-        <div class="researcher-email">
-          <i class="fas fa-envelope"></i>
-          <a href="mailto:${researcher.email}">${researcher.email}</a>
-        </div>
+        ${email}
       </div>
     </div>
   `;
@@ -695,9 +720,10 @@ function renderAlumni(lang, page = 1) {
   const container = document.querySelector('#alumniGrid');
   if (!container) return;
 
+  const visibleAlumni = teamData.alumni.filter(alumni => !alumni.hidden);
   const startIndex = (page - 1) * alumniPerPage;
   const endIndex = startIndex + alumniPerPage;
-  const alumniPage = teamData.alumni.slice(startIndex, endIndex);
+  const alumniPage = visibleAlumni.slice(startIndex, endIndex);
 
   const html = alumniPage
     .map((alumni, index) => createAlumniCard(alumni, lang, index))
@@ -710,7 +736,8 @@ function renderAlumni(lang, page = 1) {
 }
 
 function updateAlumniPagination(currentPage) {
-  const totalPages = Math.ceil(teamData.alumni.length / alumniPerPage);
+  const visibleAlumniCount = teamData.alumni.filter(alumni => !alumni.hidden).length;
+  const totalPages = Math.ceil(visibleAlumniCount / alumniPerPage);
   let paginationContainer = document.querySelector('.alumni-pagination');
 
   if (!paginationContainer) {
