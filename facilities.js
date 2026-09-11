@@ -767,10 +767,6 @@ function filterFacilities(category = 'all') {
     }
   });
   
-  // Re-trigger animation for visible items
-  setTimeout(() => {
-    initAnimations();
-  }, 50);
 }
 
 // Render all facilities
@@ -793,10 +789,6 @@ function renderFacilities() {
     }
   });
   
-  // Re-initialize animations after rendering
-  setTimeout(() => {
-    initAnimations();
-  }, 50);
 }
 
 // Sort facilities by name, category, or year
@@ -883,28 +875,6 @@ function getImageForFacility(facility) {
   return imageMap[facility.id] || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=300&fit=crop';
 }
 
-// Animation System (Members Page Style)
-function initAnimations() {
-  const observerOptions = {
-    threshold: 0.2,
-    rootMargin: '0px 0px -100px 0px'
-  };
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate-in');
-      }
-    });
-  }, observerOptions);
-  
-  setTimeout(() => {
-    document.querySelectorAll('.animate-on-scroll').forEach(card => {
-      observer.observe(card);
-    });
-  }, 50);
-}
-
 // Initialize when DOM is loaded or immediately if already loaded
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initFacilities);
@@ -953,13 +923,7 @@ function addBannerAnimation() {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     addBannerAnimation();
-    setTimeout(() => {
-      initAnimations();
-    }, 100);
   });
 } else {
   addBannerAnimation();
-  setTimeout(() => {
-    initAnimations();
-  }, 100);
 }

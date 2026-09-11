@@ -8,6 +8,7 @@ function initHeroVideoAnimation() {
   const heroBackground = document.querySelector('.hero-background');
   const header = document.querySelector('header');
   const loadingIndicator = document.getElementById('videoLoadingIndicator');
+  const skipIntroButton = document.getElementById('skipIntroButton');
 
   if (!heroVideo || !heroContent) return;
 
@@ -22,6 +23,8 @@ function initHeroVideoAnimation() {
       heroVideo.pause();
       heroVideo.style.display = 'none';
     }
+
+    if (skipIntroButton) skipIntroButton.style.display = 'none';
 
     if (heroBackground) {
       heroBackground.style.opacity = '0';
@@ -96,6 +99,49 @@ function initHeroVideoAnimation() {
   // 초기 비디오 소스 설정
   setVideoSource();
 
+  let introFinished = false;
+
+  function finishHeroIntro() {
+    if (introFinished) return;
+    introFinished = true;
+
+    heroVideo.pause();
+    if (skipIntroButton) {
+      skipIntroButton.classList.add('hidden');
+      skipIntroButton.setAttribute('aria-hidden', 'true');
+    }
+
+    heroVideo.style.transition = 'opacity 1s ease';
+    heroVideo.style.opacity = '0';
+
+    if (heroBackground) {
+      heroBackground.style.transition = 'opacity 1s ease';
+      heroBackground.style.opacity = '0';
+    }
+
+    if (heroOverlay) {
+      heroOverlay.style.transition = 'opacity 1s ease';
+      heroOverlay.style.opacity = '0';
+    }
+
+    if (header) {
+      header.style.transition = 'opacity 1s ease, visibility 0s 0s, background 1s ease';
+      header.style.visibility = 'visible';
+      header.style.opacity = '1';
+      header.style.background = 'rgba(255, 255, 255, 0.95)';
+    }
+
+    setTimeout(() => {
+      heroContent.style.visibility = 'visible';
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+
+  if (skipIntroButton) {
+    skipIntroButton.addEventListener('click', finishHeroIntro);
+  }
+
   // 화면 크기 변경 시 비디오 소스 업데이트 (디바운스 적용)
   let resizeTimer;
   window.addEventListener('resize', () => {
@@ -114,36 +160,7 @@ function initHeroVideoAnimation() {
 
   // 비디오 재생 완료 이벤트
   heroVideo.addEventListener('ended', () => {
-    // 비디오가 끝나면 페이드 아웃
-    heroVideo.style.transition = 'opacity 1s ease';
-    heroVideo.style.opacity = '0';
-
-    // hero-background 전체를 투명하게 (배경 이미지가 보이도록)
-    if (heroBackground) {
-      heroBackground.style.transition = 'opacity 1s ease';
-      heroBackground.style.opacity = '0';
-    }
-
-    // 오버레이를 투명하게
-    if (heroOverlay) {
-      heroOverlay.style.transition = 'opacity 1s ease';
-      heroOverlay.style.opacity = '0';
-    }
-
-    // 헤더 바 페이드 인 (비디오 끝나고 바로)
-    if (header) {
-      header.style.transition = 'opacity 1s ease, visibility 0s 0s, background 1s ease';
-      header.style.visibility = 'visible';
-      header.style.opacity = '1';
-      header.style.background = 'rgba(255, 255, 255, 0.95)';
-    }
-
-    // 컨텐츠 페이드 인 (비디오 페이드아웃 시작 후 0.3초 뒤)
-    setTimeout(() => {
-      heroContent.style.visibility = 'visible';
-      heroContent.style.opacity = '1';
-      heroContent.style.transform = 'translateY(0)';
-    }, 300);
+    finishHeroIntro();
   });
 
   // 비디오 로드 실패 시 바로 컨텐츠와 헤더 표시
@@ -598,6 +615,49 @@ function loadLatestAchievements() {
   }
 }
 
+const curtainAnimationTimers = new Map();
+
+function startCurtainAnimation(selector) {
+  const columns = [...document.querySelectorAll(selector)];
+  if (columns.length === 0) return;
+
+  const existingTimer = curtainAnimationTimers.get(selector);
+  if (existingTimer) {
+    clearInterval(existingTimer);
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let activeIndex = 0;
+
+  const openNextColumn = () => {
+    if (document.hidden) return;
+
+    columns.forEach(column => column.classList.remove('is-open'));
+    columns[activeIndex].classList.add('is-open');
+    activeIndex = (activeIndex + 1) % columns.length;
+  };
+
+  openNextColumn();
+  const animationTimer = setInterval(openNextColumn, 3200);
+  curtainAnimationTimers.set(selector, animationTimer);
+}
+
+function startHomeCurtainAnimations() {
+  startCurtainAnimation('.project-image-column');
+  startCurtainAnimation('.achievement-image-column');
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    startHomeCurtainAnimations();
+  }
+});
+
+window.addEventListener('pageshow', () => {
+  startHomeCurtainAnimations();
+});
+
 // Load Gallery Preview
 function loadGalleryPreview() {
   const galleryGrid = document.getElementById('galleryPreviewGrid');
@@ -712,6 +772,7 @@ function initHomePage() {
       initParallaxEffects();
       loadFeaturedProjects();
       loadLatestAchievements();
+      startHomeCurtainAnimations();
       loadGalleryPreview();
       handleHomeContactForm();
     });
@@ -726,6 +787,7 @@ function initHomePage() {
     initParallaxEffects();
     loadFeaturedProjects();
     loadLatestAchievements();
+    startHomeCurtainAnimations();
     loadGalleryPreview();
     handleHomeContactForm();
   }
@@ -816,6 +878,7 @@ window.homePageFunctions = {
   initParallaxEffects,
   loadFeaturedProjects,
   loadLatestAchievements,
+  startHomeCurtainAnimations,
   loadGalleryPreview,
   handleHomeContactForm
 };

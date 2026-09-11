@@ -9,7 +9,7 @@
   height: clamp(150px, 20vh, 300px) !important;
 }
 
-/* Animation Classes - Members Page Style */
+/* Card entrance animation - matched to the portal page */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -21,15 +21,29 @@
   }
 }
 
-.animate-on-scroll {
+.facilities-list > .animate-on-scroll {
   animation: fadeInUp 0.6s ease-out forwards;
   opacity: 0;
   transform: translateY(30px);
 }
 
-.animate-on-scroll.animate-in {
-  opacity: 1;
-  transform: translateY(0);
+.facilities-list > .animate-on-scroll:nth-child(1) { animation-delay: 0.05s; }
+.facilities-list > .animate-on-scroll:nth-child(2) { animation-delay: 0.1s; }
+.facilities-list > .animate-on-scroll:nth-child(3) { animation-delay: 0.15s; }
+.facilities-list > .animate-on-scroll:nth-child(4) { animation-delay: 0.2s; }
+.facilities-list > .animate-on-scroll:nth-child(5) { animation-delay: 0.25s; }
+.facilities-list > .animate-on-scroll:nth-child(6) { animation-delay: 0.3s; }
+.facilities-list > .animate-on-scroll:nth-child(7) { animation-delay: 0.35s; }
+.facilities-list > .animate-on-scroll:nth-child(8) { animation-delay: 0.4s; }
+.facilities-list > .animate-on-scroll:nth-child(9) { animation-delay: 0.45s; }
+.facilities-list > .animate-on-scroll:nth-child(10) { animation-delay: 0.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .facilities-list > .animate-on-scroll {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .facility-filter-container {

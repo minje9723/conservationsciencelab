@@ -1932,10 +1932,6 @@ function renderProjectsPage(projectsToShow) {
     </div>
   `;
   
-  // Re-initialize animations
-  setTimeout(() => {
-    initAnimations();
-  }, 50);
 }
 
 // Render pagination controls
@@ -2099,28 +2095,6 @@ window.addProject = addProject;
 window.updateProject = updateProject;
 window.removeProject = removeProject;
 
-// Animation System (Members Page Style)
-function initAnimations() {
-  const observerOptions = {
-    threshold: 0.2,
-    rootMargin: '0px 0px -100px 0px'
-  };
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate-in');
-      }
-    });
-  }, observerOptions);
-  
-  setTimeout(() => {
-    document.querySelectorAll('.animate-on-scroll').forEach(card => {
-      observer.observe(card);
-    });
-  }, 50);
-}
-
 // Add banner animation
 function addBannerAnimation() {
   const style = document.createElement('style');
@@ -2169,14 +2143,8 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     initProjects();
     addBannerAnimation();
-    setTimeout(() => {
-      initAnimations();
-    }, 100);
   });
 } else {
   initProjects();
   addBannerAnimation();
-  setTimeout(() => {
-    initAnimations();
-  }, 100);
 }

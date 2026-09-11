@@ -4093,10 +4093,6 @@ function renderAchievements() {
   // Update filter counts after rendering
   updateActiveFilterCount(currentFilter);
   
-  // Re-initialize animations after rendering
-  setTimeout(() => {
-    initAnimations();
-  }, 50);
 }
 
 // Render pagination controls
@@ -4415,28 +4411,6 @@ window.updateAchievement = updateAchievement;
 window.removeAchievement = removeAchievement;
 window.sortAchievements = sortAchievements;
 
-// Animation System (Members Page Style)
-function initAnimations() {
-  const observerOptions = {
-    threshold: 0.2,
-    rootMargin: '0px 0px -100px 0px'
-  };
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate-in');
-      }
-    });
-  }, observerOptions);
-  
-  setTimeout(() => {
-    document.querySelectorAll('.animate-on-scroll').forEach(card => {
-      observer.observe(card);
-    });
-  }, 50);
-}
-
 // Add banner animation
 function initBannerAnimation() {
   const style = document.createElement('style');
@@ -4499,7 +4473,4 @@ window.changePage = changePage;
 document.addEventListener('DOMContentLoaded', () => {
   initAchievements();
   initBannerAnimation();
-  setTimeout(() => {
-    initAnimations();
-  }, 100);
 });
