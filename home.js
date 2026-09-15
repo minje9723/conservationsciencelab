@@ -1,7 +1,7 @@
 // Home page specific functionality
 
 // Hero Video and Content Animation
-function initHeroVideoAnimation() {
+function initLegacyHeroVideoAnimation() {
   const heroVideo = document.getElementById('heroVideo');
   const heroContent = document.getElementById('heroContent');
   const heroOverlay = document.querySelector('.hero-overlay');
@@ -186,6 +186,91 @@ function initHeroVideoAnimation() {
     heroContent.style.opacity = '1';
     heroContent.style.transform = 'translateY(0)';
   }
+}
+
+// Minimal interactive ambient light animation for the home hero.
+function initHeroVideoAnimation() {
+  const canvas = document.getElementById('heroLineCanvas');
+  const heroContent = document.getElementById('heroContent');
+  const header = document.querySelector('header');
+
+  if (!canvas || !heroContent) return;
+
+  const context = canvas.getContext('2d');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pointer = { x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5 };
+  let animationFrame;
+
+  function resizeCanvas() {
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = canvas.clientWidth * ratio;
+    canvas.height = canvas.clientHeight * ratio;
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+
+  function updatePointer(event) {
+    const point = event.touches?.[0] || event;
+    const bounds = canvas.getBoundingClientRect();
+    pointer.targetX = Math.max(0, Math.min(1, (point.clientX - bounds.left) / bounds.width));
+    pointer.targetY = Math.max(0, Math.min(1, (point.clientY - bounds.top) / bounds.height));
+  }
+
+  function draw(time = 0) {
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const progress = time * 0.00008;
+
+    pointer.x += (pointer.targetX - pointer.x) * 0.04;
+    pointer.y += (pointer.targetY - pointer.y) * 0.04;
+    context.clearRect(0, 0, width, height);
+
+    context.fillStyle = '#f7fafb';
+    context.fillRect(0, 0, width, height);
+
+    const lights = [
+      { x: 0.18, y: 0.25, radius: 0.58, color: [77, 184, 184], speed: 1 },
+      { x: 0.82, y: 0.28, radius: 0.52, color: [124, 151, 218], speed: 0.76 },
+      { x: 0.56, y: 0.86, radius: 0.68, color: [143, 204, 184], speed: 0.58 },
+      { x: 0.5, y: 0.45, radius: 0.42, color: [210, 190, 231], speed: 0.42 }
+    ];
+
+    lights.forEach(light => {
+      const driftX = Math.sin(progress * light.speed + light.x * 7) * width * 0.1;
+      const driftY = Math.cos(progress * light.speed + light.y * 6) * height * 0.08;
+      const pointerX = (pointer.x - 0.5) * width * 0.1;
+      const pointerY = (pointer.y - 0.5) * height * 0.1;
+      const centerX = width * light.x + driftX + pointerX;
+      const centerY = height * light.y + driftY + pointerY;
+      const radius = Math.max(width, height) * light.radius;
+      const gradient = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+      const [red, green, blue] = light.color;
+
+      gradient.addColorStop(0, `rgba(${red}, ${green}, ${blue}, 0.2)`);
+      gradient.addColorStop(0.5, `rgba(${red}, ${green}, ${blue}, 0.08)`);
+      gradient.addColorStop(1, `rgba(${red}, ${green}, ${blue}, 0)`);
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, width, height);
+    });
+
+    if (!reducedMotion) animationFrame = requestAnimationFrame(draw);
+  }
+
+  resizeCanvas();
+  draw();
+  window.addEventListener('resize', resizeCanvas, { passive: true });
+  canvas.addEventListener('pointermove', updatePointer, { passive: true });
+  canvas.addEventListener('touchmove', updatePointer, { passive: true });
+
+  if (header) {
+    header.style.visibility = 'visible';
+    header.style.opacity = '1';
+    header.style.background = 'transparent';
+  }
+  heroContent.style.visibility = 'visible';
+  heroContent.style.opacity = '1';
+  heroContent.style.transform = 'translateY(0)';
+
+  window.addEventListener('pagehide', () => cancelAnimationFrame(animationFrame), { once: true });
 }
 
 // Counter Animation for Impact Metrics

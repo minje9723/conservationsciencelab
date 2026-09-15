@@ -5,6 +5,15 @@ main {
   padding-top: 0 !important;
 }
 
+.home-page header.transparent-header,
+.home-page header.transparent-header.scrolled {
+  background: transparent;
+  border-bottom: 0;
+  box-shadow: none;
+  backdrop-filter: blur(14px) saturate(115%);
+  -webkit-backdrop-filter: blur(14px) saturate(115%);
+}
+
 /* BebasNeue Font */
 @font-face {
   font-family: 'Bebas Neue';
@@ -26,7 +35,8 @@ main {
   padding: 0 2rem;
   overflow: hidden;
   /* 비디오 종료 후 배경 이미지 */
-  background-image: url('../assets/sector banner/home overlay.png');
+  background-color: #f7fafb;
+  color: #17343b;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -42,6 +52,16 @@ main {
   z-index: 1;
   overflow: hidden;
   transition: opacity 1s ease;
+}
+
+.hero-line-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #f7fafb;
+  filter: saturate(92%);
 }
 
 /* 비디오 로딩 인디케이터 */
@@ -187,44 +207,19 @@ main {
   left: 0;
   width: 100%;
   height: 100%;
-  /* 비디오 위 약간의 어두운 오버레이 */
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.08);
   z-index: 2;
   transition: opacity 1s ease;
-}
-
-.skip-intro-btn {
-  position: absolute;
-  right: 2rem;
-  bottom: 2rem;
-  z-index: 4;
-  padding: 0.65rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.35);
-  color: #fff;
-  font: inherit;
-  font-size: 0.85rem;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: opacity 0.3s ease, background 0.3s ease;
-}
-
-.skip-intro-btn:hover {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.skip-intro-btn.hidden {
-  opacity: 0;
-  pointer-events: none;
 }
 
 .hero-content {
   position: relative;
   z-index: 3;
   text-align: center;
-  color: white;
+  color: #17343b;
   max-width: 800px;
+  width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 0 2rem;
   /* 초기 상태: 완전히 숨김 (JavaScript로 제어) */
@@ -245,21 +240,18 @@ main {
 }
 
 .hero-title {
-  font-size: 4rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: clamp(1.15rem, 5vw, 4rem);
   font-weight: 300;
   margin-bottom: 1.5rem;
   line-height: 1.2;
   animation: fadeInUp 1s ease-out 0.2s both;
   font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
-  /* 강한 텍스트 아웃라인과 그림자로 가독성 향상 */
-  text-shadow: 
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000,
-    0 2px 4px rgba(0, 0, 0, 0.8),
-    0 4px 12px rgba(0, 0, 0, 0.6),
-    0 8px 24px rgba(0, 0, 0, 0.4);
+  color: #17343b;
+  text-shadow: none;
 }
 
 /* Apply Bebas Neue to hero English text */
@@ -271,17 +263,9 @@ main {
 
 .hero-title strong {
   font-weight: 700;
-  color: #ffffff;
+  color: #087f8c;
   font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
-  /* strong 태그에도 동일한 텍스트 효과 적용 */
-  text-shadow: 
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000,
-    0 2px 4px rgba(0, 0, 0, 0.8),
-    0 4px 12px rgba(0, 0, 0, 0.6),
-    0 8px 24px rgba(0, 0, 0, 0.4);
+  text-shadow: none;
 }
 
 .hero-title .lang-en strong {
@@ -316,14 +300,8 @@ main {
   animation: fadeInUp 1s ease-out 0.6s both;
   font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
-  /* 강한 텍스트 아웃라인과 그림자 */
-  text-shadow: 
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000,
-    0 2px 6px rgba(0, 0, 0, 0.8),
-    0 4px 16px rgba(0, 0, 0, 0.5);
+  color: #42636a;
+  text-shadow: none;
 }
 
 .hero-actions {

@@ -266,29 +266,29 @@ const teamData = {
     { name_en: "So-Yeon Choi", name_ko: "최소연", period: "2022-", current_org: "한국전통문화대학교 보존과학연구소", current_org_en: "Conservation Science Lab, KNUH", position: "연구원 / 박사과정", position_en: "Researcher / Ph.D. student" },
 
     // 17학번 (2021-2024)
-    { name_en: "Bo-Gyeong Kim", name_ko: "김보경", period: "2021-2024", current_org: "국립현대미술관", current_org_en: "National Museum of Modern and Contemporary Art, Korea", position: "연구원", position_en: "Researcher" },
-    { name_en: "Sun Park", name_ko: "박선", period: "2021-2024", current_org: "국립경주박물관", current_org_en: "Gyeongju National Museum", position: "연구원", position_en: "Researcher" },
-    { name_en: "Ji-Hyeon Yang", name_ko: "양지현", period: "2021-2024", current_org: "국립중원문화유산연구소", current_org_en: "Jungwon National Research Institute of Cultural Heritage", position: "연구원", position_en: "Researcher", hidden: true },
-    { name_en: "Ye-Ji Park", name_ko: "박예지", period: "2023-2025", current_org: "국가유산수리재료센터", current_org_en: "National Heritage Repair Materials Center", position: "연구원", position_en: "Researcher" },
-    { name_en: "Ji-Eun Choi", name_ko: "최지은", period: "2023-2025", current_org: "국가유산수리재료센터", current_org_en: "National Heritage Repair Materials Center", position: "연구원", position_en: "Researcher" },
+    { name_en: "Bo-Gyeong Kim", name_ko: "김보경", period: "2021-2023", current_org: "국립현대미술관", current_org_en: "National Museum of Modern and Contemporary Art, Korea", position: "연구원", position_en: "Researcher" },
+    { name_en: "Sun Park", name_ko: "박선", period: "2021-2023", current_org: "국립경주박물관", current_org_en: "Gyeongju National Museum", position: "연구원", position_en: "Researcher" },
+    { name_en: "Ji-Hyeon Yang", name_ko: "양지현", period: "2021-2023", current_org: "국립중원문화유산연구소", current_org_en: "Jungwon National Research Institute of Cultural Heritage", position: "연구원", position_en: "Researcher" },
+    { name_en: "Ye-Ji Park", name_ko: "박예지", period: "2023-2024", current_org: "국가유산수리재료센터", current_org_en: "National Heritage Repair Materials Center", position: "연구원", position_en: "Researcher" },
+    { name_en: "Ji-Eun Choi", name_ko: "최지은", period: "2023-2024", current_org: "국가유산수리재료센터", current_org_en: "National Heritage Repair Materials Center", position: "연구원", position_en: "Researcher" },
 
     // 16학번 (2018-2022)
     { name_en: "Min-Je Kim", name_ko: "김민제", period: "2021-", current_org: "한국전통문화대학교 보존과학연구소", current_org_en: "Conservation Science Lab, KNUH", position: "연구실 1짱 / 박사과정", position_en: "Head Researcher / Ph.D. student" },
-    { name_en: "Gyeong-Seo Choi", name_ko: "최경서", period: "2018-2022", current_org: "국립김해박물관", current_org_en: "Gimhae National Museum", position: "연구원", position_en: "Researcher" },
+    { name_en: "Gyeong-Seo Choi", name_ko: "최경서", period: "2018-2021", current_org: "", current_org_en: "", position: "", position_en: "" },
 
     // 15학번 (2018-2022)
-    { name_en: "Sang-A Min", name_ko: "민상아", period: "2018-2022", current_org: "국립부여문화유산연구소", current_org_en: "Buyeo National Institute of Cultural Heritage", position: "연구원", position_en: "Researcher" },
-    { name_en: "Dong-Jun Noh", name_ko: "노동준", period: "2021-2024", current_org: "국가유산수리재료센터", current_org_en: "National Heritage Repair Materials Center", position: "품질관리팀 주임연구원", position_en: "Assistant Researcher, Quality Control Team" },
-    { name_en: "So-Yeon Lee", name_ko: "이소연", period: "2018-2021", current_org: "국립중앙박물관 보존과학센터", current_org_en: "Conservation Science Center, National Museum of Korea", position: "학예연구사", position_en: "Curator" },
+    { name_en: "Sang-A Min", name_ko: "민상아", period: "2018-2021", current_org: "국립부여문화유산연구소", current_org_en: "Buyeo National Institute of Cultural Heritage", position: "연구원", position_en: "Researcher" },
+    { name_en: "Dong-Jun Noh", name_ko: "노동준", period: "2021-2023", current_org: "국가유산수리재료센터", current_org_en: "National Heritage Repair Materials Center", position: "품질관리팀 주임연구원", position_en: "Assistant Researcher, Quality Control Team" },
+    { name_en: "So-Yeon Lee", name_ko: "이소연", period: "2018-2020", current_org: "국립중앙박물관 보존과학센터", current_org_en: "Conservation Science Center, National Museum of Korea", position: "학예연구사", position_en: "Curator" },
 
     // 14학번 (2018-2022)
-    { name_en: "Jun-Hyeon Park", name_ko: "박준현", period: "2018-2022", current_org: "문화체육관광부 문화기반과", current_org_en: "Ministry of Culture, Sports and Tourism", position: "공무원", position_en: "Public Official" },
-    { name_en: "Sang-Hoon Lee", name_ko: "이상훈", period: "2022-2023", current_org: "국립현대미술관", current_org_en: "National Museum of Modern and Contemporary Art, Korea", position: "연구원", position_en: "Researcher" },
-    { name_en: "Yang-Ho Choi", name_ko: "최양호", period: "2018-2022", current_org: "전쟁기념관", current_org_en: "War Memorial of Korea", position: "연구원", position_en: "Researcher" },
+    { name_en: "Jun-Hyeon Park", name_ko: "박준현", period: "2018-2021", current_org: "문화체육관광부 문화기반과", current_org_en: "Ministry of Culture, Sports and Tourism", position: "공무원", position_en: "Public Official" },
+    { name_en: "Sang-Hoon Lee", name_ko: "이상훈", period: "2022-2022", current_org: "국립현대미술관", current_org_en: "National Museum of Modern and Contemporary Art, Korea", position: "연구원", position_en: "Researcher" },
+    { name_en: "Yang-Ho Choi", name_ko: "최양호", period: "2018-2021", current_org: "전쟁기념관", current_org_en: "War Memorial of Korea", position: "연구원", position_en: "Researcher" },
 
     // 13학번 (2017-2020)
-    { name_en: "Seung-Chan Lee", name_ko: "이승찬", period: "2019-2022", current_org: "한성백제박물관", current_org_en: "Hansung Baekje Museum", position: "학예연구사", position_en: "Curator" },
-    { name_en: "Jun-Hyeok Jang", name_ko: "장준혁", period: "2018-2021", current_org: "국립가야문화유산연구소", current_org_en: "Gaya National Research Institute of Cultural Heritage", position: "학예연구사", position_en: "Curator" },
+    { name_en: "Seung-Chan Lee", name_ko: "이승찬", period: "2019-2021", current_org: "한성백제박물관", current_org_en: "Hansung Baekje Museum", position: "학예연구사", position_en: "Curator" },
+    { name_en: "Jun-Hyeok Jang", name_ko: "장준혁", period: "2018-2020", current_org: "국립가야문화유산연구소", current_org_en: "Gaya National Research Institute of Cultural Heritage", position: "학예연구사", position_en: "Curator" },
     { name_en: "Yu-Jin Kim", name_ko: "김유진", period: "2016-2020", current_org: "국립가야문화유산연구소", current_org_en: "Gaya National Research Institute of Cultural Heritage", position: "연구원", position_en: "Researcher" },
     { name_en: "Ji-Seon Kim", name_ko: "김지선", period: "2017-2020", current_org: "", current_org_en: "", position: "", position_en: "" },
     { name_en: "Sang-Woo Jeon", name_ko: "전상우", period: "2017-2020", current_org: "", current_org_en: "", position: "", position_en: "" },

@@ -74,7 +74,7 @@
   <link rel="stylesheet" href="styles/common.css">
   <link rel="stylesheet" href="styles/home.css">
 </head>
-<body>
+<body class="home-page">
   <header class="transparent-header">
     <nav class="navbar">
       <div class="logo">
@@ -298,69 +298,18 @@
     <!-- Hero Welcome Section -->
     <section class="hero-section">
       <div class="hero-background">
-        <!-- 비디오 로딩 인디케이터 -->
-        <div class="video-loading-indicator" id="videoLoadingIndicator">
-          <div class="loading-spinner"></div>
-          <p class="loading-text">
-            <span class="lang lang-en">Loading video...</span>
-            <span class="lang lang-ko" style="display:none;">영상 로딩 중...</span>
-            <span class="lang lang-ja" style="display:none;">動画を読み込み中...</span>
-            <span class="lang lang-uz" style="display:none;">Video yuklanmoqda...</span>
-            <span class="lang lang-fr" style="display:none;">Chargement de la vidéo...</span>
-            <span class="lang lang-ar" style="display:none;">جارٍ تحميل الفيديو...</span>
-          </p>
-        </div>
-        <video class="hero-video" autoplay muted playsinline id="heroVideo"
-               preload="metadata">
-          <source src="assets/sector banner/home sector banner.mp4" type="video/mp4">
-          <!-- 영상이 지원되지 않는 브라우저를 위한 대체 이미지 -->
-          Your browser does not support the video tag.
-        </video>
+        <canvas class="hero-line-canvas" id="heroLineCanvas" aria-hidden="true"></canvas>
         <div class="hero-overlay"></div>
       </div>
-      <button class="skip-intro-btn" id="skipIntroButton" type="button" aria-label="Skip intro">
-        <span class="lang lang-en">Skip intro</span>
-        <span class="lang lang-ko" style="display:none;">건너뛰기</span>
-        <span class="lang lang-ja" style="display:none;">スキップ</span>
-        <span class="lang lang-uz" style="display:none;">O'tkazib yuborish</span>
-        <span class="lang lang-fr" style="display:none;">Passer</span>
-        <span class="lang lang-ar" style="display:none;">تخطي</span>
-      </button>
       <div class="hero-content" id="heroContent">
         <h1 class="hero-title">
           <span class="lang lang-en">Welcome to<br><strong>Conservation Science Lab</strong></span>
           <span class="lang lang-ko" style="display:none;">보존과학연구소에<br><strong>오신 것을 환영합니다</strong></span>
-          <span class="lang lang-ja" style="display:none;"><strong>保存科学研究所</strong>へようこそ</span>
-          <span class="lang lang-uz" style="display:none;"><strong>Konservatsiya Fanlari Laboratoriyasi</strong>ga xush kelibsiz</span>
+          <span class="lang lang-ja" style="display:none;"><strong>保存科学研究所</strong><br>へようこそ</span>
+          <span class="lang lang-uz" style="display:none;"><strong>Konservatsiya Fanlari Laboratoriyasi</strong><br>ga xush kelibsiz</span>
           <span class="lang lang-fr" style="display:none;">Bienvenue au<br><strong>Conservation Science Lab</strong></span>
           <span class="lang lang-ar" style="display:none;">مرحبًا بكم في<br><strong>Conservation Science Lab</strong></span>
         </h1>
-        <div class="hero-description">
-          <span class="lang lang-en">
-            We are dedicated to advancing the field of conservation science through cutting-edge research,
-            innovative technologies, and interdisciplinary collaboration at Korea National University of Heritage.
-          </span>
-          <span class="lang lang-ko" style="display:none;">
-            한국전통문화대학교에서 최첨단 연구, 혁신적인 기술, 그리고 학제간 협력을 통해
-            보존과학 분야를 발전시키는데 전념하고 있습니다.
-          </span>
-          <span class="lang lang-ja" style="display:none;">
-            韓国伝統文化大学校において、最先端の研究、革新的な技術、学際的な協力を通じて
-            保存科学分野の発展に取り組んでいます。
-          </span>
-          <span class="lang lang-uz" style="display:none;">
-            Biz Koreya Milliy Meros Universitetida ilg'or tadqiqotlar, innovatsion texnologiyalar
-            va fanlararo hamkorlik orqali konservatsiya fani sohasini rivojlantirishga bag'ishlanganmiz.
-          </span>
-          <span class="lang lang-fr" style="display:none;">
-            Nous nous consacrons à faire progresser la science de la conservation grâce à une recherche de pointe,
-            des technologies innovantes et une collaboration interdisciplinaire à l'Université nationale coréenne du patrimoine.
-          </span>
-          <span class="lang lang-ar" style="display:none;">
-            نحن ملتزمون بتطوير مجال علوم الحفظ من خلال البحث المتطور والتقنيات المبتكرة
-            والتعاون متعدد التخصصات في الجامعة الوطنية الكورية للتراث.
-          </span>
-        </div>
 
         <!-- Hero Impact Showcase -->
         <div class="hero-impact-showcase">
