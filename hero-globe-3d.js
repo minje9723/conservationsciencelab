@@ -74,6 +74,18 @@ let moonEl = null;
 let moonOpacity = 0;
 const sunWorldDir = new THREE.Vector3(0, 0, 1); // 실시간 태양 방향(world) — 지구본 셰이더와 달 조명이 함께 쓴다
 let globeShaderUniforms = null; // 지구본 커스텀 셰이더의 uniforms(day/night 텍스처 블렌딩용). init()의 onBeforeCompile에서 채워진다
+let globeMesh = null;
+let globeMaterial = null;
+let graticuleMesh = null;
+let coreSphereMesh = null;
+let dayTextureLoaded = false;
+let nightTextureLoaded = false;
+let textureFadeStart = null;
+let currentTextureFade = 0; // 0: 뼈대만 표시, 0 -> 1: 텍스처 및 언어/국기 아이콘 동시 페이드인
+let gridFormationStart = 0;
+const TEXTURE_FADE_MS = 1000;
+const GRID_MIN_SOLO_MS = 900;
+const GRID_FORMATION_MS = 1400;
 let container = null;
 let ready = false;
 let pendingMove = null; // init() 전에 들어온 이동 요청 { lang, place }
@@ -264,6 +276,10 @@ function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
 // 위도/경도(도) → spinGroup의 "회전 전(로컬)" 좌표계에서의 구체 표면 좌표.
 // SphereGeometry 기본 UV 매핑(등장방형)과 lonToYawDeg의 기준("회전 없이
 // 카메라를 향하는 경도는 -90°")을 그대로 따르므로, 이 점을 spinGroup의
@@ -323,13 +339,13 @@ function init() {
   const loader = new THREE.TextureLoader();
   const dayTexture = loader.load(
     'assets/earth-texture.jpg',
-    undefined,
+    () => { dayTextureLoaded = true; },
     undefined,
     (error) => console.warn('[hero-globe-3d] 지구(주간) 텍스처 로드 실패, 평면 폴백을 유지합니다', error)
   );
   const nightTexture = loader.load(
     'assets/earth-lights.jpg',
-    undefined,
+    () => { nightTextureLoaded = true; },
     undefined,
     (error) => console.warn('[hero-globe-3d] 지구(야간) 텍스처 로드 실패, 야경 표현 없이 진행합니다', error)
   );
@@ -340,13 +356,30 @@ function init() {
   dayTexture.anisotropy = maxAnisotropy;
   nightTexture.anisotropy = maxAnisotropy;
 
+  // 텍스처 로딩 중 지구의 입체 볼륨을 형성하고 뒷면 위경도선을 자연스럽게 차폐하는 다크 코어 구체
+  const coreSphereGeo = new THREE.SphereGeometry(0.997, 48, 48);
+  const coreSphereMat = new THREE.MeshBasicMaterial({ color: 0x050e19 });
+  coreSphereMesh = new THREE.Mesh(coreSphereGeo, coreSphereMat);
+  spinGroup.add(coreSphereMesh);
+
+  // 초기 로딩 딜레이 동안 지구본의 뼈대를 형성하는 위도·경도 격자(Graticule)
+  graticuleMesh = createGraticuleMesh();
+  spinGroup.add(graticuleMesh);
+  gridFormationStart = performance.now();
+
   // 낮/밤 텍스처를 실시간 태양 방향(worldNormal·sunDirection)에 따라 섞는 커스텀
   // 셰이더. MeshBasicMaterial(무광원)을 베이스로 onBeforeCompile로 map_fragment
   // 단계만 가로채, 기존 색공간/톤매핑 파이프라인은 그대로 유지한다(애플 지구
   // 배경화면처럼 야간 반구에는 도시 불빛 텍스처가, 주간 반구에는 실제 위성사진이
   // 표시되고 그 사이가 부드럽게 전환된다).
-  const material = new THREE.MeshBasicMaterial({ map: dayTexture });
-  material.onBeforeCompile = (shader) => {
+  globeMaterial = new THREE.MeshBasicMaterial({
+    map: dayTexture,
+    transparent: true,
+    opacity: 0,
+    depthWrite: true,
+    depthTest: true
+  });
+  globeMaterial.onBeforeCompile = (shader) => {
     shader.uniforms.nightMap = { value: nightTexture };
     shader.uniforms.sunDirection = { value: new THREE.Vector3(0, 0, 1) };
     shader.vertexShader = shader.vertexShader
@@ -370,7 +403,7 @@ function init() {
       `);
     globeShaderUniforms = shader.uniforms;
   };
-  const globeMesh = new THREE.Mesh(geometry, material);
+  globeMesh = new THREE.Mesh(geometry, globeMaterial);
   spinGroup.add(globeMesh);
 
   // 선택된 언어의 수도 위치를 표시하는 핀포인트 마커(코어 점 + 펄스 링).
@@ -432,7 +465,11 @@ function setCapitalMarkerScale(scale) {
 function setupFlags() {
   flagsLayer = document.querySelector('.hero-globe-flags');
   if (!flagsLayer) return;
+  // 초기 위도·경도 뼈대 형성 중에는 국기/언어 아이콘을 숨겨두고, 텍스처와 함께 동시에 페이드인
+  flagsLayer.style.opacity = '0';
+  flagsLayer.style.pointerEvents = 'none';
   flagsLayer.querySelectorAll('.hero-globe-flag').forEach((el) => {
+    el.style.opacity = '0';
     const capital = HERO_GLOBE_PLACES[el.dataset.place];
     if (!capital) return;
     flagEntries.push({ el, local: latLonToLocalPosition(capital.lat, capital.lon, 1) });
@@ -441,7 +478,7 @@ function setupFlags() {
   });
   // CSS 기본값(원 둘레에 고르게 놓인 정적 배치, 평면 폴백용) 대신 JS가 매 프레임 위치를 정한다
   flagsLayer.classList.add('is-projected');
-  setupDrag(flagsLayer, { isEnabled: () => flagsActive, allowZoom: true });
+  setupDrag(flagsLayer, { isEnabled: () => flagsActive && currentTextureFade > 0.1, allowZoom: true });
 }
 
 // 각 수도의 구체 표면 좌표를 현재 회전 상태의 world 좌표 → 카메라 화면 좌표(%)로
@@ -449,8 +486,24 @@ function setupFlags() {
 // NDC(-1~1)를 그대로 퍼센트로 바꾸면 된다. 구체 중심이 원점이라 world 좌표 자체가
 // 바깥 법선이므로, 카메라 방향과의 내적(facing)으로 앞면/뒷면을 판정해 지구 뒤편으로
 // 넘어가는 국기는 가장자리에서 서서히 사라지게 한다.
+// 텍스처 로드 진행도(currentTextureFade)에 맞춰 텍스처와 동시에 부드럽게 등장한다.
 function updateFlags() {
   if (!flagsActive || !flagEntries.length) return;
+
+  const flagsFade = currentTextureFade;
+  if (flagsLayer) {
+    flagsLayer.style.opacity = flagsFade.toFixed(3);
+    flagsLayer.style.pointerEvents = flagsFade > 0.1 ? 'auto' : 'none';
+  }
+
+  if (flagsFade <= 0.001) {
+    for (const { el } of flagEntries) {
+      el.style.opacity = '0';
+      el.style.pointerEvents = 'none';
+    }
+    return;
+  }
+
   camera.updateMatrixWorld();
   for (const { el, local } of flagEntries) {
     flagWorld.copy(local);
@@ -467,8 +520,11 @@ function updateFlags() {
     el.style.left = `${(flagWorld.x + 1) * 50}%`;
     el.style.top = `${(1 - flagWorld.y) * 50}%`;
     el.style.opacity = visibility.toFixed(3);
-    el.style.setProperty('--flag-scale', (0.72 + 0.28 * visibility).toFixed(3));
+    // 텍스처와 함께 부드럽게 스케일(0.75 -> 1.0)되며 등장
+    const scaleFactor = (0.72 + 0.28 * visibility) * (0.8 + 0.2 * flagsFade);
+    el.style.setProperty('--flag-scale', scaleFactor.toFixed(3));
     el.style.zIndex = String(Math.round(visibility * 100)); // 앞쪽(정면에 가까운) 국기가 위로
+    el.style.pointerEvents = flagsFade > 0.5 && visibility >= 0.25 ? '' : 'none';
     el.classList.toggle('is-behind', visibility < 0.25);
   }
 }
@@ -819,7 +875,7 @@ function setupCardOrbit() {
   cardOmega = cardEls.map(() => 0);
   ring.classList.add('is-draggable');
   setupDrag(ring, {
-    isEnabled: () => landedDragEnabled && pcOrbitLayout.matches,
+    isEnabled: () => landedDragEnabled,
     cards: true
   });
 }
@@ -938,14 +994,6 @@ function stepCardPhysics(dt) {
 
 function updateCardOrbit(delta) {
   if (!cardEls.length) return;
-  if (!pcOrbitLayout.matches) {
-    // 태블릿·휴대폰은 카드가 지구본 안쪽 링에 고정된 배치라 궤도 위치를 쓰지 않는다
-    cardTheta = cardEls.map((_, i) => THREE.MathUtils.degToRad(CARD_ORBIT_BASE_DEG[i] ?? 0));
-    cardOmega = cardEls.map(() => 0);
-    cardGrab = null;
-    if (cardStylesWritten) clearCardOrbitStyles();
-    return;
-  }
   const dt = Math.min(delta, 50); // 탭이 가려졌다 돌아온 첫 프레임에 한 번에 크게 튀지 않도록
   if (dt > 0) stepCardPhysics(dt);
   writeCardOrbitStyles();
@@ -1098,6 +1146,178 @@ function updateMoon(now, delta) {
   moonRenderer.render(moonScene, moonCamera);
 }
 
+// 위도·경도 뼈대 격자망(Graticule) 지오메트리 및 셰이더 생성.
+// - 위도선: -75° ~ +75° (15° 간격의 평행 원형 링, 적도는 네온 액센트)
+// - 경도선: 0° ~ 330° (30° 간격의 대원, 본초자오선은 네온 액센트)
+// - aProgress 속성을 통해 0 -> 1로 회전하며 스캔 스파크 효과와 함께 드로잉
+function createGraticuleMesh() {
+  const positions = [];
+  const progressList = [];
+  const typeList = []; // 0: 일반 위선, 1: 적도/자오선 액센트, 2: 일반 경선
+
+  const R = 1.002;
+  const segmentsPerCircle = 96;
+
+  // 1. 위도선 (Parallels, -75° ~ +75°, 15° 간격)
+  const latitudes = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75];
+  latitudes.forEach((latDeg) => {
+    const latRad = THREE.MathUtils.degToRad(latDeg);
+    const y = R * Math.sin(latRad);
+    const r = R * Math.cos(latRad);
+    const isEquator = latDeg === 0;
+    const typeVal = isEquator ? 1.0 : 0.0;
+
+    for (let i = 0; i < segmentsPerCircle; i++) {
+      const theta1 = (i / segmentsPerCircle) * Math.PI * 2;
+      const theta2 = ((i + 1) / segmentsPerCircle) * Math.PI * 2;
+
+      // lonToYawDeg 및 latLonToLocalPosition 기준과 정렬
+      const x1 = -r * Math.cos(theta1 + Math.PI);
+      const z1 = r * Math.sin(theta1 + Math.PI);
+      const x2 = -r * Math.cos(theta2 + Math.PI);
+      const z2 = r * Math.sin(theta2 + Math.PI);
+
+      positions.push(x1, y, z1, x2, y, z2);
+
+      const p1 = i / segmentsPerCircle;
+      const p2 = (i + 1) / segmentsPerCircle;
+      progressList.push(p1, p2);
+      typeList.push(typeVal, typeVal);
+    }
+  });
+
+  // 2. 경도선 (Meridians, 0° ~ 330°, 30° 간격 대원)
+  for (let lonDeg = 0; lonDeg < 360; lonDeg += 30) {
+    const isPrime = lonDeg === 0 || lonDeg === 180;
+    const typeVal = isPrime ? 1.0 : 2.0;
+    const phi = THREE.MathUtils.degToRad(lonDeg + 180);
+    const cosPhi = Math.cos(phi);
+    const sinPhi = Math.sin(phi);
+
+    for (let i = 0; i < segmentsPerCircle; i++) {
+      const alpha1 = (i / segmentsPerCircle) * Math.PI * 2;
+      const alpha2 = ((i + 1) / segmentsPerCircle) * Math.PI * 2;
+
+      const y1 = R * Math.cos(alpha1);
+      const sinA1 = Math.sin(alpha1);
+      const x1 = -R * sinA1 * cosPhi;
+      const z1 = R * sinA1 * sinPhi;
+
+      const y2 = R * Math.cos(alpha2);
+      const sinA2 = Math.sin(alpha2);
+      const x2 = -R * sinA2 * cosPhi;
+      const z2 = R * sinA2 * sinPhi;
+
+      positions.push(x1, y1, z1, x2, y2, z2);
+
+      const p1 = i / segmentsPerCircle;
+      const p2 = (i + 1) / segmentsPerCircle;
+      progressList.push(p1, p2);
+      typeList.push(typeVal, typeVal);
+    }
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute('aProgress', new THREE.Float32BufferAttribute(progressList, 1));
+  geometry.setAttribute('aType', new THREE.Float32BufferAttribute(typeList, 1));
+
+  const material = new THREE.ShaderMaterial({
+    transparent: true,
+    depthTest: true,
+    depthWrite: false,
+    uniforms: {
+      uProgress: { value: 0.0 },
+      uOpacity: { value: 0.75 },
+      uColorBase: { value: new THREE.Color(0x2fa4b8) },   // 연구실 메인 시안/청록
+      uColorAccent: { value: new THREE.Color(0x39ff14) } // 적도·본초자오선 네온 그린
+    },
+    vertexShader: `
+      attribute float aProgress;
+      attribute float aType;
+      varying float vProgress;
+      varying float vType;
+      void main() {
+        vProgress = aProgress;
+        vType = aType;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uProgress;
+      uniform float uOpacity;
+      uniform vec3 uColorBase;
+      uniform vec3 uColorAccent;
+      varying float vProgress;
+      varying float vType;
+      void main() {
+        if (vProgress > uProgress) discard;
+
+        // 선두에서 빛을 내며 그려지는 스파크(spark) 헤드
+        float head = smoothstep(0.07, 0.0, abs(vProgress - uProgress));
+        vec3 baseCol = (vType > 0.5 && vType < 1.5) ? uColorAccent : uColorBase;
+        vec3 col = mix(baseCol, vec3(0.9, 1.0, 0.95), head * 0.85);
+
+        float alpha = clamp(uOpacity * (0.8 + head * 0.6), 0.0, 1.0);
+        gl_FragColor = vec4(col, alpha);
+      }
+    `
+  });
+
+  return new THREE.LineSegments(geometry, material);
+}
+
+// 위도·경도 선의 형성 진행도 및 텍스처 페이드인 갱신 루프
+function updateGraticuleAndTextures(now) {
+  if (!graticuleMesh || !globeMaterial) return;
+
+  const reducedMotion = prefersReducedMotion();
+
+  // 1. 위경도 선 드로잉 형성 (uProgress: 0 -> 1)
+  if (reducedMotion) {
+    graticuleMesh.material.uniforms.uProgress.value = 1.0;
+  } else {
+    const formT = Math.min(1.0, (now - gridFormationStart) / GRID_FORMATION_MS);
+    graticuleMesh.material.uniforms.uProgress.value = easeOutCubic(formT);
+  }
+
+  // 2. 텍스처 로드 완료 후 페이드인
+  const formElapsed = now - gridFormationStart;
+  const isLanded = !flagsActive || currentPlace !== null || (camera && camera.position.z < CAMERA_Z_DEFAULT - 0.2);
+
+  if (dayTextureLoaded && (formElapsed >= GRID_MIN_SOLO_MS || reducedMotion)) {
+    if (textureFadeStart === null) textureFadeStart = now;
+    const fadeT = reducedMotion ? 1.0 : Math.min(1.0, (now - textureFadeStart) / TEXTURE_FADE_MS);
+    const easedFade = easeInOutCubic(fadeT);
+    currentTextureFade = easedFade;
+
+    // 지구본 텍스처 페이드인 (언어/국기 아이콘도 updateFlags에서 이 수치와 동기화되어 함께 페이드인)
+    globeMaterial.opacity = easedFade;
+
+    // 텍스처가 나타나면 위경도 선은 초기 강조(0.75)에서 은은한 정밀 HUD(0.18)로 전환, 착지 시 0으로 페이드
+    const targetGridOpacity = isLanded ? 0.0 : THREE.MathUtils.lerp(0.75, 0.18, easedFade);
+    graticuleMesh.material.uniforms.uOpacity.value = THREE.MathUtils.lerp(
+      graticuleMesh.material.uniforms.uOpacity.value,
+      targetGridOpacity,
+      0.1
+    );
+
+    // 페이드 완료 후 차폐 다크 구체는 숨겨 렌더링 최적화
+    if (fadeT >= 1.0 && coreSphereMesh && coreSphereMesh.visible) {
+      coreSphereMesh.visible = false;
+    }
+  } else {
+    // 텍스처 로딩 중: 뼈대 선만 보이고 국기/언어 아이콘은 숨김
+    currentTextureFade = 0;
+    const targetGridOpacity = isLanded ? 0.0 : 0.75;
+    graticuleMesh.material.uniforms.uOpacity.value = THREE.MathUtils.lerp(
+      graticuleMesh.material.uniforms.uOpacity.value,
+      targetGridOpacity,
+      0.1
+    );
+  }
+}
+
 function onResize() {
   if (!container || !renderer) return;
   const size = container.clientWidth || 640;
@@ -1141,6 +1361,7 @@ function animate(now) {
   updateSunLight(now);
   updateFlags();
   updateMoon(now, delta);
+  updateGraticuleAndTextures(now);
   if (capitalMarkerRing && !prefersReducedMotion()) {
     const pulse = 1 + 0.35 * (0.5 + 0.5 * Math.sin(now * 0.0035));
     capitalMarkerRing.scale.setScalar(pulse);

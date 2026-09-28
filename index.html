@@ -92,8 +92,8 @@
 
   <link rel="stylesheet" href="styles/variables.css">
   <link rel="stylesheet" href="styles/common.css">
-  <link rel="stylesheet" href="styles/home.css?v=20260929-21">
-  <link rel="stylesheet" href="styles/hero-globe.css?v=20260929-21">
+  <link rel="stylesheet" href="styles/home.css?v=20260929-29">
+  <link rel="stylesheet" href="styles/hero-globe.css?v=20260929-28">
   <link rel="stylesheet" href="styles/hero-weather.css">
 </head>
 <body class="home-page">
@@ -338,33 +338,7 @@
             <source src="assets/sector banner/kor-lang.mp4" type="video/mp4">
           </video>
         </div>
-        <!-- 토성의 고리처럼 지구본을 감싸고 도는 환영 문구. 실제로 읽히는(SEO·스크린리더용)
-             제목은 아래 .hero-title(h1)이며, 이 SVG는 그것을 그대로 복제한 장식용
-             링이라 aria-hidden 처리한다. 언어별 텍스트는 .hero-title과 똑같이
-             .lang/.lang-xx 클래스로 전환된다(common.js가 두 곳 모두에 동일하게 적용). -->
-        <svg class="hero-ring-text" viewBox="0 0 800 800" aria-hidden="true" focusable="false">
-          <defs>
-            <path id="heroRingTextPath" d="M 40,400 A 360,360 0 0,1 760,400 A 360,360 0 0,1 40,400" />
-          </defs>
-          <text class="lang lang-en">
-            <textPath href="#heroRingTextPath">Welcome to Conservation Science Lab · Welcome to Conservation Science Lab · </textPath>
-          </text>
-          <text class="lang lang-ko" style="display:none;">
-            <textPath href="#heroRingTextPath">보존과학연구소에 오신 것을 환영합니다 · 보존과학연구소에 오신 것을 환영합니다 · </textPath>
-          </text>
-          <text class="lang lang-ja" style="display:none;">
-            <textPath href="#heroRingTextPath">保存科学研究所へようこそ · 保存科学研究所へようこそ · 保存科学研究所へようこそ · </textPath>
-          </text>
-          <text class="lang lang-uz" style="display:none;">
-            <textPath href="#heroRingTextPath">Konservatsiya Fanlari Laboratoriyasiga xush kelibsiz · </textPath>
-          </text>
-          <text class="lang lang-fr" style="display:none;">
-            <textPath href="#heroRingTextPath">Bienvenue au Conservation Science Lab · Bienvenue au Conservation Science Lab · </textPath>
-          </text>
-          <text class="lang lang-ar" style="display:none;">
-            <textPath href="#heroRingTextPath">مرحبًا بكم في Conservation Science Lab · مرحبًا بكم في Conservation Science Lab · </textPath>
-          </text>
-        </svg>
+
         <div class="hero-weather" id="heroWeather" aria-hidden="true"></div>
         <div class="hero-overlay"></div>
       </div>
@@ -1135,6 +1109,6 @@
   <script src="achievements.js?v=20260929-21"></script>
   <script src="gallery.js"></script>
   <script src="home.js?v=20260929-21"></script>
-  <script type="module" src="hero-globe-3d.js?v=20260929-21"></script>
+  <script type="module" src="hero-globe-3d.js?v=20260929-24"></script>
 </body>
 </html>
