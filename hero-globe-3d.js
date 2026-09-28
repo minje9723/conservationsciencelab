@@ -41,6 +41,9 @@ const CAMERA_Z_DEFAULT = 3.55;
 const TRAVEL_MS = 1600;      // 이동(자전축 회전) 소요 시간
 const ZOOM_MS = 900;         // 확대 소요 시간
 const IDLE_SPIN_PER_MS = 0.00007; // 아무 언어도 선택되지 않은 초기 상태의 유휴 자전 속도(rad/ms). 완전히 한 바퀴 도는 데 약 90초
+const RESUME_SPIN_AFTER_LANDING_MS = 5000; // 착지한 나라에 이만큼 머문 뒤 다시 천천히 자전한다(모든 언어 공통)
+const RESUME_ZOOM_MS = 2200;  // 자전을 다시 시작할 때 기본 거리로 천천히 줌아웃하는 시간
+const SPIN_RAMP_MS = 2500;    // 자전을 다시 시작할 때 속도를 0에서 유휴 속도까지 서서히 올리는 시간
 const HERO_GLOBE_MARKER_COLOR = 0x39ff14; // 형광 녹색(neon green)
 const HERO_GLOBE_MARKER_OPACITY = 0.7; // 핀포인트(코어 점) 투명도
 const MARKER_LANDED_SCALE = 0.6; // 착지(확대) 시 마커가 작아지는 배율 — 카메라가 가까워져 원근감으로도 커 보이므로, 마커 자체는 반비례로 줄여 균형을 맞춘다
@@ -55,6 +58,9 @@ let pendingLang = null;
 let currentLang = null;
 let idleSpin = true;
 let travelToken = 0; // 새 이동이 시작되면 이전 애니메이션 루프를 무효화하기 위한 토큰
+let resumeSpinTimer = null;
+let spinResumed = false; // 착지 후 다시 자전 중인지 — 이때 같은 언어를 다시 고르면 그 나라로 되돌아가야 한다
+let spinRampStart = null; // 자전 재개 시 속도를 서서히 올리기 시작한 시각(null이면 바로 유휴 속도)
 let lastFrameTime = 0;
 let lastSunUpdateTime = -Infinity; // -Infinity로 시작해 최초 1회는 항상 즉시 계산되도록 한다
 
@@ -428,6 +434,31 @@ function announceLanded(lang) {
   window.dispatchEvent(new CustomEvent('heroglobe:landed', { detail: { lang } }));
 }
 
+// 착지 후 머무는 시간이 끝나면: (한국이면 영상을 내리고) 기본 거리로 천천히 줌아웃하면서
+// 유휴 자전을 0에서부터 서서히 가속해 다시 시작한다. 마커는 지도에 붙어 있으므로 선택했던
+// 수도와 함께 돌아간다. 그 사이 다른 언어로 이동이 시작됐다면(travelToken 변경) 아무것도 하지 않는다.
+function resumeSpinAfterLanding(token) {
+  if (token !== travelToken) return;
+  spinResumed = true;
+  hideKoreaVideo();
+
+  const zoomFrom = camera.position.z;
+  const markerScaleFrom = capitalMarker ? capitalMarker.scale.x : 1;
+  const start = performance.now();
+  function step(now) {
+    if (token !== travelToken) return;
+    const t = Math.min(1, Math.max(0, (now - start) / RESUME_ZOOM_MS));
+    const eased = easeInOutCubic(t);
+    camera.position.z = zoomFrom + (CAMERA_Z_DEFAULT - zoomFrom) * eased;
+    setCapitalMarkerScale(markerScaleFrom + (1 - markerScaleFrom) * eased);
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+
+  spinRampStart = start;
+  idleSpin = true;
+}
+
 function onResize() {
   if (!container || !renderer) return;
   const size = container.clientWidth || 640;
@@ -441,7 +472,13 @@ function animate(now) {
   const delta = now - lastFrameTime;
   lastFrameTime = now;
   if (idleSpin && !flagHover && !prefersReducedMotion() && spinGroup) {
-    spinGroup.rotation.y += delta * IDLE_SPIN_PER_MS;
+    let speedFactor = 1;
+    if (spinRampStart !== null) {
+      const t = Math.min(1, Math.max(0, (now - spinRampStart) / SPIN_RAMP_MS));
+      speedFactor = t * t; // 멈춰 있던 지구가 툭 튀지 않고 서서히 가속되도록 ease-in
+      if (t === 1) spinRampStart = null;
+    }
+    spinGroup.rotation.y += delta * IDLE_SPIN_PER_MS * speedFactor;
   }
   scene.updateMatrixWorld(); // 드래그로 바뀐 framingGroup 회전까지 반영한 뒤 태양 방향·국기 위치를 계산
   updateSunLight(now);
@@ -460,14 +497,18 @@ function moveToLanguage(lang) {
     return;
   }
   const target = HERO_GLOBE_CAPITALS[lang] || HERO_GLOBE_CAPITALS.ko;
-  if (currentLang === lang) {
-    // 이미 그 나라에 착지해 있는데 같은 언어를 다시 고른 경우: 이동할 필요는 없고,
-    // 한국이면 영상만 (혹시 멈춰 있었다면) 다시 보여준다.
+  if (currentLang === lang && !spinResumed) {
+    // 그 나라로 이동 중이거나 착지해 머무는 중에 같은 언어를 다시 고른 경우: 이동할 필요는
+    // 없고, 한국이면 영상만 (혹시 멈춰 있었다면) 다시 보여준다. (착지 후 다시 자전하기
+    // 시작했다면 지구가 돌아가 버렸으므로 아래로 내려가 그 나라로 다시 이동한다)
     if (lang === 'ko') showKoreaVideo();
     return;
   }
   currentLang = lang;
   idleSpin = false;
+  spinResumed = false;
+  spinRampStart = null;
+  window.clearTimeout(resumeSpinTimer);
   flagsActive = false; // 언어가 정해졌으므로 국기 선택 화면(투영·드래그)은 더 이상 쓰지 않는다
   dragState = null;
   window.clearTimeout(idleResumeTimer);
@@ -495,7 +536,7 @@ function moveToLanguage(lang) {
     setCapitalMarkerScale(MARKER_LANDED_SCALE);
     if (lang === 'ko') showKoreaVideo();
     announceLanded(lang);
-    return;
+    return; // 움직임 줄이기 설정에서는 착지 후 다시 자전하지 않고 그대로 머문다
   }
 
   // 이전에 다른 나라로 확대되어 있던 상태라면: 먼저 기본 거리로 줌아웃한 뒤에
@@ -546,8 +587,10 @@ function moveToLanguage(lang) {
       }
       // t===1: 확대된 상태로 고정(lock). 한국에 착지했다면 여기서 영상을 페이드인하고,
       // home.js에 착지를 알려 제목·카드 링·식단/포디움 패널을 띄우게 한다.
+      // 5초 동안 그 나라에 머문 뒤에는 다시 천천히 자전한다.
       if (lang === 'ko') showKoreaVideo();
       announceLanded(lang);
+      resumeSpinTimer = window.setTimeout(() => resumeSpinAfterLanding(myToken), RESUME_SPIN_AFTER_LANDING_MS);
     }
     requestAnimationFrame(step);
   }

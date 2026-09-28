@@ -288,6 +288,8 @@ let heroGlobeIdlePercent = null; // background-position-x(%). 첫 프레임에 �
 // moveHeroGlobeToLanguage()의 hero-landed/userSelected 조건이 담당한다.
 let heroGlobeCurrentLang = null;
 const HERO_GLOBE_IDLE_PERCENT_PER_MS = 0.0022; // 200%(한 바퀴)를 약 90초에 도는 속도
+const HERO_GLOBE_RESUME_SPIN_MS = 5000; // 착지 후 이만큼 머문 뒤 다시 천천히 자전(hero-globe-3d.js와 동일)
+let heroGlobeSpinResumed = false;
 
 // 히어로 첫 화면 상태(<html> 클래스, styles/hero-globe.css가 이 클래스로 표시 여부를 전환):
 //   (없음)          첫 방문 — 지구본 자전 + 수도별 국기만 표시
@@ -364,8 +366,12 @@ function moveHeroGlobeToLanguage(lang, userSelected = false) {
   const pin = document.querySelector('.hero-globe-pin'); // 수도 핀포인트. 줌인/줌아웃에 맞춰 크기도 같이 비례한다
   const lights = surface.querySelector('.hero-globe-lights'); // 야간 불빛 레이어. 주간 텍스처와 같은 지점을 가리키도록 계속 동기화한다
 
-  if (heroGlobeCurrentLang === lang) return; // 이미 그 나라(유휴 자전 포함)라면 아무것도 하지 않는다
+  // 이미 그 나라로 이동 중이거나 머무는 중이면 아무것도 하지 않는다(착지 후 다시 자전하기
+  // 시작했다면 지도가 흘러가 버렸으므로 그 나라로 다시 이동한다)
+  if (heroGlobeCurrentLang === lang && !heroGlobeSpinResumed) return;
   heroGlobeCurrentLang = lang;
+  heroGlobeSpinResumed = false;
+  if (pin) pin.style.opacity = '';
   renderHeroGlobeSky(); // 새로 선택된 나라 기준으로 주야간 표현을 다시 계산한다
 
   const target = HERO_GLOBE_LANGUAGE_POSITIONS[lang] || HERO_GLOBE_LANGUAGE_POSITIONS.ko;
@@ -404,9 +410,30 @@ function moveHeroGlobeToLanguage(lang, userSelected = false) {
     heroGlobeTravelTimers.push(window.setTimeout(() => {
       surface.classList.add('is-landing'); // 도착 지점에서 그 나라가 원의 약 80%를 채우도록 줌인
       if (pin) pin.classList.add('is-landing'); // 핀도 지도 확대에 비례해 같이 커진다
-      if (landsHere) heroGlobeTravelTimers.push(window.setTimeout(markHeroLanded, HERO_GLOBE_ZOOM_MS));
+      if (landsHere) {
+        heroGlobeTravelTimers.push(window.setTimeout(markHeroLanded, HERO_GLOBE_ZOOM_MS));
+        heroGlobeTravelTimers.push(window.setTimeout(
+          () => resumeFlatGlobeSpin(surface, pin, position),
+          HERO_GLOBE_ZOOM_MS + HERO_GLOBE_RESUME_SPIN_MS
+        ));
+      }
     }, HERO_GLOBE_TRAVEL_PAN_MS));
   }, panDelay));
+}
+
+// 평면 폴백에서도 3D 버전과 똑같이, 착지한 나라에 5초 머문 뒤 줌아웃하고 다시 천천히 흐른다.
+// 가운데 고정 핀은 지도가 흘러가면 수도를 가리키지 못하므로 숨긴다.
+function resumeFlatGlobeSpin(surface, pin, position) {
+  heroGlobeSpinResumed = true;
+  surface.classList.remove('is-landing');
+  if (pin) {
+    pin.classList.remove('is-landing');
+    pin.style.opacity = '0';
+  }
+  heroGlobeIdlePercent = parseFloat(position);
+  heroGlobeIdleActive = true;
+  // startHeroGlobeIdleSpin()은 transition을 끄므로, 줌아웃 트랜지션이 끝난 뒤에 시작한다
+  heroGlobeTravelTimers.push(window.setTimeout(startHeroGlobeIdleSpin, HERO_GLOBE_ZOOM_MS));
 }
 
 // 휴대폰에서 좌우로 넘기는 식단·포디움 카드(.hero-panels) 아래 점 표시를 현재 스크롤
