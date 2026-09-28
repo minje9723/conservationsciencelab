@@ -37,6 +37,8 @@
 .achievement-list > .animate-on-scroll:nth-child(8) { animation-delay: 0.4s; }
 .achievement-list > .animate-on-scroll:nth-child(9) { animation-delay: 0.45s; }
 .achievement-list > .animate-on-scroll:nth-child(10) { animation-delay: 0.5s; }
+.achievement-list > .animate-on-scroll:nth-child(11) { animation-delay: 0.55s; }
+.achievement-list > .animate-on-scroll:nth-child(12) { animation-delay: 0.6s; }
 
 @media (prefers-reduced-motion: reduce) {
   .achievement-list > .animate-on-scroll {

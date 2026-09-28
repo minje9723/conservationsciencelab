@@ -188,7 +188,7 @@ function initLegacyHeroVideoAnimation() {
   }
 }
 
-// Minimal interactive ambient light animation for the home hero.
+// Minimal interactive spatial energy animation for the home hero.
 function initHeroVideoAnimation() {
   const canvas = document.getElementById('heroLineCanvas');
   const heroContent = document.getElementById('heroContent');
@@ -227,30 +227,43 @@ function initHeroVideoAnimation() {
     context.fillStyle = '#f7fafb';
     context.fillRect(0, 0, width, height);
 
-    const lights = [
-      { x: 0.18, y: 0.25, radius: 0.58, color: [77, 184, 184], speed: 1 },
-      { x: 0.82, y: 0.28, radius: 0.52, color: [124, 151, 218], speed: 0.76 },
-      { x: 0.56, y: 0.86, radius: 0.68, color: [143, 204, 184], speed: 0.58 },
-      { x: 0.5, y: 0.45, radius: 0.42, color: [210, 190, 231], speed: 0.42 }
-    ];
+    const centerX = width * (0.5 + (pointer.x - 0.5) * 0.08);
+    const centerY = height * (0.5 + (pointer.y - 0.5) * 0.08);
+    const baseRadius = Math.min(width, height) * 0.12;
 
-    lights.forEach(light => {
-      const driftX = Math.sin(progress * light.speed + light.x * 7) * width * 0.1;
-      const driftY = Math.cos(progress * light.speed + light.y * 6) * height * 0.08;
-      const pointerX = (pointer.x - 0.5) * width * 0.1;
-      const pointerY = (pointer.y - 0.5) * height * 0.1;
-      const centerX = width * light.x + driftX + pointerX;
-      const centerY = height * light.y + driftY + pointerY;
-      const radius = Math.max(width, height) * light.radius;
-      const gradient = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-      const [red, green, blue] = light.color;
+    // An original spatial-wave motif: compressed rings expand and dissolve slowly.
+    for (let ring = 0; ring < 9; ring += 1) {
+      const pulse = (Math.sin(progress * 1.4 - ring * 0.55) + 1) * 0.5;
+      const radius = baseRadius + ring * Math.min(width, height) * 0.065 + pulse * 8;
+      const rotation = progress * 0.12 + ring * 0.3;
+      const gradient = context.createLinearGradient(
+        centerX - radius,
+        centerY - radius,
+        centerX + radius,
+        centerY + radius
+      );
+      gradient.addColorStop(0, 'rgba(88, 61, 190, 0)');
+      gradient.addColorStop(0.48, `rgba(106, 78, 211, ${0.08 + pulse * 0.07})`);
+      gradient.addColorStop(0.56, `rgba(50, 181, 202, ${0.1 + pulse * 0.08})`);
+      gradient.addColorStop(1, 'rgba(88, 61, 190, 0)');
 
-      gradient.addColorStop(0, `rgba(${red}, ${green}, ${blue}, 0.2)`);
-      gradient.addColorStop(0.5, `rgba(${red}, ${green}, ${blue}, 0.08)`);
-      gradient.addColorStop(1, `rgba(${red}, ${green}, ${blue}, 0)`);
-      context.fillStyle = gradient;
-      context.fillRect(0, 0, width, height);
-    });
+      context.save();
+      context.translate(centerX, centerY);
+      context.rotate(rotation);
+      context.beginPath();
+      context.ellipse(0, 0, radius * 1.7, radius * 0.52, 0, 0, Math.PI * 2);
+      context.strokeStyle = gradient;
+      context.lineWidth = 1.5 + pulse;
+      context.stroke();
+      context.restore();
+    }
+
+    const core = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, baseRadius * 2.2);
+    core.addColorStop(0, 'rgba(117, 82, 224, 0.16)');
+    core.addColorStop(0.45, 'rgba(69, 177, 205, 0.08)');
+    core.addColorStop(1, 'rgba(247, 250, 251, 0)');
+    context.fillStyle = core;
+    context.fillRect(0, 0, width, height);
 
     if (!reducedMotion) animationFrame = requestAnimationFrame(draw);
   }
@@ -842,6 +855,208 @@ function handleHomeContactForm() {
   });
 }
 
+// 동일 발표/논문이 데이터에 중복 입력된 경우가 있어 집계 전에 제거한다.
+function getUniqueAchievements() {
+  if (typeof achievements === 'undefined') return [];
+  const seenRecords = new Set();
+  return achievements.filter(achievement => {
+    const signature = [
+      achievement.type,
+      achievement.title_ko || achievement.title,
+      achievement.authors_ko || achievement.recipient_ko
+    ].join('|');
+    if (seenRecords.has(signature)) return false;
+    seenRecords.add(signature);
+    return true;
+  });
+}
+
+function renderResearchLeague() {
+  const grid = document.getElementById('researchLeagueGrid');
+  if (!grid || typeof achievements === 'undefined') return;
+
+  const lang = document.documentElement.lang || 'ko';
+  const labels = {
+    publication: { en: 'Publication King', ko: '논문왕', ja: '論文王', uz: 'Nashrlar qiroli', fr: 'Roi des publications', ar: 'ملك المنشورات' },
+    conference: { en: 'Presentation King', ko: '발표왕', ja: '発表王', uz: 'Taqdimotlar qiroli', fr: 'Roi des présentations', ar: 'ملك العروض' },
+    award: { en: 'Award King', ko: '수상왕', ja: '受賞王', uz: 'Mukofotlar qiroli', fr: 'Roi des distinctions', ar: 'ملك الجوائز' }
+  };
+  const countLabels = { en: 'records', ko: '건', ja: '件', uz: 'ta yozuv', fr: 'entrées', ar: 'سجلات' };
+  const typeOrder = ['publication', 'conference', 'award'];
+
+  // 교신저자 교수는 한글 성명(원문 데이터의 유일한 신뢰 가능 필드)으로만 판별한다.
+  // 영문 성명은 "Kwang-Yong Chung" / "Chung-Kwang Yong"처럼 성-이름 순서와
+  // 하이픈 표기가 레코드마다 달라서, 영문 필드로 비교하면 교수 실적이 새어 들어온다.
+  const normalizeName = name => name.toLowerCase().replace(/[\s.-]/g, '');
+  const alwaysExcludedProfessorKoNames = new Set(['정광용', '정광용 교수'].map(normalizeName));
+  // 이상옥 교수는 2023년부터 교신저자로 전환되어 집계에서 제외한다. 2022년까지의 실적은 공동저자로 반영한다.
+  const conditionallyExcludedProfessors = new Map(
+    ['이상옥', '이상옥 교수'].map(name => [normalizeName(name), 2023])
+  );
+  const isProfessor = (koName, year) => {
+    const normalized = normalizeName(koName);
+    if (alwaysExcludedProfessorKoNames.has(normalized)) return true;
+    const excludedFromYear = conditionallyExcludedProfessors.get(normalized);
+    return excludedFromYear !== undefined && Number(year) >= excludedFromYear;
+  };
+
+  const uniqueAchievements = getUniqueAchievements();
+
+  const rankings = typeOrder.map(type => {
+    // 영문 표기가 사람마다 순서/하이픈이 제각각이라, 한글 성명을 기준 키로 묶고
+    // 화면에 보여줄 이름만 현재 언어에 맞춰 고른다.
+    const people = new Map();
+    const records = uniqueAchievements.filter(achievement => achievement.type === type);
+
+    records.forEach(achievement => {
+      const koNames = (type === 'award' ? achievement.recipient_ko : achievement.authors_ko || '')
+        .split(',').map(name => name.trim());
+      const displayNames = (type === 'award'
+        ? (lang === 'ko' ? achievement.recipient_ko : achievement.recipient)
+        : (lang === 'ko' ? achievement.authors_ko : achievement.authors) || '')
+        .split(',').map(name => name.trim());
+
+      koNames.forEach((koName, index) => {
+        if (!koName || isProfessor(koName, achievement.year)) return;
+        // 2022년까지의 이상옥 교수 실적은 공동저자로 반영하되, 순위표에서는
+        // 교신저자 전환 이후(2023~)의 이상옥과 구분되도록 별도 표기로 보여준다.
+        const isEarlySangOkLee = normalizeName(koName) === normalizeName('이상옥') && Number(achievement.year) <= 2022;
+        const displayName = isEarlySangOkLee ? '07-22 이상옥' : (displayNames[index] || koName);
+        if (!people.has(koName)) people.set(koName, { count: 0, displayNameCounts: new Map() });
+        const person = people.get(koName);
+        person.count += 1;
+        person.displayNameCounts.set(displayName, (person.displayNameCounts.get(displayName) || 0) + 1);
+      });
+    });
+
+    const leaders = [...people.entries()].map(([, person]) => {
+      const [mostUsedName] = [...person.displayNameCounts.entries()].sort((a, b) => b[1] - a[1])[0];
+      return [mostUsedName, person.count];
+    }).sort((first, second) => {
+      return second[1] - first[1] || first[0].localeCompare(second[0]);
+    }).slice(0, 3);
+
+    return {
+      type,
+      leaders,
+      recordCount: records.length
+    };
+  });
+
+  const totalLabels = { en: 'total', ko: '전체', ja: '全体', uz: 'jami', fr: 'total', ar: 'الإجمالي' };
+  const getLabel = (dictionary, key) => dictionary[key] || dictionary.en;
+  grid.innerHTML = rankings.map(ranking => `
+    <article class="research-league-card">
+      <div class="research-league-category-row">
+        <div class="research-league-category">${getLabel(labels[ranking.type], lang)}</div>
+        <div class="research-league-category-count">${ranking.recordCount} ${getLabel(countLabels, lang)} ${getLabel(totalLabels, lang)}</div>
+      </div>
+      <ol class="research-league-ranking">
+        ${[0, 1, 2].map(index => {
+          const leader = ranking.leaders[index];
+          return `
+            <li class="research-league-ranking-item${index === 0 ? ' is-first' : ''}${leader ? '' : ' is-empty'}">
+              <span class="research-league-rank">${index + 1}</span>
+              <span class="research-league-name">${leader ? leader[0] : '-'}</span>
+              <span class="research-league-count">${leader ? `${leader[1]} ${getLabel(countLabels, lang)}` : ''}</span>
+            </li>
+          `;
+        }).join('')}
+      </ol>
+      <a class="research-league-card-link" href="achievements.html?filter=${ranking.type}">
+        <span class="lang lang-en">View records</span>
+        <span class="lang lang-ko" style="display:none;">기록 보기</span>
+        <span class="lang lang-ja" style="display:none;">記録を見る</span>
+        <span class="lang lang-uz" style="display:none;">Yozuvlarni ko'rish</span>
+        <span class="lang lang-fr" style="display:none;">Voir les résultats</span>
+        <span class="lang lang-ar" style="display:none;">عرض السجلات</span>
+      </a>
+    </article>
+  `).join('');
+}
+
+function initResearchLeague() {
+  renderResearchLeague();
+}
+
+// 오늘의 식단표는 data/daily-menu.json에서 읽어온다. 이 파일은 한국전통문화대학교
+// 학식 페이지(knuh.ac.kr)를 매주 월요일 아침 GitHub Actions가 자동으로 읽어와
+// 갱신한다 (scripts/update-daily-menu.js, .github/workflows/update-daily-menu.yml 참고).
+// "YYYY-MM-DD" 키 아래에 그날의 조식/중식/석식 메뉴 배열이 들어있고, 급식이 없는
+// 끼니는 키 자체가 없다.
+let dailyMenuDataPromise = null;
+function loadDailyMenuData() {
+  if (!dailyMenuDataPromise) {
+    dailyMenuDataPromise = fetch('data/daily-menu.json')
+      .then(response => (response.ok ? response.json() : {}))
+      .catch(() => ({}));
+  }
+  return dailyMenuDataPromise;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+async function renderDailyMenu() {
+  const dateEl = document.getElementById('dailyMenuDate');
+  const gridEl = document.getElementById('dailyMenuGrid');
+  if (!dateEl || !gridEl) return;
+
+  // 날짜별 소제목으로 대체되므로 상단 단일 날짜 표시는 쓰지 않는다.
+  dateEl.style.display = 'none';
+
+  const lang = document.documentElement.lang || 'ko';
+  const localeByLang = { ko: 'ko-KR', en: 'en-US', ja: 'ja-JP', uz: 'uz-UZ', fr: 'fr-FR', ar: 'ar-SA' };
+  const locale = localeByLang[lang] || localeByLang.en;
+
+  const mealLabels = {
+    lunch: { en: 'Lunch', ko: '중식', ja: '昼食', uz: 'Tushlik', fr: 'Déjeuner', ar: 'الغداء' },
+    dinner: { en: 'Dinner', ko: '석식', ja: '夕食', uz: 'Kechki ovqat', fr: 'Dîner', ar: 'العشاء' }
+  };
+  const emptyLabel = {
+    en: 'Menu not yet updated', ko: '메뉴 준비 중입니다', ja: '準備中です', uz: 'Tayyorlanmoqda', fr: 'Menu à venir', ar: 'القائمة قيد التحضير'
+  };
+  const getLabel = (dictionary, key) => dictionary[key] || dictionary.en;
+  const mealOrder = ['lunch', 'dinner'];
+
+  const menuData = await loadDailyMenuData();
+
+  // 조식은 제외하고, 오늘과 내일 이틀치 중식/석식만 보여준다.
+  const days = [0, 1].map(offset => {
+    const date = new Date();
+    date.setDate(date.getDate() + offset);
+    const isoDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    return { date, isoDate, menu: menuData[isoDate] };
+  });
+
+  gridEl.innerHTML = days.map(({ date, menu }) => {
+    const dayLabel = date.toLocaleDateString(locale, { month: 'long', day: 'numeric', weekday: 'short' });
+
+    const rows = mealOrder.map(meal => {
+      const items = menu && menu[meal];
+      if (!items || !items.length) return '';
+      return `
+        <div class="daily-menu-row">
+          <div class="daily-menu-row-label">${getLabel(mealLabels[meal], lang)}</div>
+          <ul class="daily-menu-row-items">
+            ${items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="daily-menu-day">
+        <div class="daily-menu-day-label">${dayLabel}</div>
+        ${rows ? `<div class="daily-menu-meals">${rows}</div>` : `<p class="daily-menu-empty">${getLabel(emptyLabel, lang)}</p>`}
+      </div>
+    `;
+  }).join('');
+}
+
 // Initialize all home page features
 function initHomePage() {
   // Wait for DOM to be fully loaded
@@ -857,6 +1072,8 @@ function initHomePage() {
       initParallaxEffects();
       loadFeaturedProjects();
       loadLatestAchievements();
+      initResearchLeague();
+      renderDailyMenu();
       startHomeCurtainAnimations();
       loadGalleryPreview();
       handleHomeContactForm();
@@ -872,6 +1089,8 @@ function initHomePage() {
     initParallaxEffects();
     loadFeaturedProjects();
     loadLatestAchievements();
+    initResearchLeague();
+    renderDailyMenu();
     startHomeCurtainAnimations();
     loadGalleryPreview();
     handleHomeContactForm();
@@ -963,6 +1182,9 @@ window.homePageFunctions = {
   initParallaxEffects,
   loadFeaturedProjects,
   loadLatestAchievements,
+  renderResearchLeague,
+  initResearchLeague,
+  renderDailyMenu,
   startHomeCurtainAnimations,
   loadGalleryPreview,
   handleHomeContactForm

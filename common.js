@@ -88,6 +88,12 @@ function setLang(lang, userSelected = false) {
     if (window.homePageFunctions.loadLatestAchievements) {
       window.homePageFunctions.loadLatestAchievements();
     }
+    if (window.homePageFunctions.renderResearchLeague) {
+      window.homePageFunctions.renderResearchLeague();
+    }
+    if (window.homePageFunctions.renderDailyMenu) {
+      window.homePageFunctions.renderDailyMenu();
+    }
     if (window.homePageFunctions.startHomeCurtainAnimations) {
       window.homePageFunctions.startHomeCurtainAnimations();
     }

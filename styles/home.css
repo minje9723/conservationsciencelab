@@ -215,17 +215,39 @@ main {
 .hero-content {
   position: relative;
   z-index: 3;
-  text-align: center;
   color: #17343b;
-  max-width: 800px;
   width: 100%;
   box-sizing: border-box;
   margin: 0 auto;
-  padding: 0 2rem;
+  /* 헤더 .navbar와 동일한 좌우 여백을 사용해, 좌측 패널이 로고와,
+     우측 패널이 언어 선택 버튼과 같은 세로선에 정렬되도록 한다 */
+  padding: 0 max(0.5rem, env(safe-area-inset-right)) 0 max(0.5rem, env(safe-area-inset-left));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
   /* 초기 상태: 완전히 숨김 (JavaScript로 제어) */
   opacity: 0;
   visibility: hidden;
   transform: translateY(30px);
+}
+
+.hero-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 800px;
+  text-align: center;
+}
+
+@media (max-width: 1500px) {
+  .hero-content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .hero-main {
+    max-width: 800px;
+  }
 }
 
 .hero-logo {
@@ -582,6 +604,419 @@ main {
     -1px 1px 0 #000,
     1px 1px 0 #000,
     0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.research-league-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(10, 26, 36, 0.42);
+  color: #fff;
+  font: 600 0.86rem/1.2 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.research-league-trigger:hover,
+.research-league-trigger:focus-visible {
+  background: rgba(10, 26, 36, 0.78);
+  border-color: #f5c86b;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.research-league-trigger-mark {
+  color: #f5c86b;
+  font-size: 1.1rem;
+}
+
+.research-league-modal[hidden] {
+  display: none;
+}
+
+.research-league-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 11000;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.research-league-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 20, 27, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.research-league-dialog {
+  position: relative;
+  width: min(900px, 100%);
+  max-height: min(760px, 92vh);
+  overflow: auto;
+  padding: clamp(2rem, 5vw, 4rem);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 2px;
+  background: #f8f4ea;
+  color: #17333a;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  animation: researchLeagueReveal 0.35s ease-out both;
+}
+
+@keyframes researchLeagueReveal {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.research-league-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(23, 51, 58, 0.3);
+  border-radius: 50%;
+  background: transparent;
+  color: #17333a;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.research-league-kicker {
+  color: #c66a3d;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.research-league-dialog h2 {
+  max-width: 620px;
+  margin: 0.65rem 0 0.5rem;
+  font-family: 'Libre Bodoni', Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: 1;
+}
+
+.research-league-intro {
+  margin: 0;
+  color: #5c6b6c;
+}
+
+.research-league-total {
+  margin: 1.7rem 0 1rem;
+  color: #17333a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.research-league-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+
+.research-league-card {
+  min-height: 190px;
+  padding: 1.25rem;
+  border-top: 4px solid #2d8c89;
+  background: #fffdf8;
+  box-shadow: 0 8px 24px rgba(23, 51, 58, 0.08);
+}
+
+.research-league-card:nth-child(2) { border-color: #c66a3d; }
+.research-league-card:nth-child(3) { border-color: #d7a63f; }
+
+.research-league-rank {
+  color: #c66a3d;
+  font-size: 1.4rem;
+}
+
+.research-league-category {
+  margin-top: 1.5rem;
+  color: #5c6b6c;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.research-league-name {
+  margin: 0.35rem 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.research-league-count {
+  color: #2d8c89;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.research-league-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.6rem;
+  color: #17333a;
+  font-weight: 800;
+  text-decoration: none;
+  border-bottom: 2px solid #f5c86b;
+}
+
+.research-league-link:hover { color: #c66a3d; }
+
+@media (max-width: 700px) {
+  .research-league-trigger {
+    max-width: calc(100vw - 2rem);
+    white-space: normal;
+  }
+
+  .research-league-dialog {
+    padding: 2.5rem 1.25rem 1.5rem;
+  }
+
+  .research-league-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .research-league-card {
+    min-height: 0;
+  }
+}
+
+/* Hero side panel — shared glass-card shell for the two symmetric panels
+   flanking the hero content (daily menu on the left, research league on the right) */
+.hero-side-panel {
+  width: 360px;
+  flex: 0 0 360px;
+  max-width: 100%;
+  /* hero-content 상단 여백으로 헤더 겹침은 해결되므로, 여기서는 히어로 메인 컬럼과의
+     균형을 위한 여백만 둔다 */
+  margin: 2.5rem 0;
+  padding: 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
+    0 4px 16px 0 rgba(0, 0, 0, 0.3);
+  text-align: left;
+  animation: fadeInUp 0.8s ease-out 1s both;
+  /* League 패널(제목 + 카드 3개)의 원래 높이를 기준값으로 고정해서, 식단표 패널도
+     같은 높이를 갖도록 한다. 콘텐츠가 더 적은 쪽은 세로 가운데로 배치한다 */
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (max-width: 1500px) {
+  .hero-side-panel {
+    width: min(560px, 100%);
+    flex: 0 0 auto;
+    min-height: 0;
+    /* 세로로 쌓일 땐 hero-content의 gap이 간격을 담당하므로 중복 여백을 없앤다 */
+    margin: 0;
+  }
+}
+
+.research-league-overview-heading {
+  margin-bottom: 1rem;
+}
+
+.hero-side-panel .research-league-kicker {
+  color: #f5c86b;
+}
+
+.hero-side-panel h2 {
+  margin: 0.3rem 0 0;
+  color: #fff;
+  font-family: 'Libre Bodoni', Georgia, serif;
+  font-size: clamp(1.25rem, 2.5vw, 1.7rem);
+  line-height: 1.15;
+}
+
+.research-league-overview .research-league-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.research-league-overview .research-league-card {
+  min-height: 0;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-top: 3px solid #2d8c89;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.research-league-overview .research-league-card:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.research-league-overview .research-league-card:nth-child(2) { border-top-color: #c66a3d; }
+.research-league-overview .research-league-card:nth-child(3) { border-top-color: #d7a63f; }
+
+.research-league-category-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0 0 0.6rem;
+}
+
+.research-league-overview .research-league-category {
+  margin: 0;
+  color: #fff;
+  font-size: 0.72rem;
+}
+
+.research-league-category-count {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.65rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.research-league-ranking {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.research-league-ranking-item {
+  display: grid;
+  grid-template-columns: 1.2rem 1fr auto;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 1.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+}
+
+.research-league-ranking-item:last-child { border-bottom: 0; }
+
+.research-league-ranking-item.is-first {
+  color: #fff;
+  font-weight: 800;
+}
+
+.research-league-ranking-item.is-empty {
+  opacity: 0.35;
+}
+
+.research-league-ranking-item .research-league-rank {
+  color: #f5c86b;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.15rem;
+  text-align: center;
+}
+
+.research-league-ranking-item .research-league-name {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+}
+
+.research-league-ranking-item .research-league-count {
+  color: #f5c86b;
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+.research-league-card-link {
+  display: inline-block;
+  margin-top: 0.7rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.68rem;
+  text-decoration: none;
+}
+
+.research-league-card-link:hover { color: #f5c86b; }
+
+/* Daily dining menu — mirrors the research league panel on the opposite side */
+.daily-menu-overview .research-league-kicker {
+  color: #d7a63f;
+}
+
+.daily-menu-date {
+  margin: 0 0 0.9rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.75rem;
+}
+
+.daily-menu-grid {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.daily-menu-day + .daily-menu-day {
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.daily-menu-day-label {
+  margin: 0 0 0.6rem;
+  color: #fff;
+  font-family: 'Libre Bodoni', Georgia, serif;
+  font-size: 0.95rem;
+}
+
+.daily-menu-meals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.daily-menu-row {
+  min-width: 0;
+  padding: 0.85rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-left: 3px solid #d7a63f;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.daily-menu-row-label {
+  margin: 0 0 0.4rem;
+  color: #f5c86b;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.daily-menu-row-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.daily-menu-empty {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
 }
 
 /* Scroll Indicator */

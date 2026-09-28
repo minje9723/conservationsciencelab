@@ -1,0 +1,12 @@
+{
+  "name": "conservationsciencelab",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Conservation Science Lab website (static site) and its weekly data-sync scripts",
+  "scripts": {
+    "update-daily-menu": "node scripts/update-daily-menu.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  }
+}

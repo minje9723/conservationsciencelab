@@ -226,17 +226,17 @@ const teamData = {
       title_ko: "연구원 / 학사과정",
       expertise: [],
       expertise_ko: [],
-      photo: "assets/members/card-photos/gowoon-bae.png",
+      photo: "assets/members/card-photos/Jae-gi-shin.jpg",
       level: "junior"
     },
     {
-      name_en: "Seo-Yeong Lee",
+      name_en: "Seo-Young Lee",
       name_ko: "이서영",
       title_en: "Researcher / Undergraduate student",
       title_ko: "연구원 / 학사과정",
       expertise: [],
       expertise_ko: [],
-      photo: "assets/members/card-photos/gowoon-bae.png",
+      photo: "assets/members/card-photos/lee-seo-young.jpg",
       level: "junior"
     }
   ],

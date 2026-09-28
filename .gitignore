@@ -19,3 +19,6 @@ yarn-error.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Node dependencies (used by scripts/update-daily-menu.js)
+node_modules/

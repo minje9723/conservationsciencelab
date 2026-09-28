@@ -1,0 +1,40 @@
+name: Update daily menu
+
+on:
+  schedule:
+    # 매주 월요일 07:00 KST (UTC 기준 일요일 22:00)
+    - cron: '0 22 * * 0'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-menu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-fund --no-audit
+
+      - name: Fetch this week's menu
+        run: npm run update-daily-menu
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- data/daily-menu.json; then
+            git add data/daily-menu.json
+            git commit -m "chore: weekly daily menu update"
+            git push
+          else
+            echo "No menu changes to commit."
+          fi
