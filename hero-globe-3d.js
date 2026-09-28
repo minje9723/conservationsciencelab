@@ -41,9 +41,12 @@ const CAMERA_Z_DEFAULT = 3.55;
 const TRAVEL_MS = 1600;      // 이동(자전축 회전) 소요 시간
 const ZOOM_MS = 900;         // 확대 소요 시간
 const IDLE_SPIN_PER_MS = 0.00007; // 아무 언어도 선택되지 않은 초기 상태의 유휴 자전 속도(rad/ms). 완전히 한 바퀴 도는 데 약 90초
+const HERO_GLOBE_MARKER_COLOR = 0x39ff14; // 형광 녹색(neon green)
+const MARKER_LANDED_SCALE = 1.4; // 착지(확대) 시 마커가 커지는 배율(카메라가 가까워지며 생기는 원근감 확대와 별개로, 확대에 비례해 눈에 띄게 커지도록)
 
 let renderer, scene, camera, axialTiltGroup, framingGroup, spinGroup;
 let capitalMarker, capitalMarkerRing;
+let globeShaderUniforms = null; // 지구본 커스텀 셰이더의 uniforms(day/night 텍스처 블렌딩용). init()의 onBeforeCompile에서 채워진다
 let container = null;
 let ready = false;
 let pendingLang = null;
@@ -51,6 +54,66 @@ let currentLang = null;
 let idleSpin = true;
 let travelToken = 0; // 새 이동이 시작되면 이전 애니메이션 루프를 무효화하기 위한 토큰
 let lastFrameTime = 0;
+let lastSunUpdateTime = -Infinity; // -Infinity로 시작해 최초 1회는 항상 즉시 계산되도록 한다
+
+// 실시간 태양 직하점(subsolar point, 태양이 머리 위 남중하는 지점) 계산.
+// 적위(태양 고도)와 균시차(equation of time)를 이용한 표준 근사 공식으로,
+// 장식용 조명 방향을 정하는 데 충분한 정확도(대략 ±0.5° 이내)를 가진다.
+function getSubsolarPoint(date) {
+  const rad = Math.PI / 180;
+  const jd = date.getTime() / 86400000 + 2440587.5; // Julian date
+  const n = jd - 2451545.0; // J2000.0 이후 경과일
+
+  const meanLon = (280.460 + 0.9856474 * n) % 360;      // 태양의 평균 황경
+  const meanAnomaly = (357.528 + 0.9856003 * n) % 360;   // 평균 근점이각
+  const eclipticLon = meanLon
+    + 1.915 * Math.sin(meanAnomaly * rad)
+    + 0.020 * Math.sin(2 * meanAnomaly * rad);           // 실제(진) 황경
+  const obliquity = 23.439 - 0.0000004 * n;               // 황도경사각
+
+  const lat = Math.asin(Math.sin(obliquity * rad) * Math.sin(eclipticLon * rad)) / rad; // 태양 적위 = 직하점 위도
+
+  let rightAscension = Math.atan2(
+    Math.cos(obliquity * rad) * Math.sin(eclipticLon * rad),
+    Math.cos(eclipticLon * rad)
+  ) / rad;
+  rightAscension = ((rightAscension % 360) + 360) % 360;
+
+  let eqTimeDeg = meanLon - rightAscension; // 균시차(도 단위)
+  if (eqTimeDeg > 180) eqTimeDeg -= 360;
+  if (eqTimeDeg < -180) eqTimeDeg += 360;
+
+  const utcHours = date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600;
+  let lon = 15 * (12 - utcHours) - eqTimeDeg; // 태양이 남중(정오)하는 경도
+  lon = ((lon + 180) % 360 + 360) % 360 - 180; // [-180, 180]로 정규화
+
+  return { lat, lon };
+}
+
+let cachedSubsolarPoint = null; // { lat, lon } — 실제 태양 위치는 천천히 바뀌므로 2초에 한 번만 재계산한다
+
+// 지구본 셰이더의 sunDirection uniform을 실시간 태양 직하점 방향으로 갱신한다.
+// spinGroup은 언어 선택/유휴 자전으로 계속 회전하지만, 태양은 world 좌표계에서
+// 고정된 실제 방향을 가리켜야 하므로, 태양 직하점의 위경도를 spinGroup의
+// "로컬" 좌표로 구한 뒤 spinGroup의 현재 world 변환으로 옮겨(world 방향으로
+// 변환) 셰이더에 넘긴다. 이렇게 하면 지구본이 어떻게 회전해 있든 항상 실제
+// 낮인 반구는 주간 텍스처가, 밤인 반구는 야간(불빛) 텍스처가 표시된다(애플
+// 지구 배경화면과 동일한 방식). 태양의 실제 좌표(cachedSubsolarPoint) 계산은
+// 2초에 한 번이면 충분하지만, spinGroup은 매 프레임 회전하므로 그 회전에
+// 맞춰 방향 자체는 매 프레임 다시 투영해야 한다(그렇지 않으면 2초마다
+// 명암 경계가 툭툭 튀어 보인다).
+function updateSunLight(now) {
+  if (!globeShaderUniforms || !spinGroup) return;
+  if (!cachedSubsolarPoint || now - lastSunUpdateTime >= 2000) {
+    lastSunUpdateTime = now;
+    cachedSubsolarPoint = getSubsolarPoint(new Date());
+  }
+
+  const localDir = latLonToLocalPosition(cachedSubsolarPoint.lat, cachedSubsolarPoint.lon, 1);
+  spinGroup.updateMatrixWorld();
+  const worldDir = spinGroup.localToWorld(localDir).normalize(); // 원점이 이동하지 않으므로 방향과 동일
+  globeShaderUniforms.sunDirection.value.copy(worldDir);
+}
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -115,14 +178,6 @@ function init() {
   container.appendChild(renderer.domElement);
   container.classList.add('hero-globe-3d-active');
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-  const keyLight = new THREE.DirectionalLight(0xffffff, 1.15);
-  keyLight.position.set(4, 2.2, 3.5);
-  scene.add(keyLight);
-  const fillLight = new THREE.DirectionalLight(0x9fd3e8, 0.25);
-  fillLight.position.set(-3, -1.5, -2);
-  scene.add(fillLight);
-
   // 계층: axialTiltGroup(고정 자전축 기울기) > framingGroup(위도 보정, 애니메이션)
   //       > spinGroup(경도 회전, 애니메이션) > 지구본 메시
   axialTiltGroup = new THREE.Group();
@@ -136,14 +191,48 @@ function init() {
   framingGroup.add(spinGroup);
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
-  const texture = new THREE.TextureLoader().load(
+  const loader = new THREE.TextureLoader();
+  const dayTexture = loader.load(
     'assets/earth-texture.jpg',
     undefined,
     undefined,
-    (error) => console.warn('[hero-globe-3d] 지구 텍스처 로드 실패, 평면 폴백을 유지합니다', error)
+    (error) => console.warn('[hero-globe-3d] 지구(주간) 텍스처 로드 실패, 평면 폴백을 유지합니다', error)
   );
-  if ('colorSpace' in texture) texture.colorSpace = THREE.SRGBColorSpace;
-  const material = new THREE.MeshPhongMaterial({ map: texture, shininess: 5 });
+  const nightTexture = loader.load(
+    'assets/earth-lights.jpg',
+    undefined,
+    undefined,
+    (error) => console.warn('[hero-globe-3d] 지구(야간) 텍스처 로드 실패, 야경 표현 없이 진행합니다', error)
+  );
+  if ('colorSpace' in dayTexture) dayTexture.colorSpace = THREE.SRGBColorSpace;
+  if ('colorSpace' in nightTexture) nightTexture.colorSpace = THREE.SRGBColorSpace;
+
+  // 낮/밤 텍스처를 실시간 태양 방향(worldNormal·sunDirection)에 따라 섞는 커스텀
+  // 셰이더. MeshBasicMaterial(무광원)을 베이스로 onBeforeCompile로 map_fragment
+  // 단계만 가로채, 기존 색공간/톤매핑 파이프라인은 그대로 유지한다(애플 지구
+  // 배경화면처럼 야간 반구에는 도시 불빛 텍스처가, 주간 반구에는 실제 위성사진이
+  // 표시되고 그 사이가 부드럽게 전환된다).
+  const material = new THREE.MeshBasicMaterial({ map: dayTexture });
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.nightMap = { value: nightTexture };
+    shader.uniforms.sunDirection = { value: new THREE.Vector3(0, 0, 1) };
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vWorldNormal;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvWorldNormal = normalize(mat3(modelMatrix) * normal);');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform sampler2D nightMap;\nuniform vec3 sunDirection;\nvarying vec3 vWorldNormal;')
+      .replace('#include <map_fragment>', `
+        #ifdef USE_MAP
+          vec4 dayColor = texture2D( map, vMapUv );
+          vec4 nightColor = texture2D( nightMap, vMapUv );
+          float ndotl = dot( normalize( vWorldNormal ), normalize( sunDirection ) );
+          float dayMix = smoothstep( -0.15, 0.15, ndotl );
+          vec3 nightSide = dayColor.rgb * 0.05 + nightColor.rgb * 1.6;
+          diffuseColor.rgb *= mix( nightSide, dayColor.rgb, dayMix );
+        #endif
+      `);
+    globeShaderUniforms = shader.uniforms;
+  };
   const globeMesh = new THREE.Mesh(geometry, material);
   spinGroup.add(globeMesh);
 
@@ -153,11 +242,11 @@ function init() {
   // 자체에 가려 자연스럽게 사라진다(별도 가시성 처리 불필요).
   const markerDot = new THREE.Mesh(
     new THREE.SphereGeometry(0.022, 16, 16),
-    new THREE.MeshBasicMaterial({ color: 0xff5252 })
+    new THREE.MeshBasicMaterial({ color: HERO_GLOBE_MARKER_COLOR })
   );
   capitalMarkerRing = new THREE.Mesh(
     new THREE.RingGeometry(0.03, 0.042, 32),
-    new THREE.MeshBasicMaterial({ color: 0xff5252, transparent: true, opacity: 0.55, side: THREE.DoubleSide })
+    new THREE.MeshBasicMaterial({ color: HERO_GLOBE_MARKER_COLOR, transparent: true, opacity: 0.55, side: THREE.DoubleSide })
   );
   capitalMarker = new THREE.Group();
   capitalMarker.add(markerDot, capitalMarkerRing);
@@ -193,6 +282,10 @@ function placeCapitalMarker(lat, lon) {
   capitalMarker.lookAt(0, 0, 0);
 }
 
+function setCapitalMarkerScale(scale) {
+  if (capitalMarker) capitalMarker.scale.setScalar(scale);
+}
+
 function onResize() {
   if (!container || !renderer) return;
   const size = container.clientWidth || 640;
@@ -208,6 +301,7 @@ function animate(now) {
   if (idleSpin && !prefersReducedMotion() && spinGroup) {
     spinGroup.rotation.y += delta * IDLE_SPIN_PER_MS;
   }
+  updateSunLight(now);
   if (capitalMarkerRing && !prefersReducedMotion()) {
     const pulse = 1 + 0.35 * (0.5 + 0.5 * Math.sin(now * 0.0035));
     capitalMarkerRing.scale.setScalar(pulse);
@@ -238,11 +332,13 @@ function moveToLanguage(lang) {
   const pitchTo = target.lat - EARTH_AXIAL_TILT_DEG;
   const zoomOutFrom = camera.position.z;
   const zoomInTo = target.landedZoom;
+  const markerScaleFrom = capitalMarker ? capitalMarker.scale.x : 1;
 
   if (prefersReducedMotion()) {
     spinGroup.rotation.y = THREE.MathUtils.degToRad(yawFrom + yawDelta);
     framingGroup.rotation.x = THREE.MathUtils.degToRad(pitchTo);
     camera.position.z = zoomInTo;
+    setCapitalMarkerScale(MARKER_LANDED_SCALE);
     return;
   }
 
@@ -255,6 +351,7 @@ function moveToLanguage(lang) {
       const t = Math.min(1, (now - start) / ZOOM_MS);
       const eased = easeInOutCubic(t);
       camera.position.z = zoomOutFrom + (CAMERA_Z_DEFAULT - zoomOutFrom) * eased;
+      setCapitalMarkerScale(markerScaleFrom + (1 - markerScaleFrom) * eased); // 마커도 줌아웃에 맞춰 원래 크기로
       if (t < 1) {
         requestAnimationFrame(step);
       } else {
@@ -286,6 +383,7 @@ function moveToLanguage(lang) {
       const t = Math.min(1, (now - start) / ZOOM_MS);
       const eased = easeInOutCubic(t);
       camera.position.z = CAMERA_Z_DEFAULT + (zoomInTo - CAMERA_Z_DEFAULT) * eased;
+      setCapitalMarkerScale(1 + (MARKER_LANDED_SCALE - 1) * eased); // 확대에 비례해 마커도 커짐
       if (t < 1) {
         requestAnimationFrame(step);
       }
@@ -295,6 +393,7 @@ function moveToLanguage(lang) {
   }
 
   if (Math.abs(zoomOutFrom - CAMERA_Z_DEFAULT) < 0.01) {
+    setCapitalMarkerScale(1); // 이미 기본 거리(=기본 크기)라면 마커도 기본 크기인 상태
     requestAnimationFrame(travelStep);
   } else {
     zoomOutStep(performance.now());

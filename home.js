@@ -250,6 +250,18 @@ const HERO_GLOBE_LANGUAGE_POSITIONS = {
   ar: { position: '75.9% 0', landingScale: 2.8 }    // 사우디아라비아 (리야드 46.7°E, 경도 폭 약 21°)
 };
 
+// 선택된 언어의 대표 도시 좌표(위도, 경도) — hero-globe-3d.js의 HERO_GLOBE_CAPITALS와
+// 같은 나라를 가리킨다. renderHeroGlobeSky()가 "그 나라가 지금 실제로 낮인지 밤인지"를
+// 계산하고, 구름 데이터를 그 나라 기준으로 가져오는 데 쓴다.
+const HERO_GLOBE_CAPITAL_COORDS = {
+  ko: { lat: 37.5665, lon: 126.9780 },
+  en: { lat: 38.9072, lon: -77.0369 },
+  ja: { lat: 35.6762, lon: 139.6503 },
+  uz: { lat: 41.2995, lon: 69.2401 },
+  fr: { lat: 48.8566, lon: 2.3522 },
+  ar: { lat: 24.7136, lon: 46.6753 }
+};
+
 // 지구본 원 자체는 그대로 두고, 안쪽 지도(.hero-globe-surface)만 그 나라로
 // 이동(pan)한 뒤, 도착한 자리에서 줌인해 그 나라가 확대된 상태로 계속 유지된다
 // (3D 버전의 "착지 후 확대 고정"과 동일한 동작). 이미 다른 나라가 확대된
@@ -280,22 +292,26 @@ let heroGlobeCurrentLang = 'ko'; // hero-globe-3d.js의 currentLang과 동일한
 // 버전처럼 별도의 currentLang 변수로 비교해야 한다.
 const HERO_GLOBE_IDLE_PERCENT_PER_MS = 0.0022; // 200%(한 바퀴)를 약 90초에 도는 속도
 
-function stepHeroGlobeIdleSpin(surface, now) {
+function stepHeroGlobeIdleSpin(surface, lights, now) {
   const delta = now - (stepHeroGlobeIdleSpin.lastTime ?? now);
   stepHeroGlobeIdleSpin.lastTime = now;
   heroGlobeIdlePercent = (heroGlobeIdlePercent + delta * HERO_GLOBE_IDLE_PERCENT_PER_MS) % 200;
-  surface.style.backgroundPosition = `${heroGlobeIdlePercent}% 0`;
-  heroGlobeIdleFrame = window.requestAnimationFrame((t) => stepHeroGlobeIdleSpin(surface, t));
+  const position = `${heroGlobeIdlePercent}% 0`;
+  surface.style.backgroundPosition = position;
+  if (lights) lights.style.backgroundPosition = position; // 야간 불빛 레이어도 주간 텍스처와 같은 지점을 가리키도록 동기화
+  heroGlobeIdleFrame = window.requestAnimationFrame((t) => stepHeroGlobeIdleSpin(surface, lights, t));
 }
 
 function startHeroGlobeIdleSpin() {
   if (!heroGlobeIdleActive || heroGlobeIdleFrame) return;
   const surface = document.querySelector('.hero-globe-surface');
   if (!surface || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const lights = surface.querySelector('.hero-globe-lights');
   if (heroGlobeIdlePercent === null) heroGlobeIdlePercent = 120.6; // CSS 기본값(한국)과 일치
   surface.style.transition = 'none'; // 매 프레임 값이 바뀌므로 CSS transition과 충돌하지 않게 끔
+  if (lights) lights.style.transition = 'none';
   stepHeroGlobeIdleSpin.lastTime = undefined;
-  heroGlobeIdleFrame = window.requestAnimationFrame((t) => stepHeroGlobeIdleSpin(surface, t));
+  heroGlobeIdleFrame = window.requestAnimationFrame((t) => stepHeroGlobeIdleSpin(surface, lights, t));
 }
 
 function stopHeroGlobeIdleSpin(surface) {
@@ -304,7 +320,11 @@ function stopHeroGlobeIdleSpin(surface) {
     window.cancelAnimationFrame(heroGlobeIdleFrame);
     heroGlobeIdleFrame = null;
   }
-  if (surface) surface.style.transition = ''; // 언어 이동 트랜지션(CSS)이 다시 적용되도록 복원
+  if (surface) {
+    surface.style.transition = ''; // 언어 이동 트랜지션(CSS)이 다시 적용되도록 복원
+    const lights = surface.querySelector('.hero-globe-lights');
+    if (lights) lights.style.transition = '';
+  }
 }
 
 function moveHeroGlobeToLanguage(lang) {
@@ -317,9 +337,12 @@ function moveHeroGlobeToLanguage(lang) {
 
   const surface = document.querySelector('.hero-globe-surface');
   if (!surface) return;
+  const pin = document.querySelector('.hero-globe-pin'); // 수도 핀포인트. 줌인/줌아웃에 맞춰 크기도 같이 비례한다
+  const lights = surface.querySelector('.hero-globe-lights'); // 야간 불빛 레이어. 주간 텍스처와 같은 지점을 가리키도록 계속 동기화한다
 
   if (heroGlobeCurrentLang === lang) return; // 이미 그 나라(유휴 자전 포함)라면 아무것도 하지 않는다
   heroGlobeCurrentLang = lang;
+  renderHeroGlobeSky(); // 새로 선택된 나라 기준으로 주야간 표현을 다시 계산한다
 
   const target = HERO_GLOBE_LANGUAGE_POSITIONS[lang] || HERO_GLOBE_LANGUAGE_POSITIONS.ko;
   const { position, landingScale } = target;
@@ -331,12 +354,15 @@ function moveHeroGlobeToLanguage(lang) {
   heroGlobeTravelTimers.forEach(timerId => window.clearTimeout(timerId));
   heroGlobeTravelTimers = [];
   surface.classList.remove('is-landing'); // 줌아웃 시작(이미 줌아웃 상태였다면 아무 변화 없음)
+  if (pin) pin.classList.remove('is-landing');
   surface.style.setProperty('--globe-landing-scale', landingScale);
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reducedMotion) {
     surface.style.backgroundPosition = position;
+    if (lights) lights.style.backgroundPosition = position;
     surface.classList.add('is-landing'); // 애니메이션 없이도 확대된 상태로 바로 고정
+    if (pin) pin.classList.add('is-landing');
     return;
   }
 
@@ -345,43 +371,101 @@ function moveHeroGlobeToLanguage(lang) {
   const panDelay = wasLanding ? HERO_GLOBE_ZOOM_MS : 0;
   heroGlobeTravelTimers.push(window.setTimeout(() => {
     surface.style.backgroundPosition = position; // 해당 국가로 이동(pan)
+    if (lights) lights.style.backgroundPosition = position;
     heroGlobeTravelTimers.push(window.setTimeout(() => {
       surface.classList.add('is-landing'); // 도착 지점에서 그 나라가 원의 약 80%를 채우도록 줌인
+      if (pin) pin.classList.add('is-landing'); // 핀도 지도 확대에 비례해 같이 커진다
     }, HERO_GLOBE_TRAVEL_PAN_MS));
   }, panDelay));
 }
 
-// 지구본에 애플 지구본 배경화면처럼 "현재 태양 위치에 따른 주야간 경계"와
-// "현재 좌표의 기상(구름량)"을 얹는다. 태양 위치는 완전한 천문 계산 대신
-// 캠퍼스 현지 시각(hour)으로 명암 경계선의 각도를, Open-Meteo의 is_day로
-// 밤/낮 강도를, cloud_cover(%)로 구름층 짙기를 정해 CSS 변수로 넘긴다.
-async function renderHeroGlobeSky() {
+// 실시간 태양 직하점(subsolar point) 계산. hero-globe-3d.js의 getSubsolarPoint()와
+// 동일한 공식(별도 모듈이라 이 파일에도 똑같이 둔다) — 적위와 균시차를 이용한
+// 표준 근사식으로, 장식용 명암 표현에 충분한 정확도(대략 ±0.5° 이내)를 가진다.
+function getSubsolarPoint(date) {
+  const rad = Math.PI / 180;
+  const jd = date.getTime() / 86400000 + 2440587.5;
+  const n = jd - 2451545.0;
+
+  const meanLon = (280.460 + 0.9856474 * n) % 360;
+  const meanAnomaly = (357.528 + 0.9856003 * n) % 360;
+  const eclipticLon = meanLon
+    + 1.915 * Math.sin(meanAnomaly * rad)
+    + 0.020 * Math.sin(2 * meanAnomaly * rad);
+  const obliquity = 23.439 - 0.0000004 * n;
+
+  const lat = Math.asin(Math.sin(obliquity * rad) * Math.sin(eclipticLon * rad)) / rad;
+
+  let rightAscension = Math.atan2(
+    Math.cos(obliquity * rad) * Math.sin(eclipticLon * rad),
+    Math.cos(eclipticLon * rad)
+  ) / rad;
+  rightAscension = ((rightAscension % 360) + 360) % 360;
+
+  let eqTimeDeg = meanLon - rightAscension;
+  if (eqTimeDeg > 180) eqTimeDeg -= 360;
+  if (eqTimeDeg < -180) eqTimeDeg += 360;
+
+  const utcHours = date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600;
+  let lon = 15 * (12 - utcHours) - eqTimeDeg;
+  lon = ((lon + 180) % 360 + 360) % 360 - 180;
+
+  return { lat, lon };
+}
+
+function normalizeAngleDeg(deg) {
+  return ((deg % 360) + 360) % 360;
+}
+
+// 지구본에 애플 지구 배경화면처럼 "현재 태양 위치에 따른 주야간 경계"를 얹는다.
+// 지금 화면에 표시된(선택된 언어의) 나라의 경도와 실시간 태양 직하점의 경도
+// 차이로 그 나라의 실제 태양 시간각을 구해, 정확히 그 나라가 지금 낮인지
+// 밤인지·명암 경계가 어디쯤인지를 계산한다(캠퍼스 고정 시각이 아니라 언어를
+// 바꿀 때마다 그 나라 기준으로 다시 계산됨). 구름층은 그 나라 좌표로 Open-Meteo에서
+// 받아오되, 네트워크 요청과 무관하게 명암 계산은 항상 즉시 적용된다.
+function renderHeroGlobeSky() {
   const globe = document.querySelector('.hero-globe');
   if (!globe) return;
 
+  const coords = HERO_GLOBE_CAPITAL_COORDS[heroGlobeCurrentLang] || HERO_GLOBE_CAPITAL_COORDS.ko;
+  const sun = getSubsolarPoint(new Date());
+
+  let hourAngle = coords.lon - sun.lon; // 0°=태양이 남중(정오), ±180°=자정
+  if (hourAngle > 180) hourAngle -= 360;
+  if (hourAngle < -180) hourAngle += 360;
+
+  // 태양 고도의 대략적인 근사치(위도 효과는 무시한 단순화) — 정오에 1, 자정에 -1
+  const dayFactor = Math.cos(hourAngle * Math.PI / 180);
+  const terminatorAngle = normalizeAngleDeg(180 + hourAngle);
+  const nightOpacity = Math.max(0.12, Math.min(0.6, 0.3 * (1 - dayFactor)));
+
+  globe.style.setProperty('--globe-terminator-angle', `${terminatorAngle}deg`);
+  globe.style.setProperty('--globe-night-opacity', nightOpacity);
+
+  // 구름층은 부가 정보라 실패해도 명암 표현에는 영향 없음
+  fetchHeroGlobeCloudOpacity(coords).then(cloudOpacity => {
+    if (cloudOpacity !== null) globe.style.setProperty('--globe-cloud-opacity', cloudOpacity);
+  });
+}
+
+async function fetchHeroGlobeCloudOpacity({ lat, lon }) {
   try {
-    const { lat, lon } = HERO_WEATHER_LOCATION;
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=is_day,cloud_cover&timezone=Asia%2FSeoul`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=cloud_cover`;
     const response = await fetch(url);
-    if (!response.ok) return;
-
+    if (!response.ok) return null;
     const data = await response.json();
-    const localTime = data.current?.time; // "2026-09-28T19:00" (Asia/Seoul, 요청한 timezone)
-    const isDay = Number(data.current?.is_day) === 1;
     const cloudCover = Number(data.current?.cloud_cover);
-
-    const hour = localTime ? Number(localTime.slice(11, 13)) + Number(localTime.slice(14, 16)) / 60 : 12;
-    const hourAngle = (hour - 12) * 15; // 태양의 대략적인 시간각(°). 정오=0°, 자정=±180°
-    const terminatorAngle = ((180 + hourAngle) % 360 + 360) % 360;
-    const nightOpacity = isDay ? 0.12 : 0.6;
-    const cloudOpacity = Number.isFinite(cloudCover) ? Math.min(1, Math.max(0, cloudCover / 100)) * 0.5 : 0.15;
-
-    globe.style.setProperty('--globe-terminator-angle', `${terminatorAngle}deg`);
-    globe.style.setProperty('--globe-night-opacity', nightOpacity);
-    globe.style.setProperty('--globe-cloud-opacity', cloudOpacity);
+    return Number.isFinite(cloudCover) ? Math.min(1, Math.max(0, cloudCover / 100)) * 0.5 : null;
   } catch (error) {
-    // 실패하면 hero-globe.css의 기본값을 그대로 사용한다
+    return null; // 오프라인이거나 요청 실패 시 기존 값을 그대로 유지
   }
+}
+
+// 태양 위치는 천천히 바뀌므로 5분마다 한 번씩만 다시 계산해도 충분하다
+let heroGlobeSkyInterval = null;
+function startHeroGlobeSkyRefresh() {
+  if (heroGlobeSkyInterval) return;
+  heroGlobeSkyInterval = window.setInterval(renderHeroGlobeSky, 5 * 60 * 1000);
 }
 
 // Minimal interactive spatial energy animation for the home hero.
@@ -1288,6 +1372,7 @@ function initHomePage() {
       initHeroVideoAnimation();
       initHeroGlobeForLanguage(document.documentElement.lang);
       renderHeroGlobeSky();
+      startHeroGlobeSkyRefresh();
       animateCounters();
       initScrollAnimations();
       animateSectionHeaders();
@@ -1307,6 +1392,7 @@ function initHomePage() {
     initHeroVideoAnimation();
     initHeroGlobeForLanguage(document.documentElement.lang);
     renderHeroGlobeSky();
+    startHeroGlobeSkyRefresh();
     animateCounters();
     initScrollAnimations();
     animateSectionHeaders();
