@@ -188,6 +188,144 @@ function initLegacyHeroVideoAnimation() {
   }
 }
 
+// 전면 날씨 오버레이(styles/hero-weather.css)는 꺼둔다. 대신 같은 API 데이터를
+// 지구본 자체의 주야간/구름 표현에 쓴다 (renderHeroGlobeSky 참고).
+// 화면 전체 오버레이를 다시 켜려면 initHomePage()에서 renderHeroWeather() 호출을 되살리면 된다.
+const HERO_WEATHER_LOCATION = { lat: 36.308, lon: 126.897 }; // 한국전통문화대학교(부여)
+const HERO_WEATHER_CATEGORY_CLASSES = [
+  'weather-clear', 'weather-cloudy', 'weather-fog',
+  'weather-rain', 'weather-snow', 'weather-storm'
+];
+
+function mapWeatherCodeToCategory(code) {
+  if (code === undefined || code === null) return null;
+  if (code === 0) return 'weather-clear';
+  if (code >= 1 && code <= 3) return 'weather-cloudy';
+  if (code === 45 || code === 48) return 'weather-fog';
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return 'weather-rain';
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'weather-snow';
+  if (code >= 95 && code <= 99) return 'weather-storm';
+  return 'weather-cloudy';
+}
+
+async function renderHeroWeather() {
+  const heroSection = document.querySelector('.hero-section');
+  if (!heroSection) return;
+
+  try {
+    const { lat, lon } = HERO_WEATHER_LOCATION;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,is_day&timezone=Asia%2FSeoul`;
+    const response = await fetch(url);
+    if (!response.ok) return;
+
+    const data = await response.json();
+    const weatherClass = mapWeatherCodeToCategory(data.current?.weather_code);
+    if (!weatherClass) return;
+    const isNight = Number(data.current?.is_day) === 0;
+
+    heroSection.classList.remove(...HERO_WEATHER_CATEGORY_CLASSES, 'weather-night');
+    heroSection.classList.add(weatherClass);
+    if (isNight) heroSection.classList.add('weather-night');
+  } catch (error) {
+    // 오프라인이거나 API 요청이 실패하면 조용히 기본 배경을 유지한다
+  }
+}
+
+// 지구본 표시 위치를 선택된 언어의 대표 국가로 부드럽게 이동시킨다.
+// 기본(초기) 위치는 대한민국이며, 언어를 바꾸면 그 나라 위치로 트랜지션된다.
+// position 값은 "경도를 지구본 텍스처(2:1 등장방형도법, background-size:200% 100%)의
+// background-position-x(%)로 환산"해서 미리 계산해둔 상수다.
+//   공식: P% = 200 * (((경도+180)/360 - 0.25) mod 1)
+// landingScale은 "줌인했을 때 그 나라가 원의 약 80%를 채우도록" 나라의 실제
+// 경도 폭(도)을 기준으로 계산한 배율이다.
+//   공식: scale = (기준폭 180° * 0.8) / 나라의 경도 폭
+// 단, 한국처럼 경도 폭이 아주 좁은 나라는 계산값이 너무 커져 텍스처 해상도상
+// 심하게 깨지므로 2.8배로 clamp 했다.
+const HERO_GLOBE_LANGUAGE_POSITIONS = {
+  ko: { position: '120.6% 0', landingScale: 2.8 },  // 대한민국 (서울 127°E, 경도 폭 약 7°) — 기본값
+  en: { position: '197.2% 0', landingScale: 2.53 }, // 미국 (중부 -95°E, 본토 경도 폭 약 57°)
+  ja: { position: '127.6% 0', landingScale: 2.8 },  // 일본 (도쿄 139.7°E, 경도 폭 약 17°)
+  uz: { position: '88.4% 0', landingScale: 2.8 },   // 우즈베키스탄 (타슈켄트 69.2°E, 경도 폭 약 17°)
+  fr: { position: '51.3% 0', landingScale: 2.8 },   // 프랑스 (파리 2.35°E, 경도 폭 약 13°)
+  ar: { position: '75.9% 0', landingScale: 2.8 }    // 사우디아라비아 (리야드 46.7°E, 경도 폭 약 21°)
+};
+
+// 지구본 원 자체는 그대로 두고, 안쪽 지도(.hero-globe-surface)만 그 나라로
+// 이동(pan)한 뒤, 도착한 자리에서 살짝 줌인했다가 다시 줌아웃해 착지를 강조한다.
+// 타이밍은 hero-globe.css의 transition 시간과 맞춰뒀다.
+const HERO_GLOBE_TRAVEL_PAN_MS = 1100;
+const HERO_GLOBE_TRAVEL_ZOOM_HOLD_MS = 650;
+let heroGlobeTravelTimers = [];
+
+function moveHeroGlobeToLanguage(lang) {
+  // hero-globe-3d.js가 WebGL로 실제 3D 구체를 그리고 있다면 그쪽에도 같은
+  // 언어를 전달해 자전축 기준 회전으로 이동시킨다. (실패/미지원 시에는
+  // window.HeroGlobe3D 자체가 없으므로 아래 평면 폴백만 동작한다)
+  if (window.HeroGlobe3D) {
+    window.HeroGlobe3D.moveToLanguage(lang);
+  }
+
+  const surface = document.querySelector('.hero-globe-surface');
+  if (!surface) return;
+
+  const target = HERO_GLOBE_LANGUAGE_POSITIONS[lang] || HERO_GLOBE_LANGUAGE_POSITIONS.ko;
+  const { position, landingScale } = target;
+  if (surface.style.backgroundPosition === position) return;
+
+  // 진행 중이던 이전 이동 애니메이션이 있으면 취소하고 새로 시작한다
+  heroGlobeTravelTimers.forEach(timerId => window.clearTimeout(timerId));
+  heroGlobeTravelTimers = [];
+  surface.classList.remove('is-landing');
+  surface.style.setProperty('--globe-landing-scale', landingScale);
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducedMotion) {
+    surface.style.backgroundPosition = position;
+    return;
+  }
+
+  surface.style.backgroundPosition = position; // 해당 국가로 이동(pan)
+  heroGlobeTravelTimers.push(window.setTimeout(() => {
+    surface.classList.add('is-landing'); // 도착 지점에서 그 나라가 원의 약 80%를 채우도록 줌인
+  }, HERO_GLOBE_TRAVEL_PAN_MS));
+  heroGlobeTravelTimers.push(window.setTimeout(() => {
+    surface.classList.remove('is-landing'); // 다시 줌아웃하며 착지 마무리
+  }, HERO_GLOBE_TRAVEL_PAN_MS + HERO_GLOBE_TRAVEL_ZOOM_HOLD_MS));
+}
+
+// 지구본에 애플 지구본 배경화면처럼 "현재 태양 위치에 따른 주야간 경계"와
+// "현재 좌표의 기상(구름량)"을 얹는다. 태양 위치는 완전한 천문 계산 대신
+// 캠퍼스 현지 시각(hour)으로 명암 경계선의 각도를, Open-Meteo의 is_day로
+// 밤/낮 강도를, cloud_cover(%)로 구름층 짙기를 정해 CSS 변수로 넘긴다.
+async function renderHeroGlobeSky() {
+  const globe = document.querySelector('.hero-globe');
+  if (!globe) return;
+
+  try {
+    const { lat, lon } = HERO_WEATHER_LOCATION;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=is_day,cloud_cover&timezone=Asia%2FSeoul`;
+    const response = await fetch(url);
+    if (!response.ok) return;
+
+    const data = await response.json();
+    const localTime = data.current?.time; // "2026-09-28T19:00" (Asia/Seoul, 요청한 timezone)
+    const isDay = Number(data.current?.is_day) === 1;
+    const cloudCover = Number(data.current?.cloud_cover);
+
+    const hour = localTime ? Number(localTime.slice(11, 13)) + Number(localTime.slice(14, 16)) / 60 : 12;
+    const hourAngle = (hour - 12) * 15; // 태양의 대략적인 시간각(°). 정오=0°, 자정=±180°
+    const terminatorAngle = ((180 + hourAngle) % 360 + 360) % 360;
+    const nightOpacity = isDay ? 0.12 : 0.6;
+    const cloudOpacity = Number.isFinite(cloudCover) ? Math.min(1, Math.max(0, cloudCover / 100)) * 0.5 : 0.15;
+
+    globe.style.setProperty('--globe-terminator-angle', `${terminatorAngle}deg`);
+    globe.style.setProperty('--globe-night-opacity', nightOpacity);
+    globe.style.setProperty('--globe-cloud-opacity', cloudOpacity);
+  } catch (error) {
+    // 실패하면 hero-globe.css의 기본값을 그대로 사용한다
+  }
+}
+
 // Minimal interactive spatial energy animation for the home hero.
 function initHeroVideoAnimation() {
   const canvas = document.getElementById('heroLineCanvas');
@@ -978,8 +1116,17 @@ function renderResearchLeague() {
   `).join('');
 }
 
+// 리서치 포디움 제목의 연도를 항상 현재 연도로 표시한다 (자동 갱신, 하드코딩 방지)
+function renderResearchPodiumYear() {
+  const yearEls = document.querySelectorAll('.research-podium-year');
+  if (!yearEls.length) return;
+  const currentYear = new Date().getFullYear();
+  yearEls.forEach(el => { el.textContent = currentYear; });
+}
+
 function initResearchLeague() {
   renderResearchLeague();
+  renderResearchPodiumYear();
 }
 
 // 오늘의 식단표는 data/daily-menu.json에서 읽어온다. 이 파일은 한국전통문화대학교
@@ -1069,6 +1216,8 @@ function initHomePage() {
       updateResearchersCount();
       updateAchievementsCount();
       initHeroVideoAnimation();
+      moveHeroGlobeToLanguage(document.documentElement.lang);
+      renderHeroGlobeSky();
       animateCounters();
       initScrollAnimations();
       animateSectionHeaders();
@@ -1086,6 +1235,8 @@ function initHomePage() {
     updateResearchersCount();
     updateAchievementsCount();
     initHeroVideoAnimation();
+    moveHeroGlobeToLanguage(document.documentElement.lang);
+    renderHeroGlobeSky();
     animateCounters();
     initScrollAnimations();
     animateSectionHeaders();
@@ -1187,7 +1338,11 @@ window.homePageFunctions = {
   loadLatestAchievements,
   renderResearchLeague,
   initResearchLeague,
+  renderResearchPodiumYear,
   renderDailyMenu,
+  renderHeroWeather,
+  renderHeroGlobeSky,
+  moveHeroGlobeToLanguage,
   startHomeCurtainAnimations,
   loadGalleryPreview,
   handleHomeContactForm

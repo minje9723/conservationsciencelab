@@ -1,0 +1,140 @@
+/* Hero weather background — 실시간(부여 캠퍼스 좌표 기준) 날씨에 맞춰 히어로
+   배경 톤과 강수 효과를 바꾼다. 날씨 상태 판정과 클래스 부여는 home.js의
+   renderHeroWeather()가 담당하며, .hero-section에 weather-<종류> 클래스와
+   (야간이면) weather-night 클래스를 함께 붙인다. 이 파일은 순수 CSS 이펙트만
+   담당하므로, 나중에 더 정교한 버전으로 바꿀 때 이 파일만 교체하면 된다.
+   마크업: .hero-background 안
+   <div class="hero-weather" id="heroWeather" aria-hidden="true"></div>. */
+
+.hero-weather {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* .hero-globe(z-index:3)보다 위, .hero-overlay(z-index:2)와는 별개로
+     톤을 얹어야 하므로 더 높은 값을 준다 */
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 1.2s ease, background 1.2s ease;
+}
+
+/* 날씨 상태별 색 오버레이 — 전면을 확실히 덮는 단일 색(그라데이션으로 은은하게
+   사라지지 않도록)이라 지구본만 보이는 것과 뚜렷하게 구분된다 */
+.weather-clear .hero-weather {
+  opacity: 1;
+  background: radial-gradient(circle at 70% 30%, rgba(255, 214, 130, 0.55), rgba(255, 214, 130, 0.15) 60%, rgba(255, 214, 130, 0.15));
+}
+
+.weather-clear.weather-night .hero-weather {
+  background: linear-gradient(180deg, rgba(8, 16, 38, 0.7), rgba(8, 16, 38, 0.4));
+}
+
+.weather-cloudy .hero-weather {
+  opacity: 1;
+  background: linear-gradient(180deg, rgba(150, 162, 175, 0.55), rgba(150, 162, 175, 0.3));
+}
+
+.weather-cloudy.weather-night .hero-weather {
+  background: linear-gradient(180deg, rgba(30, 38, 52, 0.7), rgba(30, 38, 52, 0.45));
+}
+
+.weather-fog .hero-weather {
+  opacity: 1;
+  background: rgba(210, 216, 220, 0.72);
+}
+
+.weather-fog.weather-night .hero-weather {
+  background: rgba(45, 52, 60, 0.72);
+}
+
+.weather-rain .hero-weather {
+  opacity: 1;
+  background: linear-gradient(180deg, rgba(58, 80, 102, 0.65), rgba(58, 80, 102, 0.35));
+}
+
+.weather-rain.weather-night .hero-weather {
+  background: linear-gradient(180deg, rgba(14, 22, 36, 0.75), rgba(14, 22, 36, 0.5));
+}
+
+.weather-snow .hero-weather {
+  opacity: 1;
+  background: linear-gradient(180deg, rgba(220, 228, 235, 0.6), rgba(220, 228, 235, 0.32));
+}
+
+.weather-snow.weather-night .hero-weather {
+  background: linear-gradient(180deg, rgba(40, 48, 62, 0.68), rgba(40, 48, 62, 0.4));
+}
+
+.weather-storm .hero-weather {
+  opacity: 1;
+  background: linear-gradient(180deg, rgba(48, 48, 66, 0.75), rgba(48, 48, 66, 0.45));
+}
+
+.weather-storm.weather-night .hero-weather {
+  background: linear-gradient(180deg, rgba(10, 10, 20, 0.85), rgba(10, 10, 20, 0.55));
+}
+
+/* 비/뇌우: 가는 대각선 빗줄기가 흘러내리는 것처럼 반복 */
+.weather-rain .hero-weather::before,
+.weather-storm .hero-weather::before {
+  content: '';
+  position: absolute;
+  inset: -20% -10%;
+  background-image: repeating-linear-gradient(
+    115deg,
+    transparent 0,
+    transparent 6px,
+    rgba(255, 255, 255, 0.45) 6px,
+    rgba(255, 255, 255, 0.45) 7px,
+    transparent 7px,
+    transparent 40px
+  );
+  animation: heroRainFall 0.6s linear infinite;
+}
+
+@keyframes heroRainFall {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-24px, 40px); }
+}
+
+/* 눈: 점 패턴을 천천히 아래로 흘린다 */
+.weather-snow .hero-weather::before {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.95) 2px, transparent 2.2px);
+  background-size: 60px 60px;
+  animation: heroSnowFall 8s linear infinite;
+}
+
+@keyframes heroSnowFall {
+  from { background-position: 0 0; }
+  to { background-position: 60px 320px; }
+}
+
+/* 뇌우: 아주 가끔 화면 전체가 번쩍 */
+.weather-storm .hero-weather::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  opacity: 0;
+  animation: heroLightning 9s ease-in-out infinite;
+}
+
+@keyframes heroLightning {
+  0%, 96%, 100% { opacity: 0; }
+  97% { opacity: 0.6; }
+  97.5% { opacity: 0.05; }
+  98% { opacity: 0.45; }
+  98.5% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weather-rain .hero-weather::before,
+  .weather-storm .hero-weather::before,
+  .weather-snow .hero-weather::before,
+  .weather-storm .hero-weather::after {
+    animation: none;
+  }
+}

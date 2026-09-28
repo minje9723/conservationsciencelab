@@ -64,6 +64,9 @@ main {
   filter: saturate(92%);
 }
 
+/* .hero-globe 스타일은 styles/hero-globe.css로 분리했다 (나중에 이미지 텍스처나
+   Three.js 버전으로 교체할 때 이 파일만 바꿔 끼우기 위함). index.html에서 별도 <link>로 연결. */
+
 /* 비디오 로딩 인디케이터 */
 .video-loading-indicator {
   position: absolute;
@@ -870,6 +873,11 @@ main {
   line-height: 1.15;
   white-space: nowrap;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* "2026 Research Podium 🏁"처럼 연도가 붙어 길어진 제목이 한 줄에 들어가도록 */
+#researchLeagueTitle {
+  font-size: clamp(0.9rem, 1.8vw, 1.25rem);
 }
 
 .research-league-overview .research-league-grid {

@@ -94,6 +94,9 @@ function setLang(lang, userSelected = false) {
     if (window.homePageFunctions.renderDailyMenu) {
       window.homePageFunctions.renderDailyMenu();
     }
+    if (window.homePageFunctions.moveHeroGlobeToLanguage) {
+      window.homePageFunctions.moveHeroGlobeToLanguage(lang);
+    }
     if (window.homePageFunctions.startHomeCurtainAnimations) {
       window.homePageFunctions.startHomeCurtainAnimations();
     }
