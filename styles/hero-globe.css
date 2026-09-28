@@ -364,8 +364,8 @@
 
 /* ==========================================================================
    히어로 첫 화면 상태 전환
-   <html> 클래스(index.html <head> 스크립트·home.js가 관리):
-     (없음)          첫 방문 — 지구본 자전 + 수도별 국기만 표시
+   <html> 클래스(home.js가 관리). 홈에 들어올 때마다 (없음) 상태로 시작한다:
+     (없음)          언어 선택 전 — 지구본 자전 + 수도별 국기만 표시, 상단바·스크롤 잠금
      hero-traveling  국기/드롭다운으로 고른 직후 착지 애니메이션 중 — 국기만 숨김
      hero-landed     착지 완료 — 제목, 환영 문구 링, 통계 카드 링, 식단/포디움 패널 표시
    ========================================================================== */
@@ -387,6 +387,37 @@ html:not(.hero-landed) .hero-globe-card-ring {
 
 html:not(.hero-landed) .hero-ring-text {
   opacity: 0;
+}
+
+/* 언어 선택 전 잠금: 페이지 스크롤을 막고 상단바를 완전히 숨긴다. 착지(hero-landed)하면
+   풀리고 상단바가 서서히 나타난다. (키보드 Tab·스크린리더 차단은 home.js가 상단바·아래
+   콘텐츠에 inert로 처리) */
+html:not(.hero-landed),
+html:not(.hero-landed) body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* home.js initHeroVideoAnimation()이 인라인으로 visibility/opacity를 넣으므로 !important로 덮는다.
+   visibility로 숨겨 자리는 그대로 두므로 착지 후 나타나도 레이아웃이 밀리지 않는다 */
+html:not(.hero-landed) header {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+html.hero-landed header {
+  animation: hero-header-in 0.6s ease backwards;
+}
+
+@keyframes hero-header-in {
+  from {
+    opacity: 0;
+  }
+}
+
+html:not(.hero-landed) .scroll-indicator {
+  display: none;
 }
 
 /* 평면 폴백의 "선택된 수도" 핀은 아직 아무 언어도 고르지 않은 동안엔 가리킬 곳이 없다 */
@@ -427,12 +458,22 @@ html.hero-landed .hero-side-panel {
   border-radius: 50%;
   pointer-events: auto;
   transition: opacity 0.5s ease, visibility 0s linear 0s;
+  /* 드래그 중 국기 이미지·라벨 글자가 선택되거나 길게 누르기 메뉴가 떠서 드래그가 끊기지 않게 */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hero-globe-flags img {
+  -webkit-user-drag: none;
+  pointer-events: none; /* 누름·드래그는 이미지가 아니라 국기 버튼이 받는다 */
 }
 
 /* 3D 지구본이 국기 위치를 투영 중일 때만 드래그 회전이 가능하다(hero-globe-3d.js) */
 .hero-globe-flags.is-projected {
   cursor: grab;
-  touch-action: pan-y; /* 가로 드래그는 지구본 회전, 세로 스와이프는 그대로 페이지 스크롤 */
+  touch-action: none; /* 언어 선택 전에는 페이지 스크롤이 잠겨 있으므로 가로·세로 드래그 모두 지구본 회전에 쓴다 */
 }
 
 .hero-globe-flags.is-dragging {
@@ -471,12 +512,14 @@ html.hero-landed .hero-globe-flags {
   -webkit-tap-highlight-color: transparent;
 }
 
-.hero-globe-flag:nth-child(1) { --flag-x: 50%; --flag-y: 22%; }
-.hero-globe-flag:nth-child(2) { --flag-x: 80%; --flag-y: 38%; }
-.hero-globe-flag:nth-child(3) { --flag-x: 80%; --flag-y: 72%; }
-.hero-globe-flag:nth-child(4) { --flag-x: 50%; --flag-y: 88%; }
-.hero-globe-flag:nth-child(5) { --flag-x: 20%; --flag-y: 72%; }
-.hero-globe-flag:nth-child(6) { --flag-x: 20%; --flag-y: 38%; }
+.hero-globe-flag:nth-child(1) { --flag-x: 50%;   --flag-y: 24%; }
+.hero-globe-flag:nth-child(2) { --flag-x: 75.5%; --flag-y: 34%; }
+.hero-globe-flag:nth-child(3) { --flag-x: 86%;   --flag-y: 58%; }
+.hero-globe-flag:nth-child(4) { --flag-x: 75.5%; --flag-y: 82%; }
+.hero-globe-flag:nth-child(5) { --flag-x: 50%;   --flag-y: 92%; }
+.hero-globe-flag:nth-child(6) { --flag-x: 24.5%; --flag-y: 82%; }
+.hero-globe-flag:nth-child(7) { --flag-x: 14%;   --flag-y: 58%; }
+.hero-globe-flag:nth-child(8) { --flag-x: 24.5%; --flag-y: 34%; }
 
 /* 수도를 가리키는 꼬리 */
 .hero-globe-flag::after {
@@ -710,7 +753,7 @@ html.hero-landed .hero-globe-flags {
   }
 }
 
-/* 세로로 쌓이는 화면(휴대폰·세로 태블릿)의 첫 방문 화면: 지구본과 안내 문구를 한 화면
+/* 세로로 쌓이는 화면(휴대폰·세로 태블릿)의 언어 선택 화면: 지구본과 안내 문구를 한 화면
    가운데에 두고, 착지하면 지구본이 위(스테이지 자리)로 미끄러져 올라가며 그 아래에
    제목·패널이 나타난다. */
 @media (max-width: 999px), (max-width: 1400px) and (orientation: portrait) {

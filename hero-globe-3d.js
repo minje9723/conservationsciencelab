@@ -11,22 +11,28 @@
 // 동일한 "본초자오선이 텍스처 가로 50% 지점"이라는 전제로부터 유도했다.
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
 
-// 언어별 대표 국가의 수도 좌표(위도, 경도). home.js의
-// HERO_GLOBE_LANGUAGE_POSITIONS(평면 버전용 background-position 값)와 같은
-// 나라를 가리키도록 맞췄다.
+// 착지 장소(국가 코드)별 수도 좌표(위도, 경도). 한 언어에 여러 나라가 있을 수 있어
+// (영어: 미국·영국, 아랍어: 사우디아라비아·이집트) 언어가 아니라 장소 단위로 둔다.
+// index.html 국기 버튼의 data-place, home.js의 HERO_GLOBE_PLACE_POSITIONS(평면 버전)와
+// 같은 키를 쓴다.
 // landedZoom: 착지 시 카메라 거리. 나라(대표 도시가 속한)의 대략적인 경도 폭을
 // 기준으로 "그 나라만 화면을 채우도록" 계산했다(공식은 CAMERA_Z_DEFAULT 아래 주석 참고).
 // 한국처럼 폭이 아주 좁은 나라는 텍스처 해상도상 과도하게 확대하면 심하게
 // 깨지므로 최소 거리 1.75로 clamp했다 — home.js의 평면 폴백에서 landingScale을
 // 2.8배로 clamp한 것과 같은 이유.
-const HERO_GLOBE_CAPITALS = {
-  ko: { lat: 37.5665, lon: 126.9780, landedZoom: 1.75 },  // 서울 (한국 경도 폭 약 7°)
-  en: { lat: 38.9072, lon: -77.0369, landedZoom: 3.15 },  // 워싱턴 D.C. (미국 본토 경도 폭 약 57°)
-  ja: { lat: 35.6762, lon: 139.6503, landedZoom: 1.75 },  // 도쿄 (일본 경도 폭 약 17°)
+const HERO_GLOBE_PLACES = {
+  kr: { lat: 37.5665, lon: 126.9780, landedZoom: 1.75 },  // 서울 (한국 경도 폭 약 7°)
+  us: { lat: 38.9072, lon: -77.0369, landedZoom: 3.15 },  // 워싱턴 D.C. (미국 본토 경도 폭 약 57°)
+  gb: { lat: 51.5074, lon: -0.1278, landedZoom: 1.75 },   // 런던 (영국 경도 폭 약 10°)
+  jp: { lat: 35.6762, lon: 139.6503, landedZoom: 1.75 },  // 도쿄 (일본 경도 폭 약 17°)
   uz: { lat: 41.2995, lon: 69.2401, landedZoom: 1.75 },   // 타슈켄트 (우즈베키스탄 경도 폭 약 17°)
   fr: { lat: 48.8566, lon: 2.3522, landedZoom: 1.75 },    // 파리 (프랑스 경도 폭 약 13°)
-  ar: { lat: 24.7136, lon: 46.6753, landedZoom: 1.80 }    // 리야드 (사우디아라비아 경도 폭 약 21°)
+  sa: { lat: 24.7136, lon: 46.6753, landedZoom: 1.80 },   // 리야드 (사우디아라비아 경도 폭 약 21°)
+  eg: { lat: 30.0444, lon: 31.2357, landedZoom: 1.75 }    // 카이로 (이집트 경도 폭 약 12°)
 };
+
+// 국기 없이 언어만 정해졌을 때(상단 언어 드롭다운 등) 착지할 기본 장소
+const DEFAULT_PLACE_BY_LANG = { ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'sa' };
 
 const EARTH_AXIAL_TILT_DEG = 23.4; // 실제 지구 자전축 기울기
 const CAMERA_FOV_DEG = 32;
@@ -35,7 +41,7 @@ const CAMERA_FOV_DEG = 32;
 // 처음 로드됐을 때 지구본 주위에 빈 여백 링이 보였다. 기본 상태에서도 이미
 // 꽉 차 보이도록 그 거리보다 살짝 더 가깝게 잡았다.
 const CAMERA_Z_DEFAULT = 3.55;
-// 착지 후 거리는 나라마다 다르므로 HERO_GLOBE_CAPITALS[lang].landedZoom을 쓴다.
+// 착지 후 거리는 나라마다 다르므로 HERO_GLOBE_PLACES[place].landedZoom을 쓴다.
 // 계산식: d = 1 + lonWidthDeg * (π/180) / (0.8 * 2 * tan(FOV/2))
 //   (나라 경도 폭이 프레임의 약 80%를 채우도록 하는 카메라 거리, 최소 1.75로 clamp)
 const TRAVEL_MS = 1600;      // 이동(자전축 회전) 소요 시간
@@ -54,8 +60,8 @@ let koreaVideoEl = null; // 한국 착지 시 재생하는 구글어스스튜디
 let globeShaderUniforms = null; // 지구본 커스텀 셰이더의 uniforms(day/night 텍스처 블렌딩용). init()의 onBeforeCompile에서 채워진다
 let container = null;
 let ready = false;
-let pendingLang = null;
-let currentLang = null;
+let pendingMove = null; // init() 전에 들어온 이동 요청 { lang, place }
+let currentPlace = null; // 착지했(거나 이동 중인) 장소 키 — 같은 언어라도 나라가 다르면 이동한다
 let idleSpin = true;
 let travelToken = 0; // 새 이동이 시작되면 이전 애니메이션 루프를 무효화하기 위한 토큰
 let resumeSpinTimer = null;
@@ -64,7 +70,7 @@ let spinRampStart = null; // 자전 재개 시 속도를 서서히 올리기 시
 let lastFrameTime = 0;
 let lastSunUpdateTime = -Infinity; // -Infinity로 시작해 최초 1회는 항상 즉시 계산되도록 한다
 
-// 첫 방문 화면의 수도별 언어 국기(index.html .hero-globe-flag). 3D 구체 위의 수도 좌표를
+// 언어 선택 화면의 수도별 언어 국기(index.html .hero-globe-flag). 3D 구체 위의 수도 좌표를
 // 매 프레임 화면 좌표로 투영해 HTML 버튼을 그 자리로 옮긴다(클릭·포커스·스크린리더를
 // 그대로 쓰기 위해 WebGL 스프라이트 대신 DOM 요소를 사용). 첫 언어 이동이 시작되면
 // 더 이상 필요 없으므로 flagsActive를 끄고 갱신을 멈춘다.
@@ -75,7 +81,7 @@ let flagHover = false; // 마우스가 국기 위에 있으면 유휴 자전을 
 const flagWorld = new THREE.Vector3();
 const flagToCamera = new THREE.Vector3();
 
-// 국기 레이어를 드래그해서 지구본을 직접 돌려볼 수 있다(첫 방문 화면에서만).
+// 국기 레이어를 드래그해서 지구본을 직접 돌려볼 수 있다(언어 선택 화면에서만).
 const DRAG_ROTATE_RAD_PER_PX = 0.0055;
 const DRAG_START_THRESHOLD_PX = 6; // 이보다 적게 움직이면 드래그가 아니라 국기 클릭으로 본다
 const PITCH_MIN_RAD = THREE.MathUtils.degToRad(-35);
@@ -301,9 +307,9 @@ function init() {
   spinGroup.add(capitalMarker);
 
   // 초기 자세: 한국(서울)이 정면을 보도록 맞춰 평면 폴백의 기본값과 일치시킨다.
-  // currentLang은 null로 둔다 — 아직 어느 나라에도 "착지"하지 않았으므로, 첫
+  // currentPlace는 null로 둔다 — 아직 어느 나라에도 "착지"하지 않았으므로, 첫
   // moveToLanguage('ko')도 실제 이동·줌인 애니메이션을 거쳐 착지하게 된다.
-  const initial = HERO_GLOBE_CAPITALS.ko;
+  const initial = HERO_GLOBE_PLACES.kr;
   spinGroup.rotation.y = THREE.MathUtils.degToRad(lonToYawDeg(initial.lon));
   framingGroup.rotation.x = THREE.MathUtils.degToRad(initial.lat - EARTH_AXIAL_TILT_DEG);
   placeCapitalMarker(initial.lat, initial.lon);
@@ -318,10 +324,10 @@ function init() {
   lastFrameTime = performance.now();
   requestAnimationFrame(animate);
 
-  if (pendingLang) {
-    const lang = pendingLang;
-    pendingLang = null;
-    moveToLanguage(lang);
+  if (pendingMove) {
+    const { lang, place } = pendingMove;
+    pendingMove = null;
+    moveToLanguage(lang, place);
   }
 }
 
@@ -342,7 +348,7 @@ function setupFlags() {
   flagsLayer = document.querySelector('.hero-globe-flags');
   if (!flagsLayer) return;
   flagsLayer.querySelectorAll('.hero-globe-flag').forEach((el) => {
-    const capital = HERO_GLOBE_CAPITALS[el.dataset.lang];
+    const capital = HERO_GLOBE_PLACES[el.dataset.place];
     if (!capital) return;
     flagEntries.push({ el, local: latLonToLocalPosition(capital.lat, capital.lon, 1) });
     el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') flagHover = true; });
@@ -379,8 +385,15 @@ function updateFlags() {
 }
 
 function setupDrag(surface) {
+  // 국기 이미지의 기본 끌기(drag-and-drop)나 라벨 글자 선택, 길게 누르기 메뉴가 시작되면
+  // 브라우저가 포인터 입력을 가져가(pointercancel) 드래그가 끊기고 연속 조작이 막히므로 모두 막는다.
+  surface.addEventListener('dragstart', (e) => e.preventDefault());
+  surface.addEventListener('selectstart', (e) => e.preventDefault());
+  surface.addEventListener('contextmenu', (e) => e.preventDefault());
+
   surface.addEventListener('pointerdown', (e) => {
     if (!flagsActive || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (e.pointerType === 'mouse') e.preventDefault(); // 마우스 누름으로 글자 선택이 시작되지 않게(click은 그대로 발생)
     dragState = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false };
   });
 
@@ -393,6 +406,7 @@ function setupDrag(surface) {
       dragState.moved = true;
       idleSpin = false;
       window.clearTimeout(idleResumeTimer);
+      window.getSelection()?.removeAllRanges();
       surface.setPointerCapture(e.pointerId);
       surface.classList.add('is-dragging');
     }
@@ -491,20 +505,24 @@ function animate(now) {
   renderer.render(scene, camera);
 }
 
-function moveToLanguage(lang) {
+// lang: 선택된 언어, place: 착지할 장소 키(국기로 골랐을 때). place가 없으면 그 언어의
+// 기본 장소로 간다.
+function moveToLanguage(lang, place) {
   if (!ready) {
-    pendingLang = lang;
+    pendingMove = { lang, place };
     return;
   }
-  const target = HERO_GLOBE_CAPITALS[lang] || HERO_GLOBE_CAPITALS.ko;
-  if (currentLang === lang && !spinResumed) {
-    // 그 나라로 이동 중이거나 착지해 머무는 중에 같은 언어를 다시 고른 경우: 이동할 필요는
+  const placeKey = HERO_GLOBE_PLACES[place] ? place : (DEFAULT_PLACE_BY_LANG[lang] || 'kr');
+  const target = HERO_GLOBE_PLACES[placeKey];
+  const isKorea = placeKey === 'kr';
+  if (currentPlace === placeKey && !spinResumed) {
+    // 그 나라로 이동 중이거나 착지해 머무는 중에 같은 장소를 다시 고른 경우: 이동할 필요는
     // 없고, 한국이면 영상만 (혹시 멈춰 있었다면) 다시 보여준다. (착지 후 다시 자전하기
     // 시작했다면 지구가 돌아가 버렸으므로 아래로 내려가 그 나라로 다시 이동한다)
-    if (lang === 'ko') showKoreaVideo();
+    if (isKorea) showKoreaVideo();
     return;
   }
-  currentLang = lang;
+  currentPlace = placeKey;
   idleSpin = false;
   spinResumed = false;
   spinRampStart = null;
@@ -534,7 +552,7 @@ function moveToLanguage(lang) {
     framingGroup.rotation.x = THREE.MathUtils.degToRad(pitchTo);
     camera.position.z = zoomInTo;
     setCapitalMarkerScale(MARKER_LANDED_SCALE);
-    if (lang === 'ko') showKoreaVideo();
+    if (isKorea) showKoreaVideo();
     announceLanded(lang);
     return; // 움직임 줄이기 설정에서는 착지 후 다시 자전하지 않고 그대로 머문다
   }
@@ -588,7 +606,7 @@ function moveToLanguage(lang) {
       // t===1: 확대된 상태로 고정(lock). 한국에 착지했다면 여기서 영상을 페이드인하고,
       // home.js에 착지를 알려 제목·카드 링·식단/포디움 패널을 띄우게 한다.
       // 5초 동안 그 나라에 머문 뒤에는 다시 천천히 자전한다.
-      if (lang === 'ko') showKoreaVideo();
+      if (isKorea) showKoreaVideo();
       announceLanded(lang);
       resumeSpinTimer = window.setTimeout(() => resumeSpinAfterLanding(myToken), RESUME_SPIN_AFTER_LANDING_MS);
     }

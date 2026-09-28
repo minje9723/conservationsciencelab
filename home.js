@@ -231,8 +231,9 @@ async function renderHeroWeather() {
   }
 }
 
-// 지구본 표시 위치를 선택된 언어의 대표 국가로 부드럽게 이동시킨다.
-// 기본(초기) 위치는 대한민국이며, 언어를 바꾸면 그 나라 위치로 트랜지션된다.
+// 지구본 표시 위치를 선택된 장소(국가)로 부드럽게 이동시킨다. 한 언어에 여러 나라가
+// 있을 수 있어(영어: 미국·영국, 아랍어: 사우디아라비아·이집트) 언어가 아니라 장소 키로
+// 둔다 — index.html 국기의 data-place, hero-globe-3d.js의 HERO_GLOBE_PLACES와 같은 키.
 // position 값은 "경도를 지구본 텍스처(2:1 등장방형도법, background-size:200% 100%)의
 // background-position-x(%)로 환산"해서 미리 계산해둔 상수다.
 //   공식: P% = 200 * (((경도+180)/360 - 0.25) mod 1)
@@ -241,25 +242,33 @@ async function renderHeroWeather() {
 //   공식: scale = (기준폭 180° * 0.8) / 나라의 경도 폭
 // 단, 한국처럼 경도 폭이 아주 좁은 나라는 계산값이 너무 커져 텍스처 해상도상
 // 심하게 깨지므로 2.8배로 clamp 했다.
-const HERO_GLOBE_LANGUAGE_POSITIONS = {
-  ko: { position: '120.6% 0', landingScale: 2.8 },  // 대한민국 (서울 127°E, 경도 폭 약 7°) — 기본값
-  en: { position: '197.2% 0', landingScale: 2.53 }, // 미국 (중부 -95°E, 본토 경도 폭 약 57°)
-  ja: { position: '127.6% 0', landingScale: 2.8 },  // 일본 (도쿄 139.7°E, 경도 폭 약 17°)
+const HERO_GLOBE_PLACE_POSITIONS = {
+  kr: { position: '120.6% 0', landingScale: 2.8 },  // 대한민국 (서울 127°E, 경도 폭 약 7°) — 기본값
+  us: { position: '197.2% 0', landingScale: 2.53 }, // 미국 (중부 -95°E, 본토 경도 폭 약 57°)
+  gb: { position: '49.9% 0', landingScale: 2.8 },   // 영국 (런던 -0.13°E, 경도 폭 약 10°)
+  jp: { position: '127.6% 0', landingScale: 2.8 },  // 일본 (도쿄 139.7°E, 경도 폭 약 17°)
   uz: { position: '88.4% 0', landingScale: 2.8 },   // 우즈베키스탄 (타슈켄트 69.2°E, 경도 폭 약 17°)
   fr: { position: '51.3% 0', landingScale: 2.8 },   // 프랑스 (파리 2.35°E, 경도 폭 약 13°)
-  ar: { position: '75.9% 0', landingScale: 2.8 }    // 사우디아라비아 (리야드 46.7°E, 경도 폭 약 21°)
+  sa: { position: '75.9% 0', landingScale: 2.8 },   // 사우디아라비아 (리야드 46.7°E, 경도 폭 약 21°)
+  eg: { position: '67.4% 0', landingScale: 2.8 }    // 이집트 (카이로 31.2°E, 경도 폭 약 12°)
 };
 
-// 선택된 언어의 대표 도시 좌표(위도, 경도) — hero-globe-3d.js의 HERO_GLOBE_CAPITALS와
+// 장소별 언어, 그리고 국기 없이 언어만 정해졌을 때(상단 언어 드롭다운 등) 갈 기본 장소
+const HERO_GLOBE_PLACE_LANG = { kr: 'ko', us: 'en', gb: 'en', jp: 'ja', uz: 'uz', fr: 'fr', sa: 'ar', eg: 'ar' };
+const HERO_GLOBE_DEFAULT_PLACE = { ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'sa' };
+
+// 장소별 수도 좌표(위도, 경도) — hero-globe-3d.js의 HERO_GLOBE_PLACES와
 // 같은 나라를 가리킨다. renderHeroGlobeSky()가 "그 나라가 지금 실제로 낮인지 밤인지"를
 // 계산하고, 구름 데이터를 그 나라 기준으로 가져오는 데 쓴다.
 const HERO_GLOBE_CAPITAL_COORDS = {
-  ko: { lat: 37.5665, lon: 126.9780 },
-  en: { lat: 38.9072, lon: -77.0369 },
-  ja: { lat: 35.6762, lon: 139.6503 },
+  kr: { lat: 37.5665, lon: 126.9780 },
+  us: { lat: 38.9072, lon: -77.0369 },
+  gb: { lat: 51.5074, lon: -0.1278 },
+  jp: { lat: 35.6762, lon: 139.6503 },
   uz: { lat: 41.2995, lon: 69.2401 },
   fr: { lat: 48.8566, lon: 2.3522 },
-  ar: { lat: 24.7136, lon: 46.6753 }
+  sa: { lat: 24.7136, lon: 46.6753 },
+  eg: { lat: 30.0444, lon: 31.2357 }
 };
 
 // 지구본 원 자체는 그대로 두고, 안쪽 지도(.hero-globe-surface)만 그 나라로
@@ -282,30 +291,62 @@ let heroGlobeTravelTimers = [];
 let heroGlobeIdleActive = true;
 let heroGlobeIdleFrame = null;
 let heroGlobeIdlePercent = null; // background-position-x(%). 첫 프레임에 현재 값으로 초기화
-// hero-globe-3d.js의 currentLang과 동일한 역할. 아직 어느 나라에도 착지하지 않은
-// 상태(null)에서 시작하므로, 첫 착지는 'ko'여도 항상 실제 이동(줌인) 애니메이션을 거친다.
-// "첫 방문자에게는 자동 착지하지 않는다"는 판단은 이 값이 아니라
+// hero-globe-3d.js의 currentPlace와 동일한 역할(장소 키). 아직 어느 나라에도 착지하지 않은
+// 상태(null)에서 시작하므로, 첫 착지는 한국이어도 항상 실제 이동(줌인) 애니메이션을 거친다.
+// "사용자가 고르기 전에는 자동 착지하지 않는다"는 판단은 이 값이 아니라
 // moveHeroGlobeToLanguage()의 hero-landed/userSelected 조건이 담당한다.
-let heroGlobeCurrentLang = null;
+let heroGlobeCurrentPlace = null;
+// 국기를 눌렀을 때 그 국기의 장소를 잠시 담아 두는 곳. 국기 클릭 → 언어 드롭다운 클릭 →
+// setLang() → moveHeroGlobeToLanguage()가 한 흐름으로 이어지므로 거기서 바로 꺼내 쓴다.
+let heroGlobeRequestedPlace = null;
+
+// 이번 이동에서 착지할 장소: 방금 누른 국기 → (같은 언어면) 지금 있는 나라 유지 → 언어의 기본 나라
+function resolveHeroGlobePlace(lang) {
+  const requested = heroGlobeRequestedPlace;
+  heroGlobeRequestedPlace = null;
+  if (requested && HERO_GLOBE_PLACE_LANG[requested] === lang) return requested;
+  if (heroGlobeCurrentPlace && HERO_GLOBE_PLACE_LANG[heroGlobeCurrentPlace] === lang) return heroGlobeCurrentPlace;
+  return HERO_GLOBE_DEFAULT_PLACE[lang] || 'kr';
+}
 const HERO_GLOBE_IDLE_PERCENT_PER_MS = 0.0022; // 200%(한 바퀴)를 약 90초에 도는 속도
 const HERO_GLOBE_RESUME_SPIN_MS = 5000; // 착지 후 이만큼 머문 뒤 다시 천천히 자전(hero-globe-3d.js와 동일)
 let heroGlobeSpinResumed = false;
 
-// 히어로 첫 화면 상태(<html> 클래스, styles/hero-globe.css가 이 클래스로 표시 여부를 전환):
-//   (없음)          첫 방문 — 지구본 자전 + 수도별 국기만 표시
-//   hero-traveling  첫 선택 직후 착지 애니메이션 중 — 국기만 사라짐
-//   hero-landed     착지 완료 — 제목·통계 카드 링·식단/포디움 패널 표시(이후 계속 유지)
+// 히어로 첫 화면 상태(<html> 클래스, styles/hero-globe.css가 이 클래스로 표시 여부를 전환).
+// 홈에 들어올 때마다(재접속·다른 페이지에서 복귀 포함) 항상 (없음) 상태로 시작한다:
+//   (없음)          언어 선택 전 — 지구본 자전 + 수도별 국기만 표시, 상단바·스크롤·아래 콘텐츠 잠금
+//   hero-traveling  국기/선택 직후 착지 애니메이션 중 — 국기만 사라짐(잠금은 유지)
+//   hero-landed     착지 완료 — 제목·통계 카드 링·식단/포디움 패널 표시, 잠금 해제(이후 계속 유지)
 function isHeroLanded() {
   return document.documentElement.classList.contains('hero-landed');
+}
+
+// 언어 선택 전에는 상단바와 히어로 아래 콘텐츠를 잠근다. 클릭·스크롤은 CSS(pointer-events,
+// overflow)가 막고, inert는 키보드 Tab 이동과 스크린리더까지 막는다(overflow:hidden이어도
+// 포커스가 아래 요소로 가면 페이지가 그쪽으로 스크롤되기 때문).
+function setHomeLockedUntilLanguage(locked) {
+  const targets = [
+    document.querySelector('header'),
+    document.querySelector('footer'),
+    ...document.querySelectorAll('main > :not(.hero-section)')
+  ];
+  targets.forEach(el => { if (el) el.inert = locked; });
 }
 
 function markHeroLanded() {
   const root = document.documentElement;
   root.classList.remove('hero-traveling');
   root.classList.add('hero-landed');
+  setHomeLockedUntilLanguage(false);
 }
 
 window.addEventListener('heroglobe:landed', markHeroLanded);
+
+// 뒤로 가기로 돌아와 브라우저가 이전 화면을 그대로 복원(bfcache)하면 이미 착지한 상태가
+// 보이므로, 홈에 돌아올 때마다 언어 선택 화면이 나오도록 새로 불러온다.
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) window.location.reload();
+});
 
 function isHeroGlobe3DActive() {
   return !!document.querySelector('.hero-globe.hero-globe-3d-active');
@@ -348,7 +389,7 @@ function stopHeroGlobeIdleSpin(surface) {
 
 function moveHeroGlobeToLanguage(lang, userSelected = false) {
   if (!isHeroLanded()) {
-    // 첫 방문: common.js가 페이지 로드 시 기본 언어로 setLang()을 자동 호출하더라도,
+    // 언어 선택 전: common.js가 페이지 로드 시 기본 언어로 setLang()을 자동 호출하더라도,
     // 사용자가 국기나 언어 드롭다운으로 직접 고르기 전까지는 자전 + 국기 화면을 유지한다
     if (!userSelected) return;
     document.documentElement.classList.add('hero-traveling');
@@ -357,8 +398,9 @@ function moveHeroGlobeToLanguage(lang, userSelected = false) {
   // hero-globe-3d.js가 WebGL로 실제 3D 구체를 그리고 있다면 그쪽에도 같은
   // 언어를 전달해 자전축 기준 회전으로 이동시킨다. (실패/미지원 시에는
   // window.HeroGlobe3D 자체가 없으므로 아래 평면 폴백만 동작한다)
+  const place = resolveHeroGlobePlace(lang);
   if (window.HeroGlobe3D) {
-    window.HeroGlobe3D.moveToLanguage(lang);
+    window.HeroGlobe3D.moveToLanguage(lang, place);
   }
 
   const surface = document.querySelector('.hero-globe-surface');
@@ -368,13 +410,13 @@ function moveHeroGlobeToLanguage(lang, userSelected = false) {
 
   // 이미 그 나라로 이동 중이거나 머무는 중이면 아무것도 하지 않는다(착지 후 다시 자전하기
   // 시작했다면 지도가 흘러가 버렸으므로 그 나라로 다시 이동한다)
-  if (heroGlobeCurrentLang === lang && !heroGlobeSpinResumed) return;
-  heroGlobeCurrentLang = lang;
+  if (heroGlobeCurrentPlace === place && !heroGlobeSpinResumed) return;
+  heroGlobeCurrentPlace = place;
   heroGlobeSpinResumed = false;
   if (pin) pin.style.opacity = '';
   renderHeroGlobeSky(); // 새로 선택된 나라 기준으로 주야간 표현을 다시 계산한다
 
-  const target = HERO_GLOBE_LANGUAGE_POSITIONS[lang] || HERO_GLOBE_LANGUAGE_POSITIONS.ko;
+  const target = HERO_GLOBE_PLACE_POSITIONS[place] || HERO_GLOBE_PLACE_POSITIONS.kr;
   const { position, landingScale } = target;
   const wasLanding = surface.classList.contains('is-landing'); // 이전 나라가 확대되어 있던 상태였는지
 
@@ -457,7 +499,9 @@ function initHeroGlobeFlags() {
   document.querySelectorAll('.hero-globe-flag').forEach(flag => {
     flag.addEventListener('click', () => {
       const option = document.getElementById(`lang-${flag.dataset.lang}`);
-      if (option) option.click();
+      if (!option) return;
+      heroGlobeRequestedPlace = flag.dataset.place; // 같은 언어라도 누른 국기의 나라(예: 영국)로 착지하도록
+      option.click();
     });
   });
 }
@@ -510,7 +554,7 @@ function renderHeroGlobeSky() {
   const globe = document.querySelector('.hero-globe');
   if (!globe) return;
 
-  const coords = HERO_GLOBE_CAPITAL_COORDS[heroGlobeCurrentLang] || HERO_GLOBE_CAPITAL_COORDS.ko;
+  const coords = HERO_GLOBE_CAPITAL_COORDS[heroGlobeCurrentPlace] || HERO_GLOBE_CAPITAL_COORDS.kr;
   const sun = getSubsolarPoint(new Date());
 
   let hourAngle = coords.lon - sun.lon; // 0°=태양이 남중(정오), ±180°=자정
@@ -1744,11 +1788,13 @@ async function renderDailyMenu() {
   }).join('');
 }
 
-// 페이지 최초 로드시 지구본 초기화. 재방문자(hero-landed)는 common.js의 setLang()이
-// 이미 저장된 언어로 착지시키므로 할 일이 없고, 첫 방문자는 평면 폴백도 유휴 자전을
-// 시작해 국기를 고를 때까지 지구본이 계속 돌게 한다(3D 버전은 기본이 유휴 자전).
+// 페이지 로드시 언어 선택 화면으로 초기화: 맨 위로 올리고 상단바·아래 콘텐츠를 잠근 뒤,
+// 평면 폴백도 유휴 자전을 시작해 국기를 고를 때까지 지구본이 계속 돌게 한다
+// (3D 버전은 기본이 유휴 자전).
 function initHeroGlobeIdleState() {
   if (isHeroLanded()) return;
+  window.scrollTo(0, 0);
+  setHomeLockedUntilLanguage(true);
   startHeroGlobeIdleSpin();
 }
 

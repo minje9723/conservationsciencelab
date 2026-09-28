@@ -68,20 +68,19 @@
       // HTML lang 속성도 설정
       document.documentElement.lang = savedLang;
 
-      // 사용자가 직접 언어를 고른 적이 있는 재방문자는 첫 화면부터 "착지" 상태(제목·통계 카드
-      // 링·식단/포디움 패널 표시)로 연다. 첫 방문자는 지구본 자전 + 수도별 국기 선택 화면으로
-      // 시작하고, 선택 후 착지 애니메이션이 끝나면 home.js가 같은 클래스를 붙인다.
-      // (첫 페인트 전에 결정해야 화면이 한 번 깜빡이지 않는다)
-      if (localStorage.getItem('user-selected-language')) {
-        document.documentElement.classList.add('hero-landed');
+      // 홈은 들어올 때마다(재접속·다른 페이지에서 복귀 포함) 지구본 자전 + 수도별 국기
+      // 언어 선택 화면으로 시작하고, 선택 전에는 스크롤이 잠긴다. 브라우저가 이전 스크롤
+      // 위치를 복원하면 잠긴 채 히어로가 화면 밖에 있을 수 있으므로 복원을 끈다.
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
       }
     })();
   </script>
 
   <link rel="stylesheet" href="styles/variables.css">
   <link rel="stylesheet" href="styles/common.css">
-  <link rel="stylesheet" href="styles/home.css?v=20260929-5">
-  <link rel="stylesheet" href="styles/hero-globe.css?v=20260929-5">
+  <link rel="stylesheet" href="styles/home.css?v=20260929-7">
+  <link rel="stylesheet" href="styles/hero-globe.css?v=20260929-7">
   <link rel="stylesheet" href="styles/hero-weather.css">
 </head>
 <body class="home-page">
@@ -405,34 +404,42 @@
       </div>
 
       <!-- 지구본 원과 똑같은 크기·위치로 겹쳐지는 인터랙션 레이어(styles/hero-globe.css).
-           첫 방문(언어 미선택) 상태에서는 각 언어 수도 위의 국기(.hero-globe-flags)를 보여주고
+           언어 선택 전(홈에 들어올 때마다)에는 각 언어 수도 위의 국기(.hero-globe-flags)를 보여주고
            — 3D 지구본이면 hero-globe-3d.js가 매 프레임 수도 위치를 따라가게 하고 드래그 회전도
            받는다 — 언어 선택 후 착지가 끝나면(html.hero-landed) 원 안쪽 테두리를 따라
            배치된 통계 카드 링(.hero-globe-card-ring)으로 바뀐다. -->
       <div class="hero-globe-hud" id="heroGlobeHud">
         <div class="hero-globe-flags" id="heroGlobeFlags" role="group" aria-label="Choose your language · 언어 선택">
-          <button type="button" class="hero-globe-flag" data-lang="ko" aria-label="한국어">
-            <span class="hero-globe-flag-badge"><img src="assets/flags/kr.svg" alt="" width="34" height="34"></span>
+          <button type="button" class="hero-globe-flag" data-place="kr" data-lang="ko" aria-label="한국어">
+            <span class="hero-globe-flag-badge"><img src="assets/flags/kr.svg" alt="" width="34" height="34" draggable="false"></span>
             <span class="hero-globe-flag-code">KOR</span>
           </button>
-          <button type="button" class="hero-globe-flag" data-lang="en" aria-label="English">
-            <span class="hero-globe-flag-badge"><img src="assets/flags/us.svg" alt="" width="34" height="34"></span>
+          <button type="button" class="hero-globe-flag" data-place="us" data-lang="en" aria-label="English (United States)">
+            <span class="hero-globe-flag-badge"><img src="assets/flags/us.svg" alt="" width="34" height="34" draggable="false"></span>
             <span class="hero-globe-flag-code">ENG</span>
           </button>
-          <button type="button" class="hero-globe-flag" data-lang="ja" aria-label="日本語">
-            <span class="hero-globe-flag-badge"><img src="assets/flags/jp.svg" alt="" width="34" height="34"></span>
+          <button type="button" class="hero-globe-flag" data-place="gb" data-lang="en" aria-label="English (United Kingdom)">
+            <span class="hero-globe-flag-badge"><img src="assets/flags/gb.svg" alt="" width="34" height="34" draggable="false"></span>
+            <span class="hero-globe-flag-code">ENG</span>
+          </button>
+          <button type="button" class="hero-globe-flag" data-place="jp" data-lang="ja" aria-label="日本語">
+            <span class="hero-globe-flag-badge"><img src="assets/flags/jp.svg" alt="" width="34" height="34" draggable="false"></span>
             <span class="hero-globe-flag-code">JPN</span>
           </button>
-          <button type="button" class="hero-globe-flag" data-lang="uz" aria-label="O'zbek">
-            <span class="hero-globe-flag-badge"><img src="assets/flags/uz.svg" alt="" width="34" height="34"></span>
+          <button type="button" class="hero-globe-flag" data-place="uz" data-lang="uz" aria-label="O'zbek">
+            <span class="hero-globe-flag-badge"><img src="assets/flags/uz.svg" alt="" width="34" height="34" draggable="false"></span>
             <span class="hero-globe-flag-code">UZB</span>
           </button>
-          <button type="button" class="hero-globe-flag" data-lang="fr" aria-label="Français">
-            <span class="hero-globe-flag-badge"><img src="assets/flags/fr.svg" alt="" width="34" height="34"></span>
+          <button type="button" class="hero-globe-flag" data-place="fr" data-lang="fr" aria-label="Français">
+            <span class="hero-globe-flag-badge"><img src="assets/flags/fr.svg" alt="" width="34" height="34" draggable="false"></span>
             <span class="hero-globe-flag-code">FRA</span>
           </button>
-          <button type="button" class="hero-globe-flag" data-lang="ar" aria-label="العربية">
-            <span class="hero-globe-flag-badge"><img src="assets/flags/sa.svg" alt="" width="34" height="34"></span>
+          <button type="button" class="hero-globe-flag" data-place="sa" data-lang="ar" aria-label="العربية (السعودية)">
+            <span class="hero-globe-flag-badge"><img src="assets/flags/sa.svg" alt="" width="34" height="34" draggable="false"></span>
+            <span class="hero-globe-flag-code">ARA</span>
+          </button>
+          <button type="button" class="hero-globe-flag" data-place="eg" data-lang="ar" aria-label="العربية (مصر)">
+            <span class="hero-globe-flag-badge"><img src="assets/flags/eg.svg" alt="" width="34" height="34" draggable="false"></span>
             <span class="hero-globe-flag-code">ARA</span>
           </button>
           <!-- 좁은 화면(마우스 hover가 없는 휴대폰·태블릿)에서만 보이는 안내 문구 -->
@@ -1089,13 +1096,13 @@
 
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="common.js?v=20260929-5"></script>
+  <script src="common.js?v=20260929-7"></script>
   <!-- Load data from other pages -->
   <script src="projects.js"></script>
-  <script src="members.js?v=20260929-5"></script>
-  <script src="achievements.js?v=20260929-5"></script>
+  <script src="members.js?v=20260929-7"></script>
+  <script src="achievements.js?v=20260929-7"></script>
   <script src="gallery.js"></script>
-  <script src="home.js?v=20260929-5"></script>
-  <script type="module" src="hero-globe-3d.js?v=20260929-5"></script>
+  <script src="home.js?v=20260929-7"></script>
+  <script type="module" src="hero-globe-3d.js?v=20260929-7"></script>
 </body>
 </html>
