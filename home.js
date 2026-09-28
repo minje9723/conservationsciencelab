@@ -309,7 +309,7 @@ function resolveHeroGlobePlace(lang) {
   return HERO_GLOBE_DEFAULT_PLACE[lang] || 'kr';
 }
 const HERO_GLOBE_IDLE_PERCENT_PER_MS = 0.0022; // 200%(한 바퀴)를 약 90초에 도는 속도
-const HERO_GLOBE_RESUME_SPIN_MS = 5000; // 착지 후 이만큼 머문 뒤 다시 천천히 자전(hero-globe-3d.js와 동일)
+const HERO_GLOBE_RESUME_SPIN_MS = 2500; // 착지 후 이만큼(2.5초) 머문 뒤 다시 천천히 자전(hero-globe-3d.js와 동일)
 let heroGlobeSpinResumed = false;
 
 // 히어로 첫 화면 상태(<html> 클래스, styles/hero-globe.css가 이 클래스로 표시 여부를 전환).
@@ -475,7 +475,7 @@ function moveHeroGlobeToLanguage(lang, userSelected = false) {
   }, panDelay));
 }
 
-// 평면 폴백에서도 3D 버전과 똑같이, 착지한 나라에 5초 머문 뒤 줌아웃하고 다시 천천히 흐른다.
+// 평면 폴백에서도 3D 버전과 똑같이, 착지한 나라에 2.5초 머문 뒤 줌아웃하고 다시 천천히 흐른다.
 // 가운데 고정 핀은 지도가 흘러가면 수도를 가리키지 못하므로 숨긴다.
 function resumeFlatGlobeSpin(surface, pin, position) {
   heroGlobeSpinResumed = true;

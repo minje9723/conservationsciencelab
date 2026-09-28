@@ -362,6 +362,36 @@ html:not(.hero-landed) .hero-globe-card-ring {
   display: none;
 }
 
+html.hero-landed .hero-globe-card-ring {
+  animation: hero-card-ring-fade-in 0.8s cubic-bezier(0.2, 0.8, 0.4, 1) both;
+}
+
+@keyframes hero-card-ring-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+html.hero-landed .hero-panels {
+  animation: hero-panels-fade-in 0.8s cubic-bezier(0.2, 0.8, 0.4, 1) 0.15s both;
+}
+
+@keyframes hero-panels-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 /* 언어 선택 전 잠금: 페이지 스크롤을 막고 상단바를 완전히 숨긴다. 착지(hero-landed)하면
    풀리고 상단바가 서서히 나타난다. (키보드 Tab·스크린리더 차단은 home.js가 상단바·아래
@@ -799,18 +829,29 @@ html.hero-landed .hero-globe-card-ring.is-draggable.is-dragging {
   .hero-globe,
   .hero-globe-hud,
   .hero-orbits {
-    transition: top 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: top 1.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  .hero-main {
+    transition: padding-top 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 
-  html:not(.hero-landed) .hero-section {
+  html:not(.hero-landed):not(.hero-traveling) .hero-section {
     --hero-globe-top: calc(50% - 28px); /* 아래 안내 문구까지 한 덩어리로 가운데 오도록 살짝 위로 */
     min-height: 100vh;
     min-height: 100svh;
   }
 
-  html:not(.hero-landed) .hero-main {
+  html:not(.hero-landed):not(.hero-traveling) .hero-main {
     padding-top: 0;
+  }
+
+  html.hero-traveling .hero-globe-hint,
+  html.hero-landed .hero-globe-hint {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
   }
 
   .hero-globe-hint {

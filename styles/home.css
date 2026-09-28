@@ -1157,16 +1157,80 @@ html.modal-scroll-lock {
   }
 }
 
-@media (max-width: 640px) {
-  /* 화면이 좁으면 팝오버 위치 계산이 부담스러우므로(공간이 늘 모자람) 다시
-     화면 중앙에 뜨는 기본 모달 동작으로 되돌린다 */
+@media (max-width: 768px) {
+  /* 모바일 화면에서는 팝업이 화면에 꽉 차 답답해 보이지 않도록
+     길이(높이 70vh)와 좌우 여백(최대 390px, 88vw)을 최적화하고, 내부 패딩/폰트 스케일을 정돈한다 */
   #researchPodiumModal .research-podium-modal-content {
-    position: fixed;
+    position: fixed !important;
     top: 50% !important;
     left: 50% !important;
-    width: 90vw;
     transform: translate(-50%, -50%) !important;
-    animation: modalFadeIn 0.3s ease-out;
+    width: min(390px, calc(100vw - 36px)) !important;
+    max-width: calc(100vw - 36px) !important;
+    height: auto !important;
+    max-height: min(480px, 70vh) !important;
+    padding: 1.2rem 1.1rem 1.3rem !important;
+    border-radius: 18px !important;
+    box-shadow: 0 16px 42px rgba(15, 35, 45, 0.22), 0 2px 8px rgba(15, 35, 45, 0.08) !important;
+    animation: modalFadeIn 0.25s ease-out !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .research-podium-modal-header {
+    padding-right: 1.8rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .research-podium-modal-category {
+    font-size: 0.68rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .research-podium-modal-name {
+    font-size: 1.2rem;
+    margin-bottom: 0.15rem;
+    line-height: 1.2;
+  }
+
+  .research-podium-modal-count {
+    font-size: 0.78rem;
+  }
+
+  .research-podium-modal-list {
+    gap: 0.6rem;
+  }
+
+  .research-podium-modal-item {
+    gap: 0.65rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .research-podium-modal-item-year {
+    font-size: 0.95rem;
+    min-width: 30px;
+  }
+
+  .research-podium-modal-item-title {
+    font-size: 0.84rem;
+    line-height: 1.35;
+  }
+
+  .research-podium-modal-item-badge {
+    font-size: 0.62rem;
+    padding: 0.05rem 0.35rem;
+  }
+
+  .research-podium-modal-item-meta {
+    font-size: 0.72rem;
+    margin-top: 0.2rem;
+    line-height: 1.3;
+  }
+
+  .research-podium-modal-list--awards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.7rem;
+    padding: 0.15rem 0;
   }
 }
 
@@ -1386,11 +1450,6 @@ html.modal-scroll-lock {
   font-size: 1.8rem;
 }
 
-@media (max-width: 640px) {
-  .research-podium-modal-list--awards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 
 /* Daily dining menu — mirrors the research league panel on the opposite side */
 .daily-menu-overview .research-league-kicker {

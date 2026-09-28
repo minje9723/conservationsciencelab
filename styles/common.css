@@ -222,6 +222,21 @@ header.transparent-header::before {
   font-size: calc(0.75rem + 2px);
 }
 
+/* Apply compact, balanced typography to French and Uzbek navigation text */
+.nav-links li a .lang-fr,
+.nav-text.lang-fr {
+  font-size: calc(0.8rem + 1px);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.nav-links li a .lang-uz,
+.nav-text.lang-uz {
+  font-size: calc(0.8rem + 1px);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
 .nav-links li a .nav-icon {
   display: none;
   flex-shrink: 0;
@@ -1091,18 +1106,40 @@ header.transparent-header::before {
   }
 }
 
-/* iPad Pro 11-inch landscape: keep viewport-width media inside the page. */
-@media (min-width: 1025px) and (max-width: 1200px) and (orientation: landscape) {
+/* iPad Pro 11-inch (1194px 인근) & 준대화면(1000~1300px):
+   프랑스어 등 상대적으로 긴 언어에서도 상단바 버튼들이 로고와 여유 공간을 갖도록 스케일 및 간격 최적화 */
+@media (min-width: 1000px) and (max-width: 1300px) {
   .navbar {
     gap: 1rem;
+    padding-left: max(1.2rem, env(safe-area-inset-left));
+    padding-right: max(1.2rem, env(safe-area-inset-right));
   }
 
   .nav-links {
-    gap: 1.1rem;
+    gap: 0.95rem;
   }
 
   .logo img {
-    height: 42px;
+    height: 38px;
+  }
+
+  html[lang="fr"] .nav-links {
+    gap: 0.65rem;
+  }
+
+  html[lang="fr"] .nav-links li a .lang-fr,
+  html[lang="fr"] .nav-text.lang-fr,
+  .nav-links li a .lang-fr,
+  .nav-text.lang-fr {
+    font-size: 0.72rem;
+    letter-spacing: -0.025em;
+  }
+}
+
+/* iPad Pro 11-inch landscape: keep viewport-width media inside the page. */
+@media (min-width: 1025px) and (max-width: 1200px) and (orientation: landscape) {
+  .logo img {
+    height: 38px;
   }
 
   .page-banner {

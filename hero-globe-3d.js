@@ -47,7 +47,7 @@ const CAMERA_Z_DEFAULT = 3.55;
 const TRAVEL_MS = 1600;      // 이동(자전축 회전) 소요 시간
 const ZOOM_MS = 900;         // 확대 소요 시간
 const IDLE_SPIN_PER_MS = 0.00007; // 아무 언어도 선택되지 않은 초기 상태의 유휴 자전 속도(rad/ms). 완전히 한 바퀴 도는 데 약 90초
-const RESUME_SPIN_AFTER_LANDING_MS = 5000; // 착지한 나라에 이만큼 머문 뒤 다시 천천히 자전한다(모든 언어 공통)
+const RESUME_SPIN_AFTER_LANDING_MS = 2500; // 착지한 나라에 이만큼(2.5초) 머문 뒤 다시 천천히 자전한다(모든 언어 공통)
 const RESUME_ZOOM_MS = 2200;  // 자전을 다시 시작할 때 기본 거리로 천천히 줌아웃하는 시간
 const SPIN_RAMP_MS = 2500;    // 자전을 다시 시작할 때 속도를 0에서 유휴 속도까지 서서히 올리는 시간
 // 언어 선택 화면에서 지구본 주위를 도는 달. 지구본 캔버스는 원형 프레임에 잘리므로 달은
@@ -280,6 +280,12 @@ function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+function easeOutBack(t) {
+  const c1 = 1.4;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
 // 위도/경도(도) → spinGroup의 "회전 전(로컬)" 좌표계에서의 구체 표면 좌표.
 // SphereGeometry 기본 UV 매핑(등장방형)과 lonToYawDeg의 기준("회전 없이
 // 카메라를 향하는 경도는 -90°")을 그대로 따르므로, 이 점을 spinGroup의
@@ -465,17 +471,31 @@ function setCapitalMarkerScale(scale) {
 function setupFlags() {
   flagsLayer = document.querySelector('.hero-globe-flags');
   if (!flagsLayer) return;
-  // 초기 위도·경도 뼈대 형성 중에는 국기/언어 아이콘을 숨겨두고, 텍스처와 함께 동시에 페이드인
+  // 초기 위도·경도 뼈대 형성 중에는 국기/언어 아이콘을 숨겨두고, 텍스처와 함께 동경 국가부터 순차 페이드인
   flagsLayer.style.opacity = '0';
   flagsLayer.style.pointerEvents = 'none';
   flagsLayer.querySelectorAll('.hero-globe-flag').forEach((el) => {
     el.style.opacity = '0';
-    const capital = HERO_GLOBE_PLACES[el.dataset.place];
+    const placeKey = el.dataset.place;
+    const capital = HERO_GLOBE_PLACES[placeKey];
     if (!capital) return;
-    flagEntries.push({ el, local: latLonToLocalPosition(capital.lat, capital.lon, 1) });
+    flagEntries.push({
+      el,
+      placeKey,
+      lon: capital.lon,
+      local: latLonToLocalPosition(capital.lat, capital.lon, 1)
+    });
     el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') flagHover = true; });
     el.addEventListener('pointerleave', () => { flagHover = false; });
   });
+
+  // 동경(가장 동쪽, 경도 큰 값)부터 서쪽 순서로 정렬하여 순차 등장 순위 부여
+  // (일본 139.6° -> 한국 127.0° -> 우즈벡 69.2° -> 사우디 46.7° -> 이집트 31.2° -> 프랑스 2.4° -> 영국 -0.1° -> 미국 -77.0°)
+  flagEntries.sort((a, b) => b.lon - a.lon);
+  flagEntries.forEach((entry, idx) => {
+    entry.eastRank = idx;
+  });
+
   // CSS 기본값(원 둘레에 고르게 놓인 정적 배치, 평면 폴백용) 대신 JS가 매 프레임 위치를 정한다
   flagsLayer.classList.add('is-projected');
   setupDrag(flagsLayer, { isEnabled: () => flagsActive && currentTextureFade > 0.1, allowZoom: true });
@@ -483,20 +503,23 @@ function setupFlags() {
 
 // 각 수도의 구체 표면 좌표를 현재 회전 상태의 world 좌표 → 카메라 화면 좌표(%)로
 // 투영해 국기를 그 자리에 둔다. 캔버스와 국기 레이어는 같은 정사각형 영역을 덮으므로
-// NDC(-1~1)를 그대로 퍼센트로 바꾸면 된다. 구체 중심이 원점이라 world 좌표 자체가
-// 바깥 법선이므로, 카메라 방향과의 내적(facing)으로 앞면/뒷면을 판정해 지구 뒤편으로
-// 넘어가는 국기는 가장자리에서 서서히 사라지게 한다.
-// 텍스처 로드 진행도(currentTextureFade)에 맞춰 텍스처와 동시에 부드럽게 등장한다.
+// NDC(-1~1)를 그대로 퍼센트로 바꾸면 된다.
+// 텍스처 로드가 완료되면 동경(극동) 국가부터 서쪽으로 순차적으로 팝업 등장한다.
 function updateFlags() {
   if (!flagsActive || !flagEntries.length) return;
 
   const flagsFade = currentTextureFade;
+  const now = performance.now();
+  const hasFadeStarted = textureFadeStart !== null;
+  const elapsedSinceFade = hasFadeStarted ? Math.max(0, now - textureFadeStart) : 0;
+  const reducedMotion = prefersReducedMotion();
+
   if (flagsLayer) {
-    flagsLayer.style.opacity = flagsFade.toFixed(3);
+    flagsLayer.style.opacity = hasFadeStarted ? '1' : '0';
     flagsLayer.style.pointerEvents = flagsFade > 0.1 ? 'auto' : 'none';
   }
 
-  if (flagsFade <= 0.001) {
+  if (!hasFadeStarted || flagsFade <= 0.001) {
     for (const { el } of flagEntries) {
       el.style.opacity = '0';
       el.style.pointerEvents = 'none';
@@ -504,8 +527,11 @@ function updateFlags() {
     return;
   }
 
+  const STAGGER_DELAY_MS = 85;   // 각 국가별 등장 간격 (동경부터 차례로)
+  const APPEAR_DURATION_MS = 380; // 각 핀이 부드럽게 팝업되는 시간
+
   camera.updateMatrixWorld();
-  for (const { el, local } of flagEntries) {
+  for (const { el, local, eastRank } of flagEntries) {
     flagWorld.copy(local);
     spinGroup.localToWorld(flagWorld);
     flagToCamera.copy(camera.position).sub(flagWorld).normalize();
@@ -513,18 +539,38 @@ function updateFlags() {
 
     flagWorld.project(camera);
     // 확대해서 수도가 원형 프레임 밖으로 밀려나면(화면 중심에서 반지름 1 이상) 국기도 숨긴다.
-    // 기본 거리에서는 이 범위에 들어가기 전에 위의 앞/뒷면 판정으로 이미 사라진다.
     const radial = Math.hypot(flagWorld.x, flagWorld.y);
     const visibility = THREE.MathUtils.smoothstep(facing, 0.08, 0.4)
       * (1 - THREE.MathUtils.smoothstep(radial, 0.97, 1.05));
+
+    // 동경에 있는 국가부터 순차적으로 등장하는 진행도 계산
+    let itemAlpha = 1.0;
+    let itemPop = 1.0;
+
+    if (!reducedMotion) {
+      const itemStart = (eastRank ?? 0) * STAGGER_DELAY_MS;
+      const itemElapsed = elapsedSinceFade - itemStart;
+      if (itemElapsed <= 0) {
+        itemAlpha = 0;
+        itemPop = 0;
+      } else {
+        const itemT = Math.min(1.0, itemElapsed / APPEAR_DURATION_MS);
+        itemAlpha = easeOutCubic(itemT);
+        itemPop = easeOutBack(itemT);
+      }
+    }
+
+    const finalOpacity = visibility * itemAlpha;
     el.style.left = `${(flagWorld.x + 1) * 50}%`;
     el.style.top = `${(1 - flagWorld.y) * 50}%`;
-    el.style.opacity = visibility.toFixed(3);
-    // 텍스처와 함께 부드럽게 스케일(0.75 -> 1.0)되며 등장
-    const scaleFactor = (0.72 + 0.28 * visibility) * (0.8 + 0.2 * flagsFade);
+    el.style.opacity = finalOpacity.toFixed(3);
+
+    // 등장 시 0.5 -> 1.04 -> 1.0 탄력적 팝업 스케일
+    const popScale = 0.5 + 0.5 * itemPop;
+    const scaleFactor = (0.72 + 0.28 * visibility) * popScale;
     el.style.setProperty('--flag-scale', scaleFactor.toFixed(3));
     el.style.zIndex = String(Math.round(visibility * 100)); // 앞쪽(정면에 가까운) 국기가 위로
-    el.style.pointerEvents = flagsFade > 0.5 && visibility >= 0.25 ? '' : 'none';
+    el.style.pointerEvents = itemAlpha > 0.7 && visibility >= 0.25 ? '' : 'none';
     el.classList.toggle('is-behind', visibility < 0.25);
   }
 }
@@ -1476,7 +1522,7 @@ function moveToLanguage(lang, place) {
       }
       // t===1: 확대된 상태로 고정(lock). 한국에 착지했다면 여기서 영상을 페이드인하고,
       // home.js에 착지를 알려 제목·카드 링·식단/포디움 패널을 띄우게 한다.
-      // 5초 동안 그 나라에 머문 뒤에는 다시 천천히 자전한다.
+      // 2.5초 동안 그 나라에 머문 뒤에는 다시 천천히 자전한다.
       if (isKorea) showKoreaVideo();
       announceLanded(lang);
       resumeSpinTimer = window.setTimeout(() => resumeSpinAfterLanding(myToken), RESUME_SPIN_AFTER_LANDING_MS);
