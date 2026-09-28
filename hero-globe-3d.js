@@ -91,17 +91,24 @@ let dragState = null;
 let dragJustEnded = false;
 let idleResumeTimer = null;
 
-// 언어 선택 화면에서 마우스 휠·트랙패드·두 손가락 핀치로 확대/축소한다. 기본 거리보다
-// 멀어지면 원형 프레임 안에 빈 테두리가 생기므로 최대값은 기본 거리, 최소값은 텍스처가
-// 심하게 깨지지 않는 착지 거리(1.75)로 둔다.
-const ZOOM_MIN_Z = 1.75;
-const ZOOM_MAX_Z = CAMERA_Z_DEFAULT;
-const WHEEL_ZOOM_PER_PX = 0.0015; // 휠 1px당 거리 배율(지수) — 마우스 휠 한 칸(약 100px)에 약 14%
+// 언어 선택 화면에서 마우스 휠·트랙패드·두 손가락 핀치로 확대/축소한다. 확대는 두 단계로
+// 이어진다: ① 원형 지구본 자체가 커져 화면을 가득 채우고(frameScale, CSS --globe-zoom-scale)
+// ② 화면이 다 찬 뒤에는 카메라가 지표로 다가간다(camera.position.z). 두 단계를 하나의
+// 배율(zoomMag = 원 배율 × 카메라 배율)로 다뤄 휠 한 칸의 체감이 처음부터 끝까지 같다.
+// 축소는 처음 크기(배율 1)까지만 — 더 작아지면 원형 프레임 안에 빈 테두리가 생긴다.
+const ZOOM_MIN_Z = 1.75;          // 카메라 최소 거리 — 텍스처가 심하게 깨지지 않는 착지 거리
+const WHEEL_ZOOM_PER_PX = 0.0015; // 휠 1px당 배율(지수) — 마우스 휠 한 칸(약 100px)에 약 14%
 const PINCH_WHEEL_BOOST = 4;      // 트랙패드 핀치(ctrl+wheel)는 한 번에 오는 값이 작아서 키운다
-const ZOOM_SMOOTHING_MS = 110;    // 목표 거리로 따라가는 시간 상수(작을수록 즉각적)
-let zoomTargetZ = CAMERA_Z_DEFAULT;
+const ZOOM_SMOOTHING_MS = 110;    // 목표 배율로 따라가는 시간 상수(작을수록 즉각적)
+const MAX_RENDER_PX = 2400;       // 원이 커질 때 캔버스 해상도를 올리되 이 픽셀 수(한 변)를 넘지 않는다
+let zoomTargetMag = 1;
+let zoomMag = 1;
+let frameScale = 1;               // 현재 원형 프레임 배율(1 = 원래 크기)
+let coverScale = 1;               // 원이 화면(뷰포트)을 빈틈없이 덮는 배율 — 이 이상은 카메라 줌으로 넘긴다
+let hudEl = null;                 // 국기 레이어를 담은 .hero-globe-hud — 지구본 원과 같은 배율로 커진다
+let resolutionTimer = null;
 const activePointers = new Map(); // 누르고 있는 포인터들(pointerId → {x, y}) — 두 손가락이면 핀치
-let pinchState = null; // { startDist, startZ }
+let pinchState = null; // { startDist, startMag }
 
 // 드래그를 놓는 순간의 속도로 계속 돌다가 마찰로 서서히 멈춘다(관성 회전).
 const FLING_SAMPLE_MS = 100;         // 놓기 직전 이 시간 동안의 움직임으로 속도를 잰다
@@ -251,6 +258,7 @@ function init() {
   renderer.domElement.className = 'hero-globe-canvas';
   container.appendChild(renderer.domElement);
   container.classList.add('hero-globe-3d-active');
+  hudEl = document.querySelector('.hero-globe-hud');
 
   // 계층: axialTiltGroup(고정 자전축 기울기) > framingGroup(위도 보정, 애니메이션)
   //       > spinGroup(경도 회전, 애니메이션) > 지구본 메시
@@ -280,6 +288,10 @@ function init() {
   );
   if ('colorSpace' in dayTexture) dayTexture.colorSpace = THREE.SRGBColorSpace;
   if ('colorSpace' in nightTexture) nightTexture.colorSpace = THREE.SRGBColorSpace;
+  // 구체 가장자리처럼 비스듬히 보이는 면과 확대했을 때 텍스처가 뭉개지지 않도록 비등방성 필터링을 최대로
+  const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+  dayTexture.anisotropy = maxAnisotropy;
+  nightTexture.anisotropy = maxAnisotropy;
 
   // 낮/밤 텍스처를 실시간 태양 방향(worldNormal·sunDirection)에 따라 섞는 커스텀
   // 셰이더. MeshBasicMaterial(무광원)을 베이스로 onBeforeCompile로 map_fragment
@@ -300,9 +312,13 @@ function init() {
           vec4 dayColor = texture2D( map, vMapUv );
           vec4 nightColor = texture2D( nightMap, vMapUv );
           float ndotl = dot( normalize( vWorldNormal ), normalize( sunDirection ) );
-          float dayMix = smoothstep( -0.15, 0.15, ndotl );
-          vec3 nightSide = dayColor.rgb * 0.05 + nightColor.rgb * 1.6;
-          diffuseColor.rgb *= mix( nightSide, dayColor.rgb, dayMix );
+          float dayMix = smoothstep( -0.1, 0.12, ndotl ); // 명암 경계를 조금 좁혀 흐릿한 띠를 줄인다
+          // 주간: 위성사진의 채도를 살짝(+7.5%) 올려 바다·숲·사막 색이 또렷하게 보이게 한다
+          vec3 dayRgb = dayColor.rgb;
+          dayRgb = max( mix( vec3( dot( dayRgb, vec3( 0.2126, 0.7152, 0.0722 ) ) ), dayRgb, 1.075 ), 0.0 );
+          // 야간: 완전한 검정 대신 아주 옅은 남색 바탕 위에 대륙 윤곽과 도시 불빛이 보이게 한다
+          vec3 nightSide = dayRgb * 0.07 + vec3( 0.004, 0.008, 0.02 ) + nightColor.rgb * 1.6;
+          diffuseColor.rgb *= mix( nightSide, dayRgb, dayMix );
         #endif
       `);
     globeShaderUniforms = shader.uniforms;
@@ -408,24 +424,105 @@ function updateFlags() {
   }
 }
 
-// 확대할수록 같은 손 움직임에 덜 돌게 해서, 확대해도 손가락 아래 지도가 따라오는 느낌을 유지한다
+// 확대할수록(원이 커지거나 카메라가 다가갈수록) 같은 손 움직임에 덜 돌게 해서, 확대해도
+// 손가락 아래 지도가 따라오는 느낌을 유지한다
 function rotationScaleForZoom() {
-  return THREE.MathUtils.clamp((camera.position.z - 1) / (CAMERA_Z_DEFAULT - 1), 0.25, 1);
+  const cameraMag = (CAMERA_Z_DEFAULT - 1) / (camera.position.z - 1);
+  return THREE.MathUtils.clamp(1 / (frameScale * cameraMag), 0.08, 1);
 }
 
-function setZoomTarget(z) {
-  zoomTargetZ = THREE.MathUtils.clamp(z, ZOOM_MIN_Z, ZOOM_MAX_Z);
+// 원이 화면을 빈틈없이 덮으려면 원의 반지름이 원 중심에서 가장 먼 화면 모서리까지 닿아야 한다.
+// (scale은 원 중심 기준이라 getBoundingClientRect의 중심은 배율과 상관없이 같다)
+function updateCoverScale() {
+  if (!container) return;
+  const rect = container.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const farthest = Math.max(
+    Math.hypot(cx, cy),
+    Math.hypot(vw - cx, cy),
+    Math.hypot(cx, vh - cy),
+    Math.hypot(vw - cx, vh - cy)
+  );
+  const baseRadius = (container.clientWidth || 640) / 2; // clientWidth는 transform 배율의 영향을 받지 않는다
+  coverScale = Math.max(1, (farthest / baseRadius) * 1.02);
 }
 
-// 언어 선택 화면에서만 카메라 거리를 목표값으로 부드럽게 따라가게 한다(언어가 정해진 뒤에는
-// 이동·착지 애니메이션이 카메라를 직접 움직인다)
+function maxZoomMag() {
+  return coverScale * (CAMERA_Z_DEFAULT - 1) / (ZOOM_MIN_Z - 1);
+}
+
+function setZoomTarget(mag) {
+  zoomTargetMag = THREE.MathUtils.clamp(mag, 1, maxZoomMag());
+}
+
+function applyFrameScale(scale) {
+  if (Math.abs(scale - frameScale) < 1e-4) return;
+  frameScale = scale;
+  const value = scale.toFixed(4);
+  container.style.setProperty('--globe-zoom-scale', value);
+  if (hudEl) hudEl.style.setProperty('--globe-zoom-scale', value);
+  scheduleResolutionUpdate();
+}
+
+// 배율 → (원 배율, 카메라 거리). 원이 화면을 다 덮을 때까지는 원만 키우고, 그 이상은 카메라로.
+function applyZoomMagnification(mag) {
+  const scale = Math.min(mag, coverScale);
+  applyFrameScale(scale);
+  camera.position.z = 1 + (CAMERA_Z_DEFAULT - 1) / (mag / scale);
+  if (hudEl) hudEl.classList.toggle('is-zoomed', mag > 1.01);
+}
+
+// 언어 선택 화면에서만 배율을 목표값으로 부드럽게 따라가게 한다(언어가 정해진 뒤에는
+// 이동·착지 애니메이션이 카메라를 직접 움직인다). 배율 공간에서 비율로 보간해 확대·축소
+// 속도가 배율과 상관없이 고르게 느껴지도록 한다.
 function stepZoom(delta) {
-  const diff = zoomTargetZ - camera.position.z;
-  if (Math.abs(diff) < 1e-4 || prefersReducedMotion()) {
-    camera.position.z = zoomTargetZ;
+  if (Math.abs(zoomTargetMag - zoomMag) < 1e-4 || prefersReducedMotion()) {
+    zoomMag = zoomTargetMag;
+  } else {
+    const k = 1 - Math.exp(-Math.min(delta, 100) / ZOOM_SMOOTHING_MS);
+    zoomMag *= Math.pow(zoomTargetMag / zoomMag, k);
+  }
+  applyZoomMagnification(zoomMag);
+}
+
+// 언어를 골라 이동이 시작되면 커져 있던 원을 원래 크기로 되돌린다(카메라 거리는 기존
+// 이동 애니메이션의 줌아웃 단계가 되돌린다)
+function shrinkFrameBack() {
+  zoomTargetMag = 1;
+  zoomMag = 1;
+  if (hudEl) hudEl.classList.remove('is-zoomed');
+  const from = frameScale;
+  if (from <= 1.0001) return;
+  if (prefersReducedMotion()) {
+    applyFrameScale(1);
     return;
   }
-  camera.position.z += diff * (1 - Math.exp(-Math.min(delta, 100) / ZOOM_SMOOTHING_MS));
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min(1, Math.max(0, (now - start) / ZOOM_MS));
+    applyFrameScale(from + (1 - from) * easeInOutCubic(t));
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// 원이 CSS로 커지면 캔버스도 늘어나 흐려지므로, 배율 변화가 잠시 멈추면 그만큼 렌더링
+// 해상도를 올린다(바꿀 때마다 WebGL 버퍼를 새로 만들기 때문에 매 프레임 하지는 않는다)
+function scheduleResolutionUpdate() {
+  window.clearTimeout(resolutionTimer);
+  resolutionTimer = window.setTimeout(updateRenderResolution, 160);
+}
+
+function updateRenderResolution() {
+  if (!renderer || !container) return;
+  const size = container.clientWidth || 640;
+  const base = Math.min(window.devicePixelRatio || 1, 2);
+  const wanted = Math.min(base * frameScale, Math.max(base, MAX_RENDER_PX / size));
+  if (Math.abs(wanted - renderer.getPixelRatio()) / wanted < 0.1) return;
+  renderer.setPixelRatio(wanted);
 }
 
 function stopFling() {
@@ -511,7 +608,8 @@ function setupDrag(surface) {
     e.preventDefault();
     const px = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
     const perPx = e.ctrlKey ? WHEEL_ZOOM_PER_PX * PINCH_WHEEL_BOOST : WHEEL_ZOOM_PER_PX;
-    setZoomTarget(zoomTargetZ * Math.exp(px * perPx));
+    updateCoverScale();
+    setZoomTarget(zoomTargetMag * Math.exp(-px * perPx));
   }, { passive: false });
 
   surface.addEventListener('pointerdown', (e) => {
@@ -525,7 +623,8 @@ function setupDrag(surface) {
       if (dragState?.moved) suppressNextClick();
       dragState = null;
       surface.classList.remove('is-dragging');
-      pinchState = { startDist: pinchDistance(), startZ: zoomTargetZ };
+      updateCoverScale();
+      pinchState = { startDist: pinchDistance(), startMag: zoomTargetMag };
       return;
     }
     if (activePointers.size > 2 || pinchState) return;
@@ -536,7 +635,7 @@ function setupDrag(surface) {
     if (activePointers.has(e.pointerId)) activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
     if (pinchState) {
-      if (activePointers.size >= 2) setZoomTarget(pinchState.startZ * pinchState.startDist / pinchDistance());
+      if (activePointers.size >= 2) setZoomTarget(pinchState.startMag * pinchDistance() / pinchState.startDist);
       return;
     }
 
@@ -637,6 +736,13 @@ function onResize() {
   renderer.setSize(size, size);
   camera.aspect = 1;
   camera.updateProjectionMatrix();
+  if (flagsActive) {
+    // 화면 크기가 바뀌면 "화면을 덮는 배율"도 바뀌므로 현재 배율을 새 범위 안으로 맞춘다
+    updateCoverScale();
+    setZoomTarget(zoomTargetMag);
+    zoomMag = Math.min(zoomMag, maxZoomMag());
+  }
+  scheduleResolutionUpdate();
 }
 
 function animate(now) {
@@ -695,6 +801,7 @@ function moveToLanguage(lang, place) {
   pinchState = null;
   activePointers.clear();
   stopFling();
+  shrinkFrameBack();
   window.clearTimeout(idleResumeTimer);
   if (capitalMarker) capitalMarker.visible = true;
   hideKoreaVideo(); // 착지 상태였다면(한국) 이동이 시작되는 즉시 영상을 내리고 지구본으로 되돌린다

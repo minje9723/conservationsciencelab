@@ -24,13 +24,14 @@
   position: absolute;
   top: var(--hero-globe-top);
   left: 50%;
-  transform: translate(-50%, -50%);
+  /* --globe-zoom-scale: 언어 선택 화면에서 휠·핀치로 확대하면 hero-globe-3d.js가 원 자체를
+     키워 화면을 채운다(.hero-globe-hud도 같은 값으로 함께 커진다) */
+  transform: translate(-50%, -50%) scale(var(--globe-zoom-scale, 1));
   width: var(--hero-globe-size);
   height: var(--hero-globe-size);
   border-radius: 50%;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.8;
   box-shadow:
     inset -50px -35px 90px rgba(0, 0, 0, 0.55),
     inset 25px 20px 70px rgba(255, 255, 255, 0.2),
@@ -218,6 +219,12 @@
     radial-gradient(circle at 68% 62%, rgba(255, 255, 255, var(--globe-cloud-opacity, 0.2)), transparent 55%);
   transition: background 1.5s ease;
   pointer-events: none;
+}
+
+/* 3D 지구본은 셰이더가 실제 태양 위치로 픽셀마다 주야간을 계산하므로, 평면 폴백용
+   근사 명암 막과 흰 구름 얼룩을 겹치면 표면이 뿌옇게 흐려질 뿐이다 */
+.hero-globe.hero-globe-3d-active::before {
+  display: none;
 }
 
 .hero-globe::after {
@@ -442,7 +449,7 @@ html.hero-landed .hero-side-panel {
   left: 50%;
   width: var(--hero-globe-size);
   height: var(--hero-globe-size);
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(var(--globe-zoom-scale, 1));
   /* .hero-content(z-index:3)의 투명한 패널 영역이 국기·카드 클릭을 가로채지 않도록 그 위에 둔다.
      레이어 자체는 클릭을 통과시키고, 국기 레이어·카드만 개별적으로 받는다 */
   z-index: 4;
@@ -507,7 +514,8 @@ html.hero-landed .hero-globe-flags {
   color: inherit;
   font: inherit;
   cursor: pointer;
-  transform: translate(-50%, -100%) scale(var(--flag-scale));
+  /* 지구본 원이 커져도(--globe-zoom-scale) 국기는 원래 크기를 유지하도록 그만큼 되돌려 줄인다 */
+  transform: translate(-50%, -100%) scale(calc(var(--flag-scale) / var(--globe-zoom-scale, 1)));
   transform-origin: 50% 100%;
   -webkit-tap-highlight-color: transparent;
 }
@@ -796,6 +804,12 @@ html.hero-landed .hero-globe-flags {
     text-align: center;
     pointer-events: none;
     animation: hero-globe-hint-in 0.8s ease 0.8s backwards;
+    transition: opacity 0.3s ease;
+  }
+
+  /* 확대하기 시작하면 원과 함께 커지며 화면 밖으로 밀려나므로 숨긴다 */
+  .hero-globe-hud.is-zoomed .hero-globe-hint {
+    opacity: 0;
   }
 
   .hero-globe-hint span + span {
