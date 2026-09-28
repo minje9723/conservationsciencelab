@@ -282,15 +282,32 @@ let heroGlobeTravelTimers = [];
 let heroGlobeIdleActive = true;
 let heroGlobeIdleFrame = null;
 let heroGlobeIdlePercent = null; // background-position-x(%). 첫 프레임에 현재 값으로 초기화
-let heroGlobeCurrentLang = 'ko'; // hero-globe-3d.js의 currentLang과 동일한 역할.
-// common.js의 initCommon()이 DOMContentLoaded에서 setLang(savedLang)을 먼저 호출하는데,
-// 이때 savedLang이 기본값 'ko'라도(로그인 첫 방문 이후엔 거의 항상 localStorage에 저장돼
-// 있음) moveHeroGlobeToLanguage('ko')가 home.js의 자체 초기화보다 먼저 실행된다.
-// surface.style.backgroundPosition(인라인 스타일)은 이 시점에 아직 빈 문자열이라
-// CSS 기본값과 절대 같아지지 않으므로, 그것으로 "이미 그 나라다"를 판단하면 매번
-// "실제 이동"으로 오인해 유휴 자전을 시작하기도 전에 영구히 꺼버리게 된다. 3D
-// 버전처럼 별도의 currentLang 변수로 비교해야 한다.
+// hero-globe-3d.js의 currentLang과 동일한 역할. 아직 어느 나라에도 착지하지 않은
+// 상태(null)에서 시작하므로, 첫 착지는 'ko'여도 항상 실제 이동(줌인) 애니메이션을 거친다.
+// "첫 방문자에게는 자동 착지하지 않는다"는 판단은 이 값이 아니라
+// moveHeroGlobeToLanguage()의 hero-landed/userSelected 조건이 담당한다.
+let heroGlobeCurrentLang = null;
 const HERO_GLOBE_IDLE_PERCENT_PER_MS = 0.0022; // 200%(한 바퀴)를 약 90초에 도는 속도
+
+// 히어로 첫 화면 상태(<html> 클래스, styles/hero-globe.css가 이 클래스로 표시 여부를 전환):
+//   (없음)          첫 방문 — 지구본 자전 + 수도별 국기만 표시
+//   hero-traveling  첫 선택 직후 착지 애니메이션 중 — 국기만 사라짐
+//   hero-landed     착지 완료 — 제목·통계 카드 링·식단/포디움 패널 표시(이후 계속 유지)
+function isHeroLanded() {
+  return document.documentElement.classList.contains('hero-landed');
+}
+
+function markHeroLanded() {
+  const root = document.documentElement;
+  root.classList.remove('hero-traveling');
+  root.classList.add('hero-landed');
+}
+
+window.addEventListener('heroglobe:landed', markHeroLanded);
+
+function isHeroGlobe3DActive() {
+  return !!document.querySelector('.hero-globe.hero-globe-3d-active');
+}
 
 function stepHeroGlobeIdleSpin(surface, lights, now) {
   const delta = now - (stepHeroGlobeIdleSpin.lastTime ?? now);
@@ -327,7 +344,14 @@ function stopHeroGlobeIdleSpin(surface) {
   }
 }
 
-function moveHeroGlobeToLanguage(lang) {
+function moveHeroGlobeToLanguage(lang, userSelected = false) {
+  if (!isHeroLanded()) {
+    // 첫 방문: common.js가 페이지 로드 시 기본 언어로 setLang()을 자동 호출하더라도,
+    // 사용자가 국기나 언어 드롭다운으로 직접 고르기 전까지는 자전 + 국기 화면을 유지한다
+    if (!userSelected) return;
+    document.documentElement.classList.add('hero-traveling');
+  }
+
   // hero-globe-3d.js가 WebGL로 실제 3D 구체를 그리고 있다면 그쪽에도 같은
   // 언어를 전달해 자전축 기준 회전으로 이동시킨다. (실패/미지원 시에는
   // window.HeroGlobe3D 자체가 없으므로 아래 평면 폴백만 동작한다)
@@ -357,12 +381,17 @@ function moveHeroGlobeToLanguage(lang) {
   if (pin) pin.classList.remove('is-landing');
   surface.style.setProperty('--globe-landing-scale', landingScale);
 
+  // 3D 버전이 활성화돼 있으면 착지 시점은 hero-globe-3d.js가 'heroglobe:landed'
+  // 이벤트로 알려준다. 평면 폴백만 동작 중일 때는 아래 트랜지션 타이머 끝에서 직접 착지 처리한다.
+  const landsHere = !isHeroGlobe3DActive();
+
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reducedMotion) {
     surface.style.backgroundPosition = position;
     if (lights) lights.style.backgroundPosition = position;
     surface.classList.add('is-landing'); // 애니메이션 없이도 확대된 상태로 바로 고정
     if (pin) pin.classList.add('is-landing');
+    if (landsHere) markHeroLanded();
     return;
   }
 
@@ -375,8 +404,20 @@ function moveHeroGlobeToLanguage(lang) {
     heroGlobeTravelTimers.push(window.setTimeout(() => {
       surface.classList.add('is-landing'); // 도착 지점에서 그 나라가 원의 약 80%를 채우도록 줌인
       if (pin) pin.classList.add('is-landing'); // 핀도 지도 확대에 비례해 같이 커진다
+      if (landsHere) heroGlobeTravelTimers.push(window.setTimeout(markHeroLanded, HERO_GLOBE_ZOOM_MS));
     }, HERO_GLOBE_TRAVEL_PAN_MS));
   }, panDelay));
+}
+
+// 지구본 위 국기를 누르면 상단 언어 드롭다운에서 같은 언어를 고른 것과 완전히 똑같이
+// 처리한다(common.js의 .lang-option 클릭 핸들러: 버튼 상태 갱신 + setLang(lang, true)).
+function initHeroGlobeFlags() {
+  document.querySelectorAll('.hero-globe-flag').forEach(flag => {
+    flag.addEventListener('click', () => {
+      const option = document.getElementById(`lang-${flag.dataset.lang}`);
+      if (option) option.click();
+    });
+  });
 }
 
 // 실시간 태양 직하점(subsolar point) 계산. hero-globe-3d.js의 getSubsolarPoint()와
@@ -609,7 +650,9 @@ function animateCounters() {
 function initScrollAnimations(selector = null) {
   // If specific selector provided, only observe those elements
   // Otherwise observe static elements
-  const staticSelectors = '.hero-impact-card, .impact-card, .timeline-card, .spotlight-item, .contact-info-item, .contact-form-card';
+  // .hero-impact-card는 지구본 카드 링으로 옮겨져 착지 시점에 styles/hero-globe.css의
+  // 등장 애니메이션으로 나타나므로 스크롤 애니메이션 대상에서 뺐다.
+  const staticSelectors = '.impact-card, .timeline-card, .spotlight-item, .contact-info-item, .contact-form-card';
   const targetSelector = selector || staticSelectors;
 
   const animatedElements = document.querySelectorAll(targetSelector);
@@ -1659,16 +1702,12 @@ async function renderDailyMenu() {
   }).join('');
 }
 
-// 페이지 최초 로드시 지구본 초기화: 기본 언어(한국어)라면 아직 아무 나라도
-// "선택"된 게 아니므로 유휴 자전만 시작하고, 저장된 언어가 한국어가 아니면
-// (예: 이전 방문에서 기억된 언어) 곧바로 그 나라로 이동시킨다.
-function initHeroGlobeForLanguage(lang) {
-  if (!lang || lang === 'ko') {
-    startHeroGlobeIdleSpin();
-    if (window.HeroGlobe3D) window.HeroGlobe3D.moveToLanguage('ko');
-  } else {
-    moveHeroGlobeToLanguage(lang);
-  }
+// 페이지 최초 로드시 지구본 초기화. 재방문자(hero-landed)는 common.js의 setLang()이
+// 이미 저장된 언어로 착지시키므로 할 일이 없고, 첫 방문자는 평면 폴백도 유휴 자전을
+// 시작해 국기를 고를 때까지 지구본이 계속 돌게 한다(3D 버전은 기본이 유휴 자전).
+function initHeroGlobeIdleState() {
+  if (isHeroLanded()) return;
+  startHeroGlobeIdleSpin();
 }
 
 // Initialize all home page features
@@ -1680,7 +1719,8 @@ function initHomePage() {
       updateResearchersCount();
       updateAchievementsCount();
       initHeroVideoAnimation();
-      initHeroGlobeForLanguage(document.documentElement.lang);
+      initHeroGlobeIdleState();
+      initHeroGlobeFlags();
       renderHeroGlobeSky();
       startHeroGlobeSkyRefresh();
       animateCounters();
@@ -1700,7 +1740,8 @@ function initHomePage() {
     updateResearchersCount();
     updateAchievementsCount();
     initHeroVideoAnimation();
-    initHeroGlobeForLanguage(document.documentElement.lang);
+    initHeroGlobeIdleState();
+    initHeroGlobeFlags();
     renderHeroGlobeSky();
     startHeroGlobeSkyRefresh();
     animateCounters();

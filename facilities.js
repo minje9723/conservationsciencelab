@@ -822,8 +822,9 @@ function initFacilities() {
   // Override setLang function to update language visibility
   const originalSetLang = window.setLang;
   if (originalSetLang) {
-    window.setLang = function(lang) {
-      originalSetLang(lang);
+    // userSelected 등 나머지 인자도 그대로 넘겨야 common.js가 "사용자가 직접 고른 언어"를 기록한다
+    window.setLang = function(lang, ...rest) {
+      originalSetLang(lang, ...rest);
       // Re-render facilities with new language
       renderFacilities();
     };

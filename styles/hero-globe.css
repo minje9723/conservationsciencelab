@@ -11,13 +11,22 @@
    .hero-globe-surface에 있어서 이동/줌인아웃이 원 자체가 아니라 "지도 위
    특정 지점"에서만 일어난다. */
 
+/* 지구본 원의 크기와 세로 중심. 같은 원에 겹쳐야 하는 요소들(.hero-globe, 그 위의
+   국기·카드 링 레이어 .hero-globe-hud, 환영 문구 링, 궤도 장식)이 모두 이 값을 공유해서
+   항상 정확히 같은 자리에 놓인다. 세로로 쌓이는 좁은 화면에서는 아래
+   "좁은 화면 스테이지" 규칙이 --hero-globe-top을 섹션 상단 기준으로 바꾼다. */
+.hero-section {
+  --hero-globe-size: min(640px, 62vw);
+  --hero-globe-top: 50%;
+}
+
 .hero-globe {
   position: absolute;
-  top: 50%;
+  top: var(--hero-globe-top);
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(640px, 62vw);
-  height: min(640px, 62vw);
+  width: var(--hero-globe-size);
+  height: var(--hero-globe-size);
   border-radius: 50%;
   overflow: hidden;
   pointer-events: none;
@@ -163,6 +172,30 @@
   display: block;
 }
 
+/* 한국 착지 시 재생되는 구글어스스튜디오 영상. 기본적으로 투명하게 숨겨뒀다가
+   hero-globe-3d.js가 moveToLanguage('ko') 착지(줌인 완료) 시점에
+   .is-visible을 붙여 지구본(캔버스) 위로 페이드인시키고 재생한다. */
+.hero-globe-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease;
+  pointer-events: none;
+}
+
+.hero-globe-video.is-visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-globe-video {
+    transition: none;
+  }
+}
+
 .hero-globe::before {
   /* 애플 지구본처럼 "현재 태양 위치"에 따른 주야간 경계 + "현재 좌표 기상"에
      따른 구름층. 값은 home.js의 renderHeroGlobeSky()가 실시간으로 계산해
@@ -203,12 +236,6 @@
   }
 }
 
-@media (max-width: 900px) {
-  .hero-globe {
-    opacity: 0.4;
-  }
-}
-
 /* 지구본을 중심으로 대각선으로 기울어진 태양계 궤도 느낌의 장식 배경.
    각 .hero-orbit은 원(border-radius:50%)을 세로로 납작하게(scaleY) 눌러
    타원처럼 보이게 하고, 부모 .hero-orbits 전체를 기울여(rotate) 대각선
@@ -219,7 +246,7 @@
    보인다. */
 .hero-orbits {
   position: absolute;
-  top: 50%;
+  top: var(--hero-globe-top);
   left: 50%;
   width: 0;
   height: 0;
@@ -298,7 +325,7 @@
    전체를 천천히 돌려 "맴도는" 느낌을 낸다. */
 .hero-ring-text {
   position: absolute;
-  top: 50%;
+  top: var(--hero-globe-top);
   left: 50%;
   width: min(760px, 74vw);
   height: min(760px, 74vw);
@@ -306,6 +333,7 @@
   z-index: 4;
   transform-origin: center;
   animation: hero-ring-spin 50s linear infinite;
+  transition: opacity 1.2s ease;
 }
 
 @keyframes hero-ring-spin {
@@ -331,5 +359,359 @@
 @media (max-width: 900px) {
   .hero-ring-text {
     display: none;
+  }
+}
+
+/* ==========================================================================
+   히어로 첫 화면 상태 전환
+   <html> 클래스(index.html <head> 스크립트·home.js가 관리):
+     (없음)          첫 방문 — 지구본 자전 + 수도별 국기만 표시
+     hero-traveling  국기/드롭다운으로 고른 직후 착지 애니메이션 중 — 국기만 숨김
+     hero-landed     착지 완료 — 제목, 환영 문구 링, 통계 카드 링, 식단/포디움 패널 표시
+   ========================================================================== */
+
+/* 제목은 자리(레이아웃)를 유지한 채 숨겼다가, 착지하면 원래의 fadeInUp이 처음부터 재생된다.
+   (visibility는 안쪽 .lang.lang-visible이 visible로 되돌려버리므로 opacity로 숨긴다) */
+html:not(.hero-landed) .hero-title {
+  opacity: 0;
+  pointer-events: none;
+  animation: none;
+}
+
+/* 패널·카드 링은 display로 빼 둬야 세로로 쌓이는 좁은 화면에서 빈 공간이 생기지 않고,
+   다시 표시되는 순간 각자의 등장 애니메이션(키프레임)이 자연스럽게 시작된다 */
+html:not(.hero-landed) .hero-side-panel,
+html:not(.hero-landed) .hero-globe-card-ring {
+  display: none;
+}
+
+html:not(.hero-landed) .hero-ring-text {
+  opacity: 0;
+}
+
+/* 평면 폴백의 "선택된 수도" 핀은 아직 아무 언어도 고르지 않은 동안엔 가리킬 곳이 없다 */
+html:not(.hero-landed):not(.hero-traveling) .hero-globe-pin {
+  display: none;
+}
+
+/* 좌우 패널이 카드 링과 거의 동시에 떠오르도록 원래 지연(1s)을 줄인다 */
+html.hero-landed .hero-side-panel {
+  animation-delay: 0.35s;
+}
+
+/* ==========================================================================
+   지구본 인터랙션 레이어(.hero-globe-hud)
+   .hero-globe와 같은 변수로 정확히 같은 원 위에 겹친다. .hero-globe는 장식용
+   (.hero-background 안, aria-hidden)이라 클릭을 받을 수 없으므로, 국기·카드처럼
+   눌러야 하는 요소는 .hero-section의 직계 자식인 이 레이어에 둔다.
+   ========================================================================== */
+.hero-globe-hud {
+  position: absolute;
+  top: var(--hero-globe-top);
+  left: 50%;
+  width: var(--hero-globe-size);
+  height: var(--hero-globe-size);
+  transform: translate(-50%, -50%);
+  /* .hero-content(z-index:3)의 투명한 패널 영역이 국기·카드 클릭을 가로채지 않도록 그 위에 둔다.
+     레이어 자체는 클릭을 통과시키고, 국기 레이어·카드만 개별적으로 받는다 */
+  z-index: 4;
+  pointer-events: none;
+  /* 카드 크기·글자 크기를 원 지름 기준(cqw)으로 잡아 화면 폭이 바뀌어도 원 안에 딱 맞게 한다 */
+  container-type: inline-size;
+}
+
+/* --- 수도별 언어 국기 --------------------------------------------------- */
+.hero-globe-flags {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: auto;
+  transition: opacity 0.5s ease, visibility 0s linear 0s;
+}
+
+/* 3D 지구본이 국기 위치를 투영 중일 때만 드래그 회전이 가능하다(hero-globe-3d.js) */
+.hero-globe-flags.is-projected {
+  cursor: grab;
+  touch-action: pan-y; /* 가로 드래그는 지구본 회전, 세로 스와이프는 그대로 페이지 스크롤 */
+}
+
+.hero-globe-flags.is-dragging {
+  cursor: grabbing;
+}
+
+html.hero-traveling .hero-globe-flags,
+html.hero-landed .hero-globe-flags {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+}
+
+/* 버튼의 기준점(left/top)은 수도 지점이고, 국기는 그 위로 꼬리(핀)를 달고 서 있다.
+   3D에서는 JS가 left/top·opacity·--flag-scale을 매 프레임 갱신하고, WebGL이 없는
+   평면 폴백에서는 아래 --flag-x/--flag-y로 원 둘레에 고르게 놓인다. */
+.hero-globe-flag {
+  --flag-scale: 1;
+  position: absolute;
+  left: var(--flag-x);
+  top: var(--flag-y);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin: 0;
+  padding: 0 0 14px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transform: translate(-50%, -100%) scale(var(--flag-scale));
+  transform-origin: 50% 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hero-globe-flag:nth-child(1) { --flag-x: 50%; --flag-y: 22%; }
+.hero-globe-flag:nth-child(2) { --flag-x: 80%; --flag-y: 38%; }
+.hero-globe-flag:nth-child(3) { --flag-x: 80%; --flag-y: 72%; }
+.hero-globe-flag:nth-child(4) { --flag-x: 50%; --flag-y: 88%; }
+.hero-globe-flag:nth-child(5) { --flag-x: 20%; --flag-y: 72%; }
+.hero-globe-flag:nth-child(6) { --flag-x: 20%; --flag-y: 38%; }
+
+/* 수도를 가리키는 꼬리 */
+.hero-globe-flag::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 2px;
+  height: 14px;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(57, 255, 20, 0.9));
+}
+
+/* 수도 지점 표시 점(착지 후 3D 마커와 같은 형광 녹색) */
+.hero-globe-flag::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 6px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #39ff14;
+  box-shadow: 0 0 6px rgba(57, 255, 20, 0.9);
+}
+
+.hero-globe-flag-badge {
+  display: block;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 0 4px rgba(255, 255, 255, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-globe-flag-badge img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-globe-flag-code {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(6, 22, 30, 0.72);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.hero-globe-flag:hover .hero-globe-flag-badge,
+.hero-globe-flag:focus-visible .hero-globe-flag-badge {
+  transform: scale(1.18);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 0 5px rgba(57, 255, 20, 0.45);
+}
+
+.hero-globe-flag:focus-visible {
+  outline: none;
+  opacity: 1 !important; /* 키보드로 지구 뒤편 국기에 초점이 가도 보이도록(인라인 opacity보다 우선) */
+}
+
+/* 지구 뒤편으로 넘어가 거의 안 보이는 국기는 클릭 대상에서 뺀다 */
+.hero-globe-flag.is-behind {
+  pointer-events: none;
+}
+
+/* --- 착지 후: 원 안쪽 테두리를 따라 도는 통계 카드 링 ---------------------
+   카드 4장을 원 중심에서 지름의 34% 거리, 수평선 기준 ±55° 방향(좌상·우상·우하·좌하)에
+   원형 배지로 놓는다. 가운데 띠는 비워 두어 제목과 지구본(한국이면 영상)이 보이게 하고,
+   카드 바깥 가장자리가 원 안(중심에서 34% + 반지름 10.5% = 44.5% < 50%)에 머문다. */
+.hero-globe-card-ring {
+  --ring-card: 21cqw;
+  position: absolute;
+  inset: 0;
+}
+
+.hero-globe-card-ring .hero-impact-card {
+  position: absolute;
+  left: var(--ring-x);
+  top: var(--ring-y);
+  width: var(--ring-card);
+  height: var(--ring-card);
+  /* transform은 hover·등장 애니메이션이 쓰므로, 중심 정렬은 음수 margin으로 한다 */
+  margin: calc(var(--ring-card) / -2) 0 0 calc(var(--ring-card) / -2);
+  padding: 0 1.2cqw;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.52) 55%, rgba(8, 127, 140, 0.32));
+  box-shadow:
+    0 10px 28px rgba(0, 20, 30, 0.35),
+    inset 0 0 0 1px rgba(8, 127, 140, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5cqw;
+  pointer-events: auto;
+  animation: hero-ring-card-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(0.15s + var(--ring-i) * 0.12s);
+}
+
+.hero-globe-card-ring .hero-impact-card:nth-child(1) { --ring-x: 30.5%; --ring-y: 22.1%; --ring-i: 0; }
+.hero-globe-card-ring .hero-impact-card:nth-child(2) { --ring-x: 69.5%; --ring-y: 22.1%; --ring-i: 1; }
+.hero-globe-card-ring .hero-impact-card:nth-child(3) { --ring-x: 30.5%; --ring-y: 77.9%; --ring-i: 3; }
+.hero-globe-card-ring .hero-impact-card:nth-child(4) { --ring-x: 69.5%; --ring-y: 77.9%; --ring-i: 2; }
+
+.hero-globe-card-ring .hero-impact-card:hover {
+  transform: scale(1.08);
+  background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.66) 55%, rgba(8, 127, 140, 0.4));
+  border-color: rgba(255, 255, 255, 0.95);
+}
+
+@keyframes hero-ring-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero-globe-card-ring .hero-metric-icon {
+  width: 4.4cqw;
+  height: 4.4cqw;
+  margin: 0;
+  filter: none;
+}
+
+.hero-globe-card-ring .hero-metric-content {
+  gap: 0.3cqw;
+}
+
+.hero-globe-card-ring .hero-metric-number {
+  font-size: clamp(1rem, 5.2cqw, 2.3rem);
+}
+
+.hero-globe-card-ring .hero-metric-label {
+  max-width: 15.5cqw;
+  font-size: clamp(0.56rem, 1.65cqw, 0.8rem);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-globe-card-ring .hero-impact-card {
+    animation: none;
+  }
+}
+
+/* 좌우 패널이 나란히 놓이는 넓은 화면에서는 제목이 지구본 한가운데(위아래 카드 줄 사이의
+   띠)에 오므로, 그 띠(지름의 약 35% 높이, 90% 폭)에 들어가도록 지구본 크기에 비례해 줄이고,
+   어두운 지구·영상 위에서도 읽히도록 밝은 글자 + 그림자로 바꾼다. */
+@media (min-width: 1401px), (min-width: 1000px) and (max-width: 1400px) and (orientation: landscape) {
+  .hero-main .hero-title {
+    max-width: calc(var(--hero-globe-size) * 0.9);
+    margin-bottom: 0;
+    font-size: clamp(1.4rem, calc(var(--hero-globe-size) * 0.072), 3rem);
+    color: #fff;
+    text-shadow: 0 2px 14px rgba(0, 12, 20, 0.75), 0 1px 3px rgba(0, 0, 0, 0.6);
+  }
+
+  .hero-main .hero-title strong {
+    color: #8ff0f7;
+    text-shadow: 0 2px 14px rgba(0, 12, 20, 0.75), 0 1px 3px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* ==========================================================================
+   좁은 화면 스테이지: 식단/포디움 패널이 세로로 쌓이는 폭(home.css의 max-width:1400px,
+   가로 모드 태블릿 1000~1400px 제외)에서는 패널이 지구본을 가리지 않도록, 지구본과
+   카드 링을 섹션 상단에 고정하고 제목·패널을 그 아래로 흘린다. 착지 후 패널이 나타나
+   섹션 높이가 늘어나도 지구본 위치가 바뀌지 않는다.
+   ========================================================================== */
+@media (max-width: 1400px) {
+  .hero-section {
+    --hero-stage-pad: 88px; /* 고정 헤더 높이만큼 띄움 */
+    --hero-globe-size: min(640px, 62vw, 78vh); /* 가로 모드 휴대폰에서도 첫 화면 안에 들어오도록 */
+    --hero-globe-top: calc(var(--hero-stage-pad) + var(--hero-globe-size) / 2);
+    justify-content: flex-start;
+  }
+
+  .hero-main {
+    order: -1;
+    padding-top: calc(var(--hero-stage-pad) + var(--hero-globe-size) + 1rem);
+  }
+}
+
+@media (min-width: 1000px) and (max-width: 1400px) and (orientation: landscape) {
+  .hero-section {
+    --hero-globe-size: min(640px, 62vw);
+    --hero-globe-top: 50%;
+    justify-content: center;
+  }
+
+  .hero-main {
+    order: 0;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-section {
+    --hero-globe-size: min(88vw, 400px);
+    --hero-stage-pad: 72px;
+  }
+
+  /* 작은 원에서는 아이콘을 빼고 숫자·라벨만 남겨 카드를 조금 키운다(34% + 12.5% < 50%) */
+  .hero-globe-card-ring {
+    --ring-card: 25cqw;
+  }
+
+  .hero-globe-card-ring .hero-metric-icon {
+    display: none;
+  }
+
+  .hero-globe-card-ring .hero-metric-label {
+    max-width: 20cqw;
+  }
+
+  .hero-globe-flag-badge {
+    width: 28px;
+    height: 28px;
   }
 }

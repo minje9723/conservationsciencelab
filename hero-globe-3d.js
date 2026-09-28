@@ -47,6 +47,7 @@ const MARKER_LANDED_SCALE = 0.6; // 착지(확대) 시 마커가 작아지는 �
 
 let renderer, scene, camera, axialTiltGroup, framingGroup, spinGroup;
 let capitalMarker, capitalMarkerRing;
+let koreaVideoEl = null; // 한국 착지 시 재생하는 구글어스스튜디오 영상(.hero-globe-video)
 let globeShaderUniforms = null; // 지구본 커스텀 셰이더의 uniforms(day/night 텍스처 블렌딩용). init()의 onBeforeCompile에서 채워진다
 let container = null;
 let ready = false;
@@ -56,6 +57,27 @@ let idleSpin = true;
 let travelToken = 0; // 새 이동이 시작되면 이전 애니메이션 루프를 무효화하기 위한 토큰
 let lastFrameTime = 0;
 let lastSunUpdateTime = -Infinity; // -Infinity로 시작해 최초 1회는 항상 즉시 계산되도록 한다
+
+// 첫 방문 화면의 수도별 언어 국기(index.html .hero-globe-flag). 3D 구체 위의 수도 좌표를
+// 매 프레임 화면 좌표로 투영해 HTML 버튼을 그 자리로 옮긴다(클릭·포커스·스크린리더를
+// 그대로 쓰기 위해 WebGL 스프라이트 대신 DOM 요소를 사용). 첫 언어 이동이 시작되면
+// 더 이상 필요 없으므로 flagsActive를 끄고 갱신을 멈춘다.
+const flagEntries = []; // { el, local: 구체 로컬 좌표(Vector3) }
+let flagsLayer = null;
+let flagsActive = true;
+let flagHover = false; // 마우스가 국기 위에 있으면 유휴 자전을 잠시 멈춰 누르기 쉽게 한다
+const flagWorld = new THREE.Vector3();
+const flagToCamera = new THREE.Vector3();
+
+// 국기 레이어를 드래그해서 지구본을 직접 돌려볼 수 있다(첫 방문 화면에서만).
+const DRAG_ROTATE_RAD_PER_PX = 0.0055;
+const DRAG_START_THRESHOLD_PX = 6; // 이보다 적게 움직이면 드래그가 아니라 국기 클릭으로 본다
+const PITCH_MIN_RAD = THREE.MathUtils.degToRad(-35);
+const PITCH_MAX_RAD = THREE.MathUtils.degToRad(55);
+const IDLE_RESUME_AFTER_DRAG_MS = 2000;
+let dragState = null;
+let dragJustEnded = false;
+let idleResumeTimer = null;
 
 // 실시간 태양 직하점(subsolar point, 태양이 머리 위 남중하는 지점) 계산.
 // 적위(태양 고도)와 균시차(equation of time)를 이용한 표준 근사 공식으로,
@@ -120,6 +142,24 @@ function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+// 한국(ko) 착지가 끝난 뒤 구글어스스튜디오 영상을 지구본 위에 페이드인하며 재생한다.
+function showKoreaVideo() {
+  if (!koreaVideoEl) return;
+  if (!koreaVideoEl.classList.contains('is-visible')) {
+    koreaVideoEl.currentTime = 0;
+  }
+  koreaVideoEl.play().catch(() => {}); // 자동재생이 막혀도 지구본 표시 자체는 계속 정상 동작해야 하므로 무시
+  koreaVideoEl.classList.add('is-visible');
+}
+
+// 다른 언어로 이동을 시작하면 영상을 즉시 페이드아웃하고 멈춰, 이동 애니메이션이
+// 영상 위가 아니라 다시 지구본(캔버스) 위에서 보이도록 한다.
+function hideKoreaVideo() {
+  if (!koreaVideoEl) return;
+  koreaVideoEl.classList.remove('is-visible');
+  koreaVideoEl.pause();
+}
+
 // 경도(도) → 그 지점을 카메라 정면(+Z)으로 데려오는 데 필요한 Y축 회전각(도).
 // 유도: SphereGeometry의 기본 텍스처 매핑에서 회전 없이 카메라를 향하는
 // 경도는 -90°이므로, 목표 경도가 그 자리에 오도록 R = -90 - lon 만큼 돌린다.
@@ -156,6 +196,7 @@ function latLonToLocalPosition(lat, lon, radius) {
 function init() {
   container = document.querySelector('.hero-globe');
   if (!container) return;
+  koreaVideoEl = container.querySelector('.hero-globe-video');
 
   let gl;
   try {
@@ -253,12 +294,16 @@ function init() {
   capitalMarker.add(markerDot, capitalMarkerRing);
   spinGroup.add(capitalMarker);
 
-  // 초기 자세: 한국(서울)이 정면을 보도록 맞춰 평면 폴백의 기본값과 일치시킨다
+  // 초기 자세: 한국(서울)이 정면을 보도록 맞춰 평면 폴백의 기본값과 일치시킨다.
+  // currentLang은 null로 둔다 — 아직 어느 나라에도 "착지"하지 않았으므로, 첫
+  // moveToLanguage('ko')도 실제 이동·줌인 애니메이션을 거쳐 착지하게 된다.
   const initial = HERO_GLOBE_CAPITALS.ko;
   spinGroup.rotation.y = THREE.MathUtils.degToRad(lonToYawDeg(initial.lon));
   framingGroup.rotation.x = THREE.MathUtils.degToRad(initial.lat - EARTH_AXIAL_TILT_DEG);
   placeCapitalMarker(initial.lat, initial.lon);
-  currentLang = 'ko';
+  capitalMarker.visible = false; // 착지 전(국기 선택 화면)에는 선택된 수도가 없으므로 숨긴다
+
+  setupFlags();
 
   window.addEventListener('resize', onResize);
   onResize();
@@ -267,7 +312,7 @@ function init() {
   lastFrameTime = performance.now();
   requestAnimationFrame(animate);
 
-  if (pendingLang && pendingLang !== 'ko') {
+  if (pendingLang) {
     const lang = pendingLang;
     pendingLang = null;
     moveToLanguage(lang);
@@ -287,6 +332,102 @@ function setCapitalMarkerScale(scale) {
   if (capitalMarker) capitalMarker.scale.setScalar(scale);
 }
 
+function setupFlags() {
+  flagsLayer = document.querySelector('.hero-globe-flags');
+  if (!flagsLayer) return;
+  flagsLayer.querySelectorAll('.hero-globe-flag').forEach((el) => {
+    const capital = HERO_GLOBE_CAPITALS[el.dataset.lang];
+    if (!capital) return;
+    flagEntries.push({ el, local: latLonToLocalPosition(capital.lat, capital.lon, 1) });
+    el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') flagHover = true; });
+    el.addEventListener('pointerleave', () => { flagHover = false; });
+  });
+  // CSS 기본값(원 둘레에 고르게 놓인 정적 배치, 평면 폴백용) 대신 JS가 매 프레임 위치를 정한다
+  flagsLayer.classList.add('is-projected');
+  setupDrag(flagsLayer);
+}
+
+// 각 수도의 구체 표면 좌표를 현재 회전 상태의 world 좌표 → 카메라 화면 좌표(%)로
+// 투영해 국기를 그 자리에 둔다. 캔버스와 국기 레이어는 같은 정사각형 영역을 덮으므로
+// NDC(-1~1)를 그대로 퍼센트로 바꾸면 된다. 구체 중심이 원점이라 world 좌표 자체가
+// 바깥 법선이므로, 카메라 방향과의 내적(facing)으로 앞면/뒷면을 판정해 지구 뒤편으로
+// 넘어가는 국기는 가장자리에서 서서히 사라지게 한다.
+function updateFlags() {
+  if (!flagsActive || !flagEntries.length) return;
+  camera.updateMatrixWorld();
+  for (const { el, local } of flagEntries) {
+    flagWorld.copy(local);
+    spinGroup.localToWorld(flagWorld);
+    flagToCamera.copy(camera.position).sub(flagWorld).normalize();
+    const facing = flagWorld.dot(flagToCamera);
+    const visibility = THREE.MathUtils.smoothstep(facing, 0.08, 0.4);
+
+    flagWorld.project(camera);
+    el.style.left = `${(flagWorld.x + 1) * 50}%`;
+    el.style.top = `${(1 - flagWorld.y) * 50}%`;
+    el.style.opacity = visibility.toFixed(3);
+    el.style.setProperty('--flag-scale', (0.72 + 0.28 * visibility).toFixed(3));
+    el.style.zIndex = String(Math.round(visibility * 100)); // 앞쪽(정면에 가까운) 국기가 위로
+    el.classList.toggle('is-behind', visibility < 0.25);
+  }
+}
+
+function setupDrag(surface) {
+  surface.addEventListener('pointerdown', (e) => {
+    if (!flagsActive || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    dragState = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false };
+  });
+
+  surface.addEventListener('pointermove', (e) => {
+    if (!dragState || e.pointerId !== dragState.id) return;
+    const dx = e.clientX - dragState.x;
+    const dy = e.clientY - dragState.y;
+    if (!dragState.moved) {
+      if (Math.hypot(dx, dy) < DRAG_START_THRESHOLD_PX) return;
+      dragState.moved = true;
+      idleSpin = false;
+      window.clearTimeout(idleResumeTimer);
+      surface.setPointerCapture(e.pointerId);
+      surface.classList.add('is-dragging');
+    }
+    dragState.x = e.clientX;
+    dragState.y = e.clientY;
+    spinGroup.rotation.y += dx * DRAG_ROTATE_RAD_PER_PX;
+    framingGroup.rotation.x = THREE.MathUtils.clamp(
+      framingGroup.rotation.x + dy * DRAG_ROTATE_RAD_PER_PX,
+      PITCH_MIN_RAD,
+      PITCH_MAX_RAD
+    );
+  });
+
+  const endDrag = (e) => {
+    if (!dragState || e.pointerId !== dragState.id) return;
+    const moved = dragState.moved;
+    dragState = null;
+    surface.classList.remove('is-dragging');
+    if (!moved) return;
+    // 드래그를 끝낸 손가락/마우스가 국기 위에서 떨어져도 그 국기가 눌린 것으로 처리되지
+    // 않도록, 바로 뒤따르는 click 한 번을 무시한다(click은 pointerup 직후 같은 흐름에서 발생)
+    dragJustEnded = true;
+    window.setTimeout(() => { dragJustEnded = false; }, 0);
+    idleResumeTimer = window.setTimeout(() => {
+      if (flagsActive) idleSpin = true;
+    }, IDLE_RESUME_AFTER_DRAG_MS);
+  };
+  surface.addEventListener('pointerup', endDrag);
+  surface.addEventListener('pointercancel', endDrag);
+
+  surface.addEventListener('click', (e) => {
+    if (!dragJustEnded) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+}
+
+function announceLanded(lang) {
+  window.dispatchEvent(new CustomEvent('heroglobe:landed', { detail: { lang } }));
+}
+
 function onResize() {
   if (!container || !renderer) return;
   const size = container.clientWidth || 640;
@@ -299,10 +440,12 @@ function animate(now) {
   requestAnimationFrame(animate);
   const delta = now - lastFrameTime;
   lastFrameTime = now;
-  if (idleSpin && !prefersReducedMotion() && spinGroup) {
+  if (idleSpin && !flagHover && !prefersReducedMotion() && spinGroup) {
     spinGroup.rotation.y += delta * IDLE_SPIN_PER_MS;
   }
+  scene.updateMatrixWorld(); // 드래그로 바뀐 framingGroup 회전까지 반영한 뒤 태양 방향·국기 위치를 계산
   updateSunLight(now);
+  updateFlags();
   if (capitalMarkerRing && !prefersReducedMotion()) {
     const pulse = 1 + 0.35 * (0.5 + 0.5 * Math.sin(now * 0.0035));
     capitalMarkerRing.scale.setScalar(pulse);
@@ -317,9 +460,19 @@ function moveToLanguage(lang) {
     return;
   }
   const target = HERO_GLOBE_CAPITALS[lang] || HERO_GLOBE_CAPITALS.ko;
-  if (currentLang === lang) return;
+  if (currentLang === lang) {
+    // 이미 그 나라에 착지해 있는데 같은 언어를 다시 고른 경우: 이동할 필요는 없고,
+    // 한국이면 영상만 (혹시 멈춰 있었다면) 다시 보여준다.
+    if (lang === 'ko') showKoreaVideo();
+    return;
+  }
   currentLang = lang;
   idleSpin = false;
+  flagsActive = false; // 언어가 정해졌으므로 국기 선택 화면(투영·드래그)은 더 이상 쓰지 않는다
+  dragState = null;
+  window.clearTimeout(idleResumeTimer);
+  if (capitalMarker) capitalMarker.visible = true;
+  hideKoreaVideo(); // 착지 상태였다면(한국) 이동이 시작되는 즉시 영상을 내리고 지구본으로 되돌린다
   // 마커는 spinGroup 로컬 좌표(지도 위 고정점)이므로 즉시 새 수도로 옮겨두면
   // 이후 spinGroup/framingGroup 회전 애니메이션에 실려 자연스럽게 화면 위를
   // 이동한다(마커 자체를 따로 트윈할 필요가 없다)
@@ -340,6 +493,8 @@ function moveToLanguage(lang) {
     framingGroup.rotation.x = THREE.MathUtils.degToRad(pitchTo);
     camera.position.z = zoomInTo;
     setCapitalMarkerScale(MARKER_LANDED_SCALE);
+    if (lang === 'ko') showKoreaVideo();
+    announceLanded(lang);
     return;
   }
 
@@ -387,8 +542,12 @@ function moveToLanguage(lang) {
       setCapitalMarkerScale(1 + (MARKER_LANDED_SCALE - 1) * eased); // 지도가 확대될수록 마커는 반비례로 작아짐
       if (t < 1) {
         requestAnimationFrame(step);
+        return;
       }
-      // t===1: 확대된 상태로 고정(lock). 더 이상 아무것도 움직이지 않는다.
+      // t===1: 확대된 상태로 고정(lock). 한국에 착지했다면 여기서 영상을 페이드인하고,
+      // home.js에 착지를 알려 제목·카드 링·식단/포디움 패널을 띄우게 한다.
+      if (lang === 'ko') showKoreaVideo();
+      announceLanded(lang);
     }
     requestAnimationFrame(step);
   }

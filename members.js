@@ -836,8 +836,9 @@ function setupLanguageToggle() {
   if (window.setLang && typeof window.setLang === 'function') {
     const originalSetLang = window.setLang;
 
-    window.setLang = function (lang) {
-      originalSetLang(lang);
+    // userSelected 등 나머지 인자도 그대로 넘겨야 common.js가 "사용자가 직접 고른 언어"를 기록한다
+    window.setLang = function (lang, ...rest) {
+      originalSetLang(lang, ...rest);
 
       setTimeout(() => {
         renderDirectors();

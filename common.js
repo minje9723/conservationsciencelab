@@ -95,7 +95,7 @@ function setLang(lang, userSelected = false) {
       window.homePageFunctions.renderDailyMenu();
     }
     if (window.homePageFunctions.moveHeroGlobeToLanguage) {
-      window.homePageFunctions.moveHeroGlobeToLanguage(lang);
+      window.homePageFunctions.moveHeroGlobeToLanguage(lang, userSelected);
     }
     if (window.homePageFunctions.startHomeCurtainAnimations) {
       window.homePageFunctions.startHomeCurtainAnimations();

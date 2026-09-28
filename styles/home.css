@@ -242,7 +242,9 @@ main {
   text-align: center;
 }
 
-@media (max-width: 1500px) {
+/* 통계 카드가 지구본 안의 링으로 옮겨가 가운데 열에는 제목만 남으므로, 좌우 패널(324px×2)과
+   지구본(640px)이 나란히 들어가는 1401px부터는 3단 배치를 유지한다 */
+@media (max-width: 1400px) {
   .hero-content {
     flex-direction: column;
     gap: 2rem;
@@ -492,27 +494,8 @@ main {
     0 0 40px rgba(0, 210, 190, 0.3);
 }
 
-/* Hero Impact Showcase */
-.hero-impact-showcase {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  margin-top: 3rem;
-  animation: fadeInUp 1s ease-out 0.8s both;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* 아이패드 가로 화면: hero-main 폭이 좁아지므로 통계 카드도 2x2로 줄인다 */
-@media (min-width: 1000px) and (max-width: 1400px) and (orientation: landscape) {
-  .hero-impact-showcase {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.9rem;
-    max-width: 378px;
-  }
-}
-
+/* Hero impact cards — 지구본 안 카드 링(.hero-globe-card-ring)의 배치·원형 모양은
+   styles/hero-globe.css에서 덮어쓴다. 여기는 공통 유리 질감·아이콘·숫자 스타일. */
 .hero-impact-card {
   /* 어두운 유리 대신 밝은 유리 질감 위에 브랜드 틸(#087f8c)을 은은하게 얹는다 */
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(8, 127, 140, 0.16));
@@ -835,7 +818,7 @@ main {
   justify-content: center;
 }
 
-@media (max-width: 1500px) {
+@media (max-width: 1400px) {
   .hero-side-panel {
     width: min(504px, 100%);
     flex: 0 0 auto;
@@ -1935,13 +1918,6 @@ main {
     min-width: 0;
     padding: 0.8rem 0.5rem;
     font-size: 0.85rem;
-  }
-  
-  /* Hero Impact Showcase - 모바일 2x2 그리드 */
-  .hero-impact-showcase {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-top: 2rem;
   }
   
   .hero-impact-card {
@@ -3537,13 +3513,6 @@ main {
   
   .impact-card {
     padding: 1.25rem;
-  }
-  
-  /* Hero Impact Showcase - 작은 모바일 */
-  .hero-impact-showcase {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.8rem;
-    margin-top: 1.5rem;
   }
   
   .hero-impact-card {
