@@ -877,9 +877,9 @@ function renderResearchLeague() {
 
   const lang = document.documentElement.lang || 'ko';
   const labels = {
-    publication: { en: 'Publication King', ko: '논문왕', ja: '論文王', uz: 'Nashrlar qiroli', fr: 'Roi des publications', ar: 'ملك المنشورات' },
-    conference: { en: 'Presentation King', ko: '발표왕', ja: '発表王', uz: 'Taqdimotlar qiroli', fr: 'Roi des présentations', ar: 'ملك العروض' },
-    award: { en: 'Award King', ko: '수상왕', ja: '受賞王', uz: 'Mukofotlar qiroli', fr: 'Roi des distinctions', ar: 'ملك الجوائز' }
+    publication: { en: 'Publications', ko: '논문 분야', ja: '論文分野', uz: 'Nashrlar', fr: 'Publications', ar: 'المنشورات' },
+    conference: { en: 'Presentations', ko: '발표 분야', ja: '発表分野', uz: 'Taqdimotlar', fr: 'Présentations', ar: 'العروض' },
+    award: { en: 'Awards', ko: '수상 분야', ja: '受賞分野', uz: 'Mukofotlar', fr: 'Distinctions', ar: 'الجوائز' }
   };
   const countLabels = { en: 'records', ko: '건', ja: '件', uz: 'ta yozuv', fr: 'entrées', ar: 'سجلات' };
   const typeOrder = ['publication', 'conference', 'award'];
@@ -921,7 +921,7 @@ function renderResearchLeague() {
         // 2022년까지의 이상옥 교수 실적은 공동저자로 반영하되, 순위표에서는
         // 교신저자 전환 이후(2023~)의 이상옥과 구분되도록 별도 표기로 보여준다.
         const isEarlySangOkLee = normalizeName(koName) === normalizeName('이상옥') && Number(achievement.year) <= 2022;
-        const displayName = isEarlySangOkLee ? '07-22 이상옥' : (displayNames[index] || koName);
+        const displayName = isEarlySangOkLee ? '07 이상옥' : (displayNames[index] || koName);
         if (!people.has(koName)) people.set(koName, { count: 0, displayNameCounts: new Map() });
         const person = people.get(koName);
         person.count += 1;
@@ -951,18 +951,21 @@ function renderResearchLeague() {
         <div class="research-league-category">${getLabel(labels[ranking.type], lang)}</div>
         <div class="research-league-category-count">${ranking.recordCount} ${getLabel(countLabels, lang)} ${getLabel(totalLabels, lang)}</div>
       </div>
-      <ol class="research-league-ranking">
-        ${[0, 1, 2].map(index => {
+      <div class="research-league-podium">
+        ${[1, 0, 2].map(index => {
           const leader = ranking.leaders[index];
+          const rank = index + 1;
           return `
-            <li class="research-league-ranking-item${index === 0 ? ' is-first' : ''}${leader ? '' : ' is-empty'}">
-              <span class="research-league-rank">${index + 1}</span>
-              <span class="research-league-name">${leader ? leader[0] : '-'}</span>
-              <span class="research-league-count">${leader ? `${leader[1]} ${getLabel(countLabels, lang)}` : ''}</span>
-            </li>
+            <div class="podium-step podium-rank-${rank}${leader ? '' : ' is-empty'}">
+              <div class="podium-step-name">${leader ? leader[0] : '-'}</div>
+              <div class="podium-step-block">
+                <span class="podium-step-symbol">${{ 1: 'Au', 2: 'Ag', 3: 'Cu' }[rank]}</span>
+                <span class="podium-step-rank">${leader ? leader[1] : '-'}</span>
+              </div>
+            </div>
           `;
         }).join('')}
-      </ol>
+      </div>
       <a class="research-league-card-link" href="achievements.html?filter=${ranking.type}">
         <span class="lang lang-en">View records</span>
         <span class="lang lang-ko" style="display:none;">기록 보기</span>

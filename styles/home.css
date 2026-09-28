@@ -250,6 +250,19 @@ main {
   }
 }
 
+/* 아이패드 가로 화면(표준/Air/Pro 11·12.9형)에서는 세로로 쌓지 않고,
+   PC와 동일한 3단(식단표-메인-League) 배치를 축소 비율로 유지한다 */
+@media (min-width: 1000px) and (max-width: 1400px) and (orientation: landscape) {
+  .hero-content {
+    flex-direction: row;
+    gap: 1.1rem;
+  }
+
+  .hero-main {
+    max-width: 504px;
+  }
+}
+
 .hero-logo {
   margin-bottom: 2rem;
   animation: fadeInUp 1s ease-out;
@@ -488,19 +501,29 @@ main {
   margin-right: auto;
 }
 
+/* 아이패드 가로 화면: hero-main 폭이 좁아지므로 통계 카드도 2x2로 줄인다 */
+@media (min-width: 1000px) and (max-width: 1400px) and (orientation: landscape) {
+  .hero-impact-showcase {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+    max-width: 378px;
+  }
+}
+
 .hero-impact-card {
-  background: rgba(0, 0, 0, 0.5);
+  /* 어두운 유리 대신 밝은 유리 질감 위에 브랜드 틸(#087f8c)을 은은하게 얹는다 */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(8, 127, 140, 0.16));
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(8, 127, 140, 0.4);
   border-radius: 0;
   padding: 1.5rem 1rem;
   text-align: center;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 
-    0 8px 32px 0 rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
-    0 4px 16px 0 rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.25),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.1),
+    0 4px 16px 0 rgba(0, 0, 0, 0.15);
   position: relative;
   overflow: hidden;
   /* Link styles */
@@ -517,9 +540,9 @@ main {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.2), 
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(8, 127, 140, 0.4),
     transparent
   );
   transition: left 0.6s ease;
@@ -530,15 +553,15 @@ main {
 }
 
 .hero-impact-card:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(8, 127, 140, 0.28));
   backdrop-filter: blur(25px) saturate(200%);
   -webkit-backdrop-filter: blur(25px) saturate(200%);
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(8, 127, 140, 0.6);
   transform: translateY(-8px) scale(1.05);
-  box-shadow: 
-    0 16px 48px 0 rgba(0, 0, 0, 0.6),
-    inset 0 1px 2px 0 rgba(255, 255, 255, 0.3),
-    0 4px 16px 0 rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 16px 48px 0 rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.15),
+    0 4px 16px 0 rgba(255, 255, 255, 0.075);
 }
 
 .hero-impact-card:active {
@@ -560,7 +583,7 @@ main {
   width: 100%;
   height: 100%;
   fill: none;
-  stroke: white;
+  stroke: #087f8c;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -576,34 +599,23 @@ main {
 .hero-metric-number {
   font-size: 2.5rem;
   font-weight: 800;
-  color: white;
+  color: #087f8c;
   font-family: 'Bebas Neue', sans-serif;
   letter-spacing: 1px;
   line-height: 1;
-  /* 강한 텍스트 아웃라인과 그림자 */
-  text-shadow: 
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000,
-    0 2px 6px rgba(0, 0, 0, 0.8),
-    0 4px 12px rgba(0, 0, 0, 0.6);
+  /* 아이콘과 동일한 드롭섀도 효과로 톤 통일 */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .hero-metric-label {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 1);
+  color: #087f8c;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
-  /* 강한 텍스트 아웃라인과 그림자 */
-  text-shadow: 
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000,
-    0 2px 4px rgba(0, 0, 0, 0.8);
+  /* 아이콘과 동일한 드롭섀도 효과로 톤 통일 */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .research-league-trigger {
@@ -796,26 +808,25 @@ main {
 /* Hero side panel — shared glass-card shell for the two symmetric panels
    flanking the hero content (daily menu on the left, research league on the right) */
 .hero-side-panel {
-  width: 360px;
-  flex: 0 0 360px;
+  width: 324px;
+  flex: 0 0 324px;
   max-width: 100%;
   /* hero-content 상단 여백으로 헤더 겹침은 해결되므로, 여기서는 히어로 메인 컬럼과의
      균형을 위한 여백만 둔다 */
-  margin: 2.5rem 0;
-  padding: 1.5rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  box-shadow:
-    0 8px 32px 0 rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
-    0 4px 16px 0 rgba(0, 0, 0, 0.3);
+  margin: 2.25rem 0;
+  padding: 1.35rem;
+  /* 박스처럼 튀어 보이지 않도록 테두리/배경은 없애고, 뒤 배경을 살짝 눌러주는
+     정도의 약한 블러만 남긴다. 그룹핑은 내부 카드(순위 카드, 식단 행)가 담당한다 */
+  border: none;
+  background: none;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: none;
   text-align: left;
   animation: fadeInUp 0.8s ease-out 1s both;
   /* League 패널(제목 + 카드 3개)의 원래 높이를 기준값으로 고정해서, 식단표 패널도
      같은 높이를 갖도록 한다. 콘텐츠가 더 적은 쪽은 세로 가운데로 배치한다 */
-  min-height: 600px;
+  min-height: 540px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -823,11 +834,22 @@ main {
 
 @media (max-width: 1500px) {
   .hero-side-panel {
-    width: min(560px, 100%);
+    width: min(504px, 100%);
     flex: 0 0 auto;
     min-height: 0;
     /* 세로로 쌓일 땐 hero-content의 gap이 간격을 담당하므로 중복 여백을 없앤다 */
     margin: 0;
+  }
+}
+
+/* 아이패드 가로 화면: 3단 배치를 유지하되 패널 폭/최소높이를 줄여서 맞춘다 */
+@media (min-width: 1000px) and (max-width: 1400px) and (orientation: landscape) {
+  .hero-side-panel {
+    width: 234px;
+    flex: 0 0 234px;
+    min-height: 378px;
+    margin: 1.35rem 0;
+    padding: 1rem;
   }
 }
 
@@ -837,40 +859,45 @@ main {
 
 .hero-side-panel .research-league-kicker {
   color: #f5c86b;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .hero-side-panel h2 {
   margin: 0.3rem 0 0;
   color: #fff;
   font-family: 'Libre Bodoni', Georgia, serif;
-  font-size: clamp(1.25rem, 2.5vw, 1.7rem);
+  font-size: clamp(1.05rem, 2.1vw, 1.5rem);
   line-height: 1.15;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .research-league-overview .research-league-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.5rem;
+  gap: 0.32rem;
   margin: 0;
 }
 
 .research-league-overview .research-league-card {
   min-height: 0;
-  padding: 1rem;
+  padding: 0.63rem 0.63rem 0;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-top: 3px solid #2d8c89;
-  background: rgba(255, 255, 255, 0.06);
+  background: none;
   box-shadow: none;
-  transition: background 0.25s ease, border-color 0.25s ease;
+  transition: border-color 0.25s ease;
 }
 
 .research-league-overview .research-league-card:hover {
-  background: rgba(255, 255, 255, 0.11);
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.45);
 }
 
 .research-league-overview .research-league-card:nth-child(2) { border-top-color: #c66a3d; }
 .research-league-overview .research-league-card:nth-child(3) { border-top-color: #d7a63f; }
+
+.research-league-overview .research-league-card:nth-child(2) .research-league-category { color: #c66a3d; }
+.research-league-overview .research-league-card:nth-child(3) .research-league-category { color: #d7a63f; }
 
 .research-league-category-row {
   display: flex;
@@ -882,8 +909,9 @@ main {
 
 .research-league-overview .research-league-category {
   margin: 0;
-  color: #fff;
-  font-size: 0.72rem;
+  color: #2d8c89;
+  font-size: 0.83rem;
+  font-weight: 700;
 }
 
 .research-league-category-count {
@@ -893,55 +921,107 @@ main {
   white-space: nowrap;
 }
 
-.research-league-ranking {
-  display: grid;
-  gap: 0.35rem;
+/* 실제 시상대(포디움)를 연상시키는 계단형 순위 표시 — 2위(왼쪽)-1위(가운데, 가장 높음)-3위(오른쪽) */
+.research-league-podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.4rem;
   margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
-.research-league-ranking-item {
-  display: grid;
-  grid-template-columns: 1.2rem 1fr auto;
+.podium-step {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
-  min-height: 1.8rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.13);
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.78rem;
-}
-
-.research-league-ranking-item:last-child { border-bottom: 0; }
-
-.research-league-ranking-item.is-first {
-  color: #fff;
-  font-weight: 800;
-}
-
-.research-league-ranking-item.is-empty {
-  opacity: 0.35;
-}
-
-.research-league-ranking-item .research-league-rank {
-  color: #f5c86b;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.15rem;
   text-align: center;
 }
 
-.research-league-ranking-item .research-league-name {
-  margin: 0;
+.podium-step.is-empty {
+  opacity: 0.35;
+}
+
+.podium-step-name {
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.82rem;
+  color: #111;
+  font-size: 0.77rem;
+  font-weight: 700;
+  /* 검정 글자가 어두운 히어로 배경 위에서도 읽히도록 흰색 헤일로를 준다 */
+  text-shadow:
+    0 0 3px rgba(255, 255, 255, 0.9),
+    0 0 6px rgba(255, 255, 255, 0.7),
+    0 0 1px rgba(255, 255, 255, 1);
 }
 
-.research-league-ranking-item .research-league-count {
-  color: #f5c86b;
-  font-size: 0.7rem;
-  white-space: nowrap;
+.podium-rank-1 .podium-step-name {
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.podium-step-block {
+  position: relative;
+  width: 100%;
+  margin-top: 0.4rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0.35rem;
+  border-radius: 0;
+  /* 크롬(광택 금속) 질감을 위한 상단 하이라이트 + 하단 음영 베벨 */
+  box-shadow:
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.75),
+    inset 0 -3px 5px 0 rgba(0, 0, 0, 0.3);
+}
+
+.podium-step-rank {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  color: rgba(23, 51, 58, 0.75);
+}
+
+/* 원소기호(Au/Ag/Cu)가 금속 표면에 각인된 것처럼 보이도록 디보스 효과를 준다 */
+.podium-step-symbol {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* Bebas Neue는 대문자만 있는 디스플레이 폰트라 Au/Ag/Cu의 대소문자가
+     구분되지 않아서, 소문자 글리프가 있는 기본 서체를 쓴다 */
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+.podium-rank-1 .podium-step-symbol { color: rgba(120, 80, 10, 0.55); }
+.podium-rank-2 .podium-step-symbol { color: rgba(60, 65, 70, 0.5); }
+.podium-rank-3 .podium-step-symbol { color: rgba(90, 45, 20, 0.55); }
+
+.podium-rank-1 .podium-step-block {
+  height: 88px;
+  background: linear-gradient(135deg, #d7a63f 0%, #fff6dc 45%, #b8862c 100%);
+}
+
+.podium-rank-2 .podium-step-block {
+  height: 66px;
+  background: linear-gradient(135deg, #b9c0c7 0%, #ffffff 45%, #8c95a0 100%);
+}
+
+.podium-rank-3 .podium-step-block {
+  height: 50px;
+  background: linear-gradient(135deg, #c6773f 0%, #f3d2ae 45%, #8f5024 100%);
+}
+
+.podium-rank-1 .podium-step-rank {
+  font-size: 1.3rem;
 }
 
 .research-league-card-link {
@@ -980,20 +1060,21 @@ main {
   color: #fff;
   font-family: 'Libre Bodoni', Georgia, serif;
   font-size: 0.95rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .daily-menu-meals {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .daily-menu-row {
   min-width: 0;
-  padding: 0.85rem 0.85rem;
+  padding: 0.77rem 0.77rem;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-left: 3px solid #d7a63f;
-  background: rgba(255, 255, 255, 0.06);
+  background: none;
 }
 
 .daily-menu-row-label {
@@ -1003,15 +1084,17 @@ main {
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 1px 6px rgba(0, 0, 0, 0.55);
 }
 
 .daily-menu-row-items {
   margin: 0;
   padding: 0;
   list-style: none;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.82rem;
+  color: #fff;
+  font-size: 0.83rem;
   line-height: 1.5;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 1px 6px rgba(0, 0, 0, 0.55);
 }
 
 .daily-menu-empty {
