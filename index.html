@@ -301,12 +301,44 @@
     <section class="hero-section">
       <div class="hero-background">
         <canvas class="hero-line-canvas" id="heroLineCanvas" aria-hidden="true"></canvas>
+        <div class="hero-orbits" aria-hidden="true">
+          <div class="hero-orbit hero-orbit--1"><div class="hero-orbit-spin"><span class="hero-orbit-planet"></span></div></div>
+          <div class="hero-orbit hero-orbit--2"><div class="hero-orbit-spin"><span class="hero-orbit-planet hero-orbit-planet--amber"></span></div></div>
+          <div class="hero-orbit hero-orbit--3"><div class="hero-orbit-spin"><span class="hero-orbit-planet hero-orbit-planet--rose"></span></div></div>
+        </div>
         <div class="hero-globe" aria-hidden="true">
           <div class="hero-globe-surface">
             <div class="hero-globe-lights"></div>
           </div>
           <div class="hero-globe-pin"></div>
         </div>
+        <!-- 토성의 고리처럼 지구본을 감싸고 도는 환영 문구. 실제로 읽히는(SEO·스크린리더용)
+             제목은 아래 .hero-title(h1)이며, 이 SVG는 그것을 그대로 복제한 장식용
+             링이라 aria-hidden 처리한다. 언어별 텍스트는 .hero-title과 똑같이
+             .lang/.lang-xx 클래스로 전환된다(common.js가 두 곳 모두에 동일하게 적용). -->
+        <svg class="hero-ring-text" viewBox="0 0 800 800" aria-hidden="true" focusable="false">
+          <defs>
+            <path id="heroRingTextPath" d="M 40,400 A 360,360 0 0,1 760,400 A 360,360 0 0,1 40,400" />
+          </defs>
+          <text class="lang lang-en">
+            <textPath href="#heroRingTextPath">Welcome to Conservation Science Lab · Welcome to Conservation Science Lab · </textPath>
+          </text>
+          <text class="lang lang-ko" style="display:none;">
+            <textPath href="#heroRingTextPath">보존과학연구소에 오신 것을 환영합니다 · 보존과학연구소에 오신 것을 환영합니다 · </textPath>
+          </text>
+          <text class="lang lang-ja" style="display:none;">
+            <textPath href="#heroRingTextPath">保存科学研究所へようこそ · 保存科学研究所へようこそ · 保存科学研究所へようこそ · </textPath>
+          </text>
+          <text class="lang lang-uz" style="display:none;">
+            <textPath href="#heroRingTextPath">Konservatsiya Fanlari Laboratoriyasiga xush kelibsiz · </textPath>
+          </text>
+          <text class="lang lang-fr" style="display:none;">
+            <textPath href="#heroRingTextPath">Bienvenue au Conservation Science Lab · Bienvenue au Conservation Science Lab · </textPath>
+          </text>
+          <text class="lang lang-ar" style="display:none;">
+            <textPath href="#heroRingTextPath">مرحبًا بكم في Conservation Science Lab · مرحبًا بكم في Conservation Science Lab · </textPath>
+          </text>
+        </svg>
         <div class="hero-weather" id="heroWeather" aria-hidden="true"></div>
         <div class="hero-overlay"></div>
       </div>
@@ -899,6 +931,31 @@
         </div>
       </div>
     </div>
+  </div>
+  <!-- Research Podium overview modal: 포디움 스텝(1~3위)을 클릭하면 그 사람의
+       실적 목록이 여기 채워진다 (home.js의 openResearchPodiumOverview 참고) -->
+  <div id="researchPodiumModal" class="modal research-podium-modal">
+    <div class="modal-content research-podium-modal-content">
+      <span class="close-btn research-podium-modal-close">&times;</span>
+      <div class="research-podium-modal-header">
+        <p class="research-podium-modal-category"></p>
+        <h2 class="research-podium-modal-name"></h2>
+        <p class="research-podium-modal-count"></p>
+      </div>
+      <ul class="research-podium-modal-list"></ul>
+    </div>
+  </div>
+  <!-- 수상 상장 이미지를 클릭하면 뜨는 2차 팝업(원본 이미지 + 제목·수여기관·연도).
+       home.js의 openResearchPodiumAwardDetail 참고 -->
+  <div id="researchPodiumAwardDetail" class="modal research-podium-award-detail">
+    <span class="close-btn research-podium-award-detail-close">&times;</span>
+    <figure class="research-podium-award-detail-figure">
+      <img class="research-podium-award-detail-image" alt="">
+      <figcaption>
+        <p class="research-podium-award-detail-title"></p>
+        <p class="research-podium-award-detail-meta"></p>
+      </figcaption>
+    </figure>
   </div>
   <!-- Footer -->
   <footer class="footer">

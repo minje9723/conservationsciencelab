@@ -42,7 +42,8 @@ const TRAVEL_MS = 1600;      // 이동(자전축 회전) 소요 시간
 const ZOOM_MS = 900;         // 확대 소요 시간
 const IDLE_SPIN_PER_MS = 0.00007; // 아무 언어도 선택되지 않은 초기 상태의 유휴 자전 속도(rad/ms). 완전히 한 바퀴 도는 데 약 90초
 const HERO_GLOBE_MARKER_COLOR = 0x39ff14; // 형광 녹색(neon green)
-const MARKER_LANDED_SCALE = 1.4; // 착지(확대) 시 마커가 커지는 배율(카메라가 가까워지며 생기는 원근감 확대와 별개로, 확대에 비례해 눈에 띄게 커지도록)
+const HERO_GLOBE_MARKER_OPACITY = 0.7; // 핀포인트(코어 점) 투명도
+const MARKER_LANDED_SCALE = 0.6; // 착지(확대) 시 마커가 작아지는 배율 — 카메라가 가까워져 원근감으로도 커 보이므로, 마커 자체는 반비례로 줄여 균형을 맞춘다
 
 let renderer, scene, camera, axialTiltGroup, framingGroup, spinGroup;
 let capitalMarker, capitalMarkerRing;
@@ -242,7 +243,7 @@ function init() {
   // 자체에 가려 자연스럽게 사라진다(별도 가시성 처리 불필요).
   const markerDot = new THREE.Mesh(
     new THREE.SphereGeometry(0.022, 16, 16),
-    new THREE.MeshBasicMaterial({ color: HERO_GLOBE_MARKER_COLOR })
+    new THREE.MeshBasicMaterial({ color: HERO_GLOBE_MARKER_COLOR, transparent: true, opacity: HERO_GLOBE_MARKER_OPACITY })
   );
   capitalMarkerRing = new THREE.Mesh(
     new THREE.RingGeometry(0.03, 0.042, 32),
@@ -351,7 +352,7 @@ function moveToLanguage(lang) {
       const t = Math.min(1, (now - start) / ZOOM_MS);
       const eased = easeInOutCubic(t);
       camera.position.z = zoomOutFrom + (CAMERA_Z_DEFAULT - zoomOutFrom) * eased;
-      setCapitalMarkerScale(markerScaleFrom + (1 - markerScaleFrom) * eased); // 마커도 줌아웃에 맞춰 원래 크기로
+      setCapitalMarkerScale(markerScaleFrom + (1 - markerScaleFrom) * eased); // 줌아웃되며 마커도 원래(기본) 크기로 되돌아감
       if (t < 1) {
         requestAnimationFrame(step);
       } else {
@@ -383,7 +384,7 @@ function moveToLanguage(lang) {
       const t = Math.min(1, (now - start) / ZOOM_MS);
       const eased = easeInOutCubic(t);
       camera.position.z = CAMERA_Z_DEFAULT + (zoomInTo - CAMERA_Z_DEFAULT) * eased;
-      setCapitalMarkerScale(1 + (MARKER_LANDED_SCALE - 1) * eased); // 확대에 비례해 마커도 커짐
+      setCapitalMarkerScale(1 + (MARKER_LANDED_SCALE - 1) * eased); // 지도가 확대될수록 마커는 반비례로 작아짐
       if (t < 1) {
         requestAnimationFrame(step);
       }

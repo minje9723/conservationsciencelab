@@ -951,6 +951,24 @@ main {
   opacity: 0.35;
 }
 
+/* 실적이 있는 스텝은 클릭/터치(또는 Enter·Space)하면 그 사람의 실적 목록이
+   모달로 열린다(home.js의 openResearchPodiumOverview 참고) */
+.podium-step--clickable {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: transform 0.15s ease;
+}
+
+.podium-step--clickable:hover,
+.podium-step--clickable:focus-visible {
+  transform: translateY(-3px);
+}
+
+.podium-step--clickable:focus-visible {
+  outline: 2px solid #f5c86b;
+  outline-offset: 3px;
+}
+
 .podium-step-name {
   width: 100%;
   overflow: hidden;
@@ -1041,6 +1059,271 @@ main {
 }
 
 .research-league-card-link:hover { color: #f5c86b; }
+
+/* Research Podium overview 모달. 공통 .modal/.modal-content/.close-btn(styles/common.css)
+   기반이지만, 화면 중앙에 뜨는 기본 동작 대신 클릭한 스텝블록 바로 아래(공간이
+   없으면 왼쪽)에서 파생되는 팝오버처럼 보이게 한다. top/left는 home.js가 매번
+   스텝블록 위치를 기준으로 px 단위로 직접 계산해 인라인 스타일로 넣어주므로,
+   공통 .modal-content의 top:50%/left:50%/translate(-50%,-50%) 중앙정렬을 여기서
+   무효화해야 한다(그래서 transform은 기본값을 none으로 둔다 — scale은 아래
+   키프레임 애니메이션이 재생 중에만 얹는다). */
+#researchPodiumModal .research-podium-modal-content {
+  top: 0;
+  left: 0;
+  width: min(440px, 90vw);
+  max-width: min(440px, 90vw);
+  padding: clamp(1.5rem, 4vw, 2rem);
+  max-height: min(560px, 82vh);
+  overflow-y: auto;
+  transform: none;
+  transform-origin: var(--reveal-origin-x, 50%) var(--reveal-origin-y, 0%);
+  animation: researchPodiumReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 안드로이드 폴더가 열리는 느낌: 처음엔 접힌 탭처럼 세로로 납작하게(scaleY를
+   거의 0으로) 시작했다가, 스텝블록과 맞닿은 모서리(--reveal-origin-x/y, home.js가
+   아래쪽이면 위쪽 모서리를, 왼쪽이면 오른쪽 모서리를 기준점으로 계산)를 중심으로
+   펼쳐지며 커진다. scaleX와 scaleY를 따로 둬서 단순 확대(zoom)가 아니라
+   "펼쳐지는" 모양이 나오게 했다. */
+@keyframes researchPodiumReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.3, 0.04);
+  }
+  35% {
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.01, 1.03);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #researchPodiumModal .research-podium-modal-content {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  /* 화면이 좁으면 팝오버 위치 계산이 부담스러우므로(공간이 늘 모자람) 다시
+     화면 중앙에 뜨는 기본 모달 동작으로 되돌린다 */
+  #researchPodiumModal .research-podium-modal-content {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    width: 90vw;
+    transform: translate(-50%, -50%) !important;
+    animation: modalFadeIn 0.3s ease-out;
+  }
+}
+
+.research-podium-modal-header {
+  padding-right: 2rem; /* 닫기 버튼과 겹치지 않도록 */
+  border-bottom: 1px solid rgba(23, 51, 58, 0.12);
+  margin-bottom: 1.2rem;
+  padding-bottom: 1.2rem;
+}
+
+.research-podium-modal-category {
+  margin: 0 0 0.3rem;
+  color: #c66a3d;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.research-podium-modal-name {
+  margin: 0 0 0.3rem;
+  color: #17333a;
+  font-family: 'Libre Bodoni', Georgia, serif;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.research-podium-modal-count {
+  margin: 0;
+  color: #5c6b6c;
+  font-size: 0.85rem;
+}
+
+.research-podium-modal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.research-podium-modal-item {
+  display: flex;
+  gap: 0.9rem;
+  align-items: baseline;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(23, 51, 58, 0.08);
+}
+
+.research-podium-modal-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.research-podium-modal-item-year {
+  flex: 0 0 auto;
+  color: #2d8c89;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+}
+
+/* 바로 위 항목과 연도가 같으면 숫자를 안 보이게만 한다(visibility:hidden) —
+   display:none을 쓰면 칸이 아예 사라져 아래 제목들의 좌측 정렬이 어긋난다 */
+.research-podium-modal-item-year.is-repeated-year {
+  visibility: hidden;
+}
+
+/* 수상 분야는 부가 텍스트 없이 상장 이미지만 그리드로 보여준다(research-podium-modal-list
+   기본값인 flex column을 여기서만 grid로 바꾼다). */
+.research-podium-modal-list--awards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.research-podium-award-item {
+  border-bottom: none; /* 일반 목록의 구분선은 그리드에선 필요 없다 */
+}
+
+.research-podium-award-thumb {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid rgba(23, 51, 58, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.research-podium-award-thumb:hover,
+.research-podium-award-thumb:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(23, 51, 58, 0.18);
+}
+
+.research-podium-award-thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.research-podium-modal-item-body {
+  min-width: 0;
+}
+
+.research-podium-modal-item-title {
+  margin: 0;
+  color: #17333a;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* 학술논문 학회지 등급(SCI/KCI/Scopus 등) 배지 */
+.research-podium-modal-item-badge {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid rgba(45, 140, 137, 0.4);
+  border-radius: 3px;
+  color: #2d8c89;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.research-podium-modal-item-meta {
+  margin: 0.25rem 0 0;
+  color: #5c6b6c;
+  font-size: 0.82rem;
+}
+
+/* 수상 상장 썸네일을 클릭했을 때 뜨는 2차 팝업(원본 이미지 감상 + 제목/수여기관/연도).
+   overview 모달(.research-podium-modal)과 별개로 화면 전체를 덮는 어두운
+   라이트박스이며, achievements.html의 .award-modal과 같은 패턴이다. */
+.research-podium-award-detail {
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 20, 27, 0.88);
+  z-index: 12000; /* overview 모달(.modal 기본 9000)보다 위에 뜨도록 */
+  cursor: zoom-out;
+}
+
+.research-podium-award-detail-figure {
+  margin: 0;
+  max-width: min(640px, 90vw);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: researchPodiumAwardDetailIn 0.25s ease-out;
+}
+
+@keyframes researchPodiumAwardDetailIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.research-podium-award-detail-image {
+  max-width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5);
+  cursor: default;
+}
+
+.research-podium-award-detail-figure figcaption {
+  margin-top: 1rem;
+  text-align: center;
+  cursor: default;
+}
+
+.research-podium-award-detail-title {
+  margin: 0;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.research-podium-award-detail-meta {
+  margin: 0.3rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.85rem;
+}
+
+.research-podium-award-detail-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.5rem;
+  color: #fff;
+  font-size: 1.8rem;
+}
+
+@media (max-width: 640px) {
+  .research-podium-modal-list--awards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
 /* Daily dining menu — mirrors the research league panel on the opposite side */
 .daily-menu-overview .research-league-kicker {

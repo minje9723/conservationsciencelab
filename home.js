@@ -1151,17 +1151,38 @@ function getUniqueAchievements() {
   });
 }
 
+// 포디움의 각 스텝(1~3위)을 클릭/터치하면 그 사람의 실적 목록을 모달로 보여준다.
+// renderResearchLeague()가 다시 그려질 때마다(언어 전환 등) 최신 데이터로 갱신된다.
+// 키는 "type::한글성명"(언어와 무관한 고유 식별자).
+const researchPodiumIndex = new Map();
+function researchPodiumKey(type, koName) {
+  return `${type}::${koName}`;
+}
+// 클릭 가능한 각 스텝을 data-podium-index(정수)로만 식별한다. koName을 직접
+// HTML 속성 값으로 넣지 않는 이유: escapeHtml()은 텍스트 노드 기준으로만
+// 이스케이프해 따옴표(")는 그대로 두므로, 속성 값에 쓰면 안전하지 않다.
+let researchPodiumStepKeys = [];
+// 현재 overview 모달에 표시 중인 수상 실적 목록. 이미지 썸네일도 같은 이유로
+// data-award-index(정수)만 속성에 넣고, 실제 achievement 객체는 여기서 찾는다.
+let researchPodiumAwardRecords = [];
+
+// renderResearchLeague()의 카드 헤더와 overview 모달 헤더가 같은 분야명을 써야 하므로
+// 모듈 스코프로 공유한다.
+const RESEARCH_PODIUM_TYPE_LABELS = {
+  publication: { en: 'Publications', ko: '논문 분야', ja: '論文分野', uz: 'Nashrlar', fr: 'Publications', ar: 'المنشورات' },
+  conference: { en: 'Presentations', ko: '발표 분야', ja: '発表分野', uz: 'Taqdimotlar', fr: 'Présentations', ar: 'العروض' },
+  award: { en: 'Awards', ko: '수상 분야', ja: '受賞分野', uz: 'Mukofotlar', fr: 'Distinctions', ar: 'الجوائز' }
+};
+const RESEARCH_PODIUM_COUNT_LABELS = { en: 'records', ko: '건', ja: '件', uz: 'ta yozuv', fr: 'entrées', ar: 'سجلات' };
+
 function renderResearchLeague() {
   const grid = document.getElementById('researchLeagueGrid');
   if (!grid || typeof achievements === 'undefined') return;
+  closeResearchPodiumOverview(); // 다시 그려지는 동안 이전 언어의 내용이 열려있지 않도록
 
   const lang = document.documentElement.lang || 'ko';
-  const labels = {
-    publication: { en: 'Publications', ko: '논문 분야', ja: '論文分野', uz: 'Nashrlar', fr: 'Publications', ar: 'المنشورات' },
-    conference: { en: 'Presentations', ko: '발표 분야', ja: '発表分野', uz: 'Taqdimotlar', fr: 'Présentations', ar: 'العروض' },
-    award: { en: 'Awards', ko: '수상 분야', ja: '受賞分野', uz: 'Mukofotlar', fr: 'Distinctions', ar: 'الجوائز' }
-  };
-  const countLabels = { en: 'records', ko: '건', ja: '件', uz: 'ta yozuv', fr: 'entrées', ar: 'سجلات' };
+  const labels = RESEARCH_PODIUM_TYPE_LABELS;
+  const countLabels = RESEARCH_PODIUM_COUNT_LABELS;
   const typeOrder = ['publication', 'conference', 'award'];
 
   // 교신저자 교수는 한글 성명(원문 데이터의 유일한 신뢰 가능 필드)으로만 판별한다.
@@ -1202,19 +1223,34 @@ function renderResearchLeague() {
         // 교신저자 전환 이후(2023~)의 이상옥과 구분되도록 별도 표기로 보여준다.
         const isEarlySangOkLee = normalizeName(koName) === normalizeName('이상옥') && Number(achievement.year) <= 2022;
         const displayName = isEarlySangOkLee ? '07 이상옥' : (displayNames[index] || koName);
-        if (!people.has(koName)) people.set(koName, { count: 0, displayNameCounts: new Map() });
+        if (!people.has(koName)) people.set(koName, { count: 0, displayNameCounts: new Map(), records: [] });
         const person = people.get(koName);
         person.count += 1;
         person.displayNameCounts.set(displayName, (person.displayNameCounts.get(displayName) || 0) + 1);
+        person.records.push(achievement);
       });
     });
 
-    const leaders = [...people.entries()].map(([, person]) => {
+    // 동점자 순서는 반드시 언어와 무관한 키(한글 성명)로만 비교해야 한다.
+    // 예전에는 화면에 표시되는 이름(mostUsedName)으로 비교했는데, 그 이름은
+    // 언어별로 다른 문자열이라("김민제" vs "Min-Je Kim") localeCompare 결과가
+    // 언어마다 달라져 동점일 때 1·2위가 언어별로 뒤바뀌는 원인이 됐다.
+    const leaders = [...people.entries()].map(([koName, person]) => {
       const [mostUsedName] = [...person.displayNameCounts.entries()].sort((a, b) => b[1] - a[1])[0];
-      return [mostUsedName, person.count];
+      return [mostUsedName, person.count, koName];
     }).sort((first, second) => {
-      return second[1] - first[1] || first[0].localeCompare(second[0]);
+      return second[1] - first[1] || first[2].localeCompare(second[2]);
     }).slice(0, 3);
+
+    // 모달용 인덱스: 순위 3위 안에 든 사람만 클릭 대상이면 충분하다
+    leaders.forEach(([displayName, count, koName]) => {
+      researchPodiumIndex.set(researchPodiumKey(type, koName), {
+        displayName,
+        count,
+        type,
+        records: people.get(koName).records
+      });
+    });
 
     return {
       type,
@@ -1225,6 +1261,7 @@ function renderResearchLeague() {
 
   const totalLabels = { en: 'total', ko: '전체', ja: '全体', uz: 'jami', fr: 'total', ar: 'الإجمالي' };
   const getLabel = (dictionary, key) => dictionary[key] || dictionary.en;
+  researchPodiumStepKeys = [];
   grid.innerHTML = rankings.map(ranking => `
     <article class="research-league-card">
       <div class="research-league-category-row">
@@ -1235,9 +1272,16 @@ function renderResearchLeague() {
         ${[1, 0, 2].map(index => {
           const leader = ranking.leaders[index];
           const rank = index + 1;
+          // 실적이 있는 스텝만 클릭 가능(overview 모달)하게 한다
+          let interactiveAttrs = '';
+          if (leader) {
+            researchPodiumStepKeys.push({ type: ranking.type, koName: leader[2] });
+            const stepIndex = researchPodiumStepKeys.length - 1;
+            interactiveAttrs = `data-podium-index="${stepIndex}" tabindex="0" role="button" aria-haspopup="dialog" aria-label="${escapeHtml(leader[0])}"`;
+          }
           return `
-            <div class="podium-step podium-rank-${rank}${leader ? '' : ' is-empty'}">
-              <div class="podium-step-name">${leader ? leader[0] : '-'}</div>
+            <div class="podium-step podium-rank-${rank}${leader ? ' podium-step--clickable' : ' is-empty'}" ${interactiveAttrs}>
+              <div class="podium-step-name">${leader ? escapeHtml(leader[0]) : '-'}</div>
               <div class="podium-step-block">
                 <span class="podium-step-symbol">${{ 1: 'Au', 2: 'Ag', 3: 'Cu' }[rank]}</span>
                 <span class="podium-step-rank">${leader ? leader[1] : '-'}</span>
@@ -1256,6 +1300,271 @@ function renderResearchLeague() {
       </a>
     </article>
   `).join('');
+
+  bindResearchPodiumInteractions(grid);
+}
+
+// 포디움 스텝 클릭/키보드(Enter, Space) 이벤트를 위임으로 처리한다. grid.innerHTML은
+// renderResearchLeague()가 다시 그려질 때마다 교체되지만 grid 엘리먼트 자체는
+// 그대로이므로, 리스너는 한 번만 등록하면 된다(dataset 플래그로 중복 등록 방지).
+function bindResearchPodiumInteractions(grid) {
+  if (grid.dataset.podiumBound) return;
+  grid.dataset.podiumBound = 'true';
+
+  const openFromStep = (step) => {
+    const key = researchPodiumStepKeys[Number(step.dataset.podiumIndex)];
+    if (key) openResearchPodiumOverview(key.type, key.koName, step);
+  };
+
+  grid.addEventListener('click', (e) => {
+    const step = e.target.closest('.podium-step--clickable');
+    if (step) openFromStep(step);
+  });
+
+  grid.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const step = e.target.closest('.podium-step--clickable');
+    if (!step) return;
+    e.preventDefault();
+    openFromStep(step);
+  });
+}
+
+// 실적 하나의 제목/부가정보(저널·학회·수여기관)를 현재 언어에 맞춰 뽑아낸다.
+// ko·ja는 전용 필드가 있고, 그 외 언어는 기존 목록 렌더링 함수들과 동일하게
+// 영문 필드로 대체한다.
+function researchPodiumRecordLine(type, achievement, lang) {
+  const title = lang === 'ko'
+    ? achievement.title_ko
+    : lang === 'ja'
+      ? (achievement.title_ja || achievement.title_en)
+      : achievement.title_en;
+
+  let secondary;
+  if (type === 'publication') {
+    secondary = lang === 'ko'
+      ? (achievement.journal_ko || achievement.journal)
+      : lang === 'ja'
+        ? (achievement.journal_ja || achievement.journal)
+        : achievement.journal;
+  } else if (type === 'conference') {
+    secondary = lang === 'ko' ? (achievement.event_ko || achievement.event) : achievement.event;
+  } else {
+    secondary = lang === 'ko' ? (achievement.organization_ko || achievement.organization) : achievement.organization;
+  }
+
+  // 학술논문은 학회지 등급(SCI/KCI/Scopus 등)을, 수상 내역은 상장 이미지를
+  // 같이 보여줘 정보성/접근성을 높인다(type별로 서로 다른 필드이므로 다른
+  // 항목은 자연히 undefined가 되어 화면에서 조용히 생략된다).
+  return {
+    title,
+    secondary,
+    year: achievement.year,
+    indexing: type === 'publication' ? achievement.indexing : undefined,
+    awardImage: type === 'award' ? achievement.award_image : undefined
+  };
+}
+
+// 포디움 스텝을 클릭/터치(또는 Enter·Space)하면 그 사람의 실적 목록을 모달로 보여준다.
+// triggerEl이 있으면 그 스텝 블록 위치를 기준으로 "폴더가 열리듯" 그 지점에서부터
+// 커지는 애니메이션을 재생한다(CSS의 --reveal-origin-x/y 커스텀 프로퍼티로 전달).
+function openResearchPodiumOverview(type, koName, triggerEl) {
+  const entry = researchPodiumIndex.get(researchPodiumKey(type, koName));
+  const modal = document.getElementById('researchPodiumModal');
+  if (!entry || !modal) return;
+
+  const lang = document.documentElement.lang || 'ko';
+  const dialog = modal.querySelector('.research-podium-modal-content');
+  const nameEl = modal.querySelector('.research-podium-modal-name');
+  const categoryEl = modal.querySelector('.research-podium-modal-category');
+  const countEl = modal.querySelector('.research-podium-modal-count');
+  const listEl = modal.querySelector('.research-podium-modal-list');
+  if (!dialog || !nameEl || !categoryEl || !countEl || !listEl) return;
+
+  nameEl.textContent = entry.displayName;
+  const typeLabels = RESEARCH_PODIUM_TYPE_LABELS[type];
+  categoryEl.textContent = typeLabels[lang] || typeLabels.en;
+  countEl.textContent = `${entry.count} ${RESEARCH_PODIUM_COUNT_LABELS[lang] || RESEARCH_PODIUM_COUNT_LABELS.en}`;
+
+  const sortedRecords = [...entry.records].sort((a, b) => Number(b.year) - Number(a.year));
+  listEl.classList.toggle('research-podium-modal-list--awards', type === 'award');
+
+  if (type === 'award') {
+    // 수상 분야는 부가 텍스트 없이 상장 이미지만 그리드로 보여주고, 제목·수여기관·
+    // 연도 같은 상세 정보는 이미지를 클릭했을 때 뜨는 별도 팝업에서 확인한다.
+    researchPodiumAwardRecords = sortedRecords;
+    listEl.innerHTML = sortedRecords.map((achievement, i) => {
+      const { title, awardImage } = researchPodiumRecordLine(type, achievement, lang);
+      if (!awardImage) return '';
+      return `
+        <li class="research-podium-award-item">
+          <button type="button" class="research-podium-award-thumb" data-award-index="${i}" aria-label="${escapeHtml(title || '')}">
+            <img src="${escapeHtml(awardImage)}" alt="${escapeHtml(title || '')}" loading="lazy">
+          </button>
+        </li>
+      `;
+    }).join('');
+  } else {
+    researchPodiumAwardRecords = [];
+    // 연도가 이전 항목과 같으면(연도별로 묶여 보이도록) 숫자 자체는 남겨두되
+    // visibility:hidden으로 감춘다 — 칸의 너비는 그대로라 아래 항목들의 정렬이
+    // 흐트러지지 않으면서, 시각적으로는 가장 위(최신) 항목에만 연도가 표기된다.
+    let lastYear = null;
+    listEl.innerHTML = sortedRecords.map(achievement => {
+      const { title, secondary, year, indexing } = researchPodiumRecordLine(type, achievement, lang);
+      const isRepeatedYear = year === lastYear;
+      lastYear = year;
+      return `
+        <li class="research-podium-modal-item">
+          <span class="research-podium-modal-item-year${isRepeatedYear ? ' is-repeated-year' : ''}">${year}</span>
+          <div class="research-podium-modal-item-body">
+            <p class="research-podium-modal-item-title">
+              ${escapeHtml(title || '')}
+              ${indexing ? `<span class="research-podium-modal-item-badge">${escapeHtml(indexing)}</span>` : ''}
+            </p>
+            ${secondary ? `<p class="research-podium-modal-item-meta">${escapeHtml(secondary)}</p>` : ''}
+          </div>
+        </li>
+      `;
+    }).join('');
+  }
+
+  // 화면 중앙이 아니라 클릭한 스텝블록 바로 아래(공간이 없으면 왼쪽)에서
+  // 파생되는 팝오버처럼 보이도록 위치를 직접 계산한다. 애니메이션은 잠시
+  // 꺼서(scale 등 진행 중인 변형이 크기 측정을 왜곡하지 않도록) 자연스러운
+  // 크기를 먼저 구하고, 위치와 --reveal-origin-x/y(펼쳐지는 기준 모서리)를
+  // 정한 뒤 reflow를 강제하고 다시 켜서 애니메이션이 처음부터 재생되게 한다.
+  modal.style.display = 'block';
+  dialog.style.animation = 'none';
+  if (triggerEl) {
+    const placement = computeResearchPodiumPlacement(triggerEl.getBoundingClientRect(), dialog);
+    dialog.style.top = `${placement.top}px`;
+    dialog.style.left = `${placement.left}px`;
+    dialog.style.setProperty('--reveal-origin-x', `${placement.originX}%`);
+    dialog.style.setProperty('--reveal-origin-y', `${placement.originY}%`);
+  } else {
+    dialog.style.removeProperty('top');
+    dialog.style.removeProperty('left');
+    dialog.style.removeProperty('--reveal-origin-x');
+    dialog.style.removeProperty('--reveal-origin-y');
+  }
+  void dialog.offsetWidth; // reflow 강제
+  dialog.style.animation = '';
+
+  document.body.style.overflow = 'hidden';
+  const closeBtn = modal.querySelector('.research-podium-modal-close');
+  if (closeBtn) closeBtn.focus();
+}
+
+// 스텝블록 아래에 다이얼로그를 붙일 자리가 있으면 그쪽에, 없으면 왼쪽에 붙인다.
+// 어느 쪽에 붙었는지에 따라 "펼쳐지는" 애니메이션의 기준 모서리(원점)도 함께
+// 정해준다 — 아래쪽이면 다이얼로그의 윗변, 왼쪽이면 오른쪽 변이 스텝블록과
+// 맞닿으므로 그 변을 기준으로 펼쳐져야 자연스럽다.
+function computeResearchPodiumPlacement(stepRect, dialog) {
+  const margin = 16;
+  const dialogWidth = dialog.offsetWidth;
+  const dialogHeight = dialog.offsetHeight;
+  const viewportW = window.innerWidth;
+  const viewportH = window.innerHeight;
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+  const belowTop = stepRect.bottom + margin;
+  if (belowTop + dialogHeight <= viewportH - margin) {
+    const left = clamp(stepRect.left, margin, viewportW - dialogWidth - margin);
+    const originX = clamp(((stepRect.left + stepRect.width / 2 - left) / dialogWidth) * 100, 8, 92);
+    return { top: belowTop, left, originX, originY: 0 };
+  }
+
+  const leftPos = stepRect.left - dialogWidth - margin;
+  if (leftPos >= margin) {
+    const top = clamp(stepRect.top, margin, viewportH - dialogHeight - margin);
+    const originY = clamp(((stepRect.top + stepRect.height / 2 - top) / dialogHeight) * 100, 8, 92);
+    return { top, left: leftPos, originX: 100, originY };
+  }
+
+  // 아래에도 왼쪽에도 자리가 없으면(작은 화면 등) 화면 안에 들어오도록 눌러 담는다
+  return {
+    top: clamp(belowTop, margin, viewportH - dialogHeight - margin),
+    left: clamp(stepRect.left, margin, viewportW - dialogWidth - margin),
+    originX: 50,
+    originY: 0
+  };
+}
+
+function closeResearchPodiumOverview() {
+  closeResearchPodiumAwardDetail();
+  const modal = document.getElementById('researchPodiumModal');
+  if (!modal || modal.style.display !== 'block') return;
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// 수상 상장 이미지를 클릭했을 때 뜨는 2차 팝업: 원본 크기 이미지와 함께
+// overview 목록에서는 뺀 제목·수여기관·연도를 여기서 보여준다.
+function openResearchPodiumAwardDetail(index) {
+  const achievement = researchPodiumAwardRecords[index];
+  const modal = document.getElementById('researchPodiumAwardDetail');
+  if (!achievement || !modal) return;
+
+  const lang = document.documentElement.lang || 'ko';
+  const { title, secondary, year, awardImage } = researchPodiumRecordLine('award', achievement, lang);
+  const imgEl = modal.querySelector('.research-podium-award-detail-image');
+  const titleEl = modal.querySelector('.research-podium-award-detail-title');
+  const metaEl = modal.querySelector('.research-podium-award-detail-meta');
+  if (!imgEl || !titleEl || !metaEl) return;
+
+  imgEl.src = awardImage || '';
+  imgEl.alt = title || '';
+  titleEl.textContent = title || '';
+  metaEl.textContent = secondary ? `${secondary} · ${year}` : `${year}`;
+
+  modal.style.display = 'flex';
+}
+
+function closeResearchPodiumAwardDetail() {
+  const modal = document.getElementById('researchPodiumAwardDetail');
+  if (!modal || modal.style.display !== 'flex') return;
+  modal.style.display = 'none';
+}
+
+// 닫기 버튼/바깥 클릭/Escape는 모달이 페이지에 딱 하나뿐이라 한 번만 등록해도 된다.
+function initResearchPodiumModal() {
+  const modal = document.getElementById('researchPodiumModal');
+  if (!modal || modal.dataset.bound) return;
+  modal.dataset.bound = 'true';
+
+  const closeBtn = modal.querySelector('.research-podium-modal-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeResearchPodiumOverview);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeResearchPodiumOverview(); // 바깥(배경) 클릭
+  });
+
+  // 상장 썸네일 클릭 → 2차 팝업. listEl은 매번 innerHTML로 교체되지만 이 위임
+  // 리스너는 modal 자체에 걸려있어 계속 유효하다.
+  modal.addEventListener('click', (e) => {
+    const thumb = e.target.closest('.research-podium-award-thumb');
+    if (thumb) openResearchPodiumAwardDetail(Number(thumb.dataset.awardIndex));
+  });
+
+  const detailModal = document.getElementById('researchPodiumAwardDetail');
+  if (detailModal) {
+    const detailCloseBtn = detailModal.querySelector('.research-podium-award-detail-close');
+    if (detailCloseBtn) detailCloseBtn.addEventListener('click', closeResearchPodiumAwardDetail);
+    detailModal.addEventListener('click', (e) => {
+      if (e.target === detailModal) closeResearchPodiumAwardDetail(); // 바깥(배경) 클릭
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    // 2차 팝업이 열려있으면 그것만 닫고, overview는 그대로 둔다
+    if (detailModal && detailModal.style.display === 'flex') {
+      closeResearchPodiumAwardDetail();
+    } else {
+      closeResearchPodiumOverview();
+    }
+  });
 }
 
 // 리서치 포디움 제목의 연도를 항상 현재 연도로 표시한다 (자동 갱신, 하드코딩 방지)
@@ -1269,6 +1578,7 @@ function renderResearchPodiumYear() {
 function initResearchLeague() {
   renderResearchLeague();
   renderResearchPodiumYear();
+  initResearchPodiumModal();
 }
 
 // 오늘의 식단표는 data/daily-menu.json에서 읽어온다. 이 파일은 한국전통문화대학교
