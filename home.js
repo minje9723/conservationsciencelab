@@ -251,11 +251,61 @@ const HERO_GLOBE_LANGUAGE_POSITIONS = {
 };
 
 // 지구본 원 자체는 그대로 두고, 안쪽 지도(.hero-globe-surface)만 그 나라로
-// 이동(pan)한 뒤, 도착한 자리에서 살짝 줌인했다가 다시 줌아웃해 착지를 강조한다.
-// 타이밍은 hero-globe.css의 transition 시간과 맞춰뒀다.
-const HERO_GLOBE_TRAVEL_PAN_MS = 1100;
-const HERO_GLOBE_TRAVEL_ZOOM_HOLD_MS = 650;
+// 이동(pan)한 뒤, 도착한 자리에서 줌인해 그 나라가 확대된 상태로 계속 유지된다
+// (3D 버전의 "착지 후 확대 고정"과 동일한 동작). 이미 다른 나라가 확대된
+// 상태에서 언어를 바꾸면: 먼저 줌아웃 → 이동(pan) → 새 나라로 다시 줌인
+// 순서로 진행한다(3D 버전의 줌아웃→회전 이동→줌인 루틴과 동일). 각 단계의
+// 대기 시간은 hero-globe.css의 transition 시간과 맞춰뒀다.
+const HERO_GLOBE_ZOOM_MS = 600;  // hero-globe.css의 transform transition(0.6s)과 일치
+const HERO_GLOBE_TRAVEL_PAN_MS = 1100; // hero-globe.css의 background-position transition(1.1s)과 일치
 let heroGlobeTravelTimers = [];
+
+// hero-globe-3d.js가 로드되지 않거나(WebGL 미지원, file:// 프로토콜에서
+// ES 모듈이 CORS로 막히는 경우, CDN 접근 실패 등) 실패했을 때를 위한 평면
+// 폴백은 원래 언어를 바꿀 때만 background-position이 전환(transition)되고
+// 그 외에는 완전히 정지해 있었다("지구본 애니메이션이 작동하지 않는다"는
+// 문제의 실제 원인). 3D 버전의 유휴 자전(idleSpin)과 동일한 동작을 평면
+// 버전에서도 재현해, 아직 언어를 선택하지 않은 기본 상태에서는 항상
+// 지도가 천천히 흘러가도록 한다.
+let heroGlobeIdleActive = true;
+let heroGlobeIdleFrame = null;
+let heroGlobeIdlePercent = null; // background-position-x(%). 첫 프레임에 현재 값으로 초기화
+let heroGlobeCurrentLang = 'ko'; // hero-globe-3d.js의 currentLang과 동일한 역할.
+// common.js의 initCommon()이 DOMContentLoaded에서 setLang(savedLang)을 먼저 호출하는데,
+// 이때 savedLang이 기본값 'ko'라도(로그인 첫 방문 이후엔 거의 항상 localStorage에 저장돼
+// 있음) moveHeroGlobeToLanguage('ko')가 home.js의 자체 초기화보다 먼저 실행된다.
+// surface.style.backgroundPosition(인라인 스타일)은 이 시점에 아직 빈 문자열이라
+// CSS 기본값과 절대 같아지지 않으므로, 그것으로 "이미 그 나라다"를 판단하면 매번
+// "실제 이동"으로 오인해 유휴 자전을 시작하기도 전에 영구히 꺼버리게 된다. 3D
+// 버전처럼 별도의 currentLang 변수로 비교해야 한다.
+const HERO_GLOBE_IDLE_PERCENT_PER_MS = 0.0022; // 200%(한 바퀴)를 약 90초에 도는 속도
+
+function stepHeroGlobeIdleSpin(surface, now) {
+  const delta = now - (stepHeroGlobeIdleSpin.lastTime ?? now);
+  stepHeroGlobeIdleSpin.lastTime = now;
+  heroGlobeIdlePercent = (heroGlobeIdlePercent + delta * HERO_GLOBE_IDLE_PERCENT_PER_MS) % 200;
+  surface.style.backgroundPosition = `${heroGlobeIdlePercent}% 0`;
+  heroGlobeIdleFrame = window.requestAnimationFrame((t) => stepHeroGlobeIdleSpin(surface, t));
+}
+
+function startHeroGlobeIdleSpin() {
+  if (!heroGlobeIdleActive || heroGlobeIdleFrame) return;
+  const surface = document.querySelector('.hero-globe-surface');
+  if (!surface || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (heroGlobeIdlePercent === null) heroGlobeIdlePercent = 120.6; // CSS 기본값(한국)과 일치
+  surface.style.transition = 'none'; // 매 프레임 값이 바뀌므로 CSS transition과 충돌하지 않게 끔
+  stepHeroGlobeIdleSpin.lastTime = undefined;
+  heroGlobeIdleFrame = window.requestAnimationFrame((t) => stepHeroGlobeIdleSpin(surface, t));
+}
+
+function stopHeroGlobeIdleSpin(surface) {
+  heroGlobeIdleActive = false;
+  if (heroGlobeIdleFrame) {
+    window.cancelAnimationFrame(heroGlobeIdleFrame);
+    heroGlobeIdleFrame = null;
+  }
+  if (surface) surface.style.transition = ''; // 언어 이동 트랜지션(CSS)이 다시 적용되도록 복원
+}
 
 function moveHeroGlobeToLanguage(lang) {
   // hero-globe-3d.js가 WebGL로 실제 3D 구체를 그리고 있다면 그쪽에도 같은
@@ -268,29 +318,37 @@ function moveHeroGlobeToLanguage(lang) {
   const surface = document.querySelector('.hero-globe-surface');
   if (!surface) return;
 
+  if (heroGlobeCurrentLang === lang) return; // 이미 그 나라(유휴 자전 포함)라면 아무것도 하지 않는다
+  heroGlobeCurrentLang = lang;
+
   const target = HERO_GLOBE_LANGUAGE_POSITIONS[lang] || HERO_GLOBE_LANGUAGE_POSITIONS.ko;
   const { position, landingScale } = target;
-  if (surface.style.backgroundPosition === position) return;
+  const wasLanding = surface.classList.contains('is-landing'); // 이전 나라가 확대되어 있던 상태였는지
+
+  stopHeroGlobeIdleSpin(surface);
 
   // 진행 중이던 이전 이동 애니메이션이 있으면 취소하고 새로 시작한다
   heroGlobeTravelTimers.forEach(timerId => window.clearTimeout(timerId));
   heroGlobeTravelTimers = [];
-  surface.classList.remove('is-landing');
+  surface.classList.remove('is-landing'); // 줌아웃 시작(이미 줌아웃 상태였다면 아무 변화 없음)
   surface.style.setProperty('--globe-landing-scale', landingScale);
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reducedMotion) {
     surface.style.backgroundPosition = position;
+    surface.classList.add('is-landing'); // 애니메이션 없이도 확대된 상태로 바로 고정
     return;
   }
 
-  surface.style.backgroundPosition = position; // 해당 국가로 이동(pan)
+  // 이전에 확대되어 있었다면 줌아웃 트랜지션이 끝날 때까지 기다렸다가 이동(pan)을
+  // 시작하고, 그렇지 않았다면(예: 최초 유휴 상태) 곧바로 이동한다
+  const panDelay = wasLanding ? HERO_GLOBE_ZOOM_MS : 0;
   heroGlobeTravelTimers.push(window.setTimeout(() => {
-    surface.classList.add('is-landing'); // 도착 지점에서 그 나라가 원의 약 80%를 채우도록 줌인
-  }, HERO_GLOBE_TRAVEL_PAN_MS));
-  heroGlobeTravelTimers.push(window.setTimeout(() => {
-    surface.classList.remove('is-landing'); // 다시 줌아웃하며 착지 마무리
-  }, HERO_GLOBE_TRAVEL_PAN_MS + HERO_GLOBE_TRAVEL_ZOOM_HOLD_MS));
+    surface.style.backgroundPosition = position; // 해당 국가로 이동(pan)
+    heroGlobeTravelTimers.push(window.setTimeout(() => {
+      surface.classList.add('is-landing'); // 도착 지점에서 그 나라가 원의 약 80%를 채우도록 줌인
+    }, HERO_GLOBE_TRAVEL_PAN_MS));
+  }, panDelay));
 }
 
 // 지구본에 애플 지구본 배경화면처럼 "현재 태양 위치에 따른 주야간 경계"와
@@ -1207,6 +1265,18 @@ async function renderDailyMenu() {
   }).join('');
 }
 
+// 페이지 최초 로드시 지구본 초기화: 기본 언어(한국어)라면 아직 아무 나라도
+// "선택"된 게 아니므로 유휴 자전만 시작하고, 저장된 언어가 한국어가 아니면
+// (예: 이전 방문에서 기억된 언어) 곧바로 그 나라로 이동시킨다.
+function initHeroGlobeForLanguage(lang) {
+  if (!lang || lang === 'ko') {
+    startHeroGlobeIdleSpin();
+    if (window.HeroGlobe3D) window.HeroGlobe3D.moveToLanguage('ko');
+  } else {
+    moveHeroGlobeToLanguage(lang);
+  }
+}
+
 // Initialize all home page features
 function initHomePage() {
   // Wait for DOM to be fully loaded
@@ -1216,7 +1286,7 @@ function initHomePage() {
       updateResearchersCount();
       updateAchievementsCount();
       initHeroVideoAnimation();
-      moveHeroGlobeToLanguage(document.documentElement.lang);
+      initHeroGlobeForLanguage(document.documentElement.lang);
       renderHeroGlobeSky();
       animateCounters();
       initScrollAnimations();
@@ -1235,7 +1305,7 @@ function initHomePage() {
     updateResearchersCount();
     updateAchievementsCount();
     initHeroVideoAnimation();
-    moveHeroGlobeToLanguage(document.documentElement.lang);
+    initHeroGlobeForLanguage(document.documentElement.lang);
     renderHeroGlobeSky();
     animateCounters();
     initScrollAnimations();

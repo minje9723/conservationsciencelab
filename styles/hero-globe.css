@@ -40,7 +40,7 @@
      background-size를 200% 100%로 주면 정사각형 지구본에 딱 맞게 늘어난다.
      기본 표시 위치는 대한민국(약 127°E)이며, 언어를 바꾸면 home.js의
      moveHeroGlobeToLanguage()가 background-position으로 그 나라까지 이동시킨
-     다음, 도착한 자리에서만 scale로 살짝 줌인했다가 다시 줌아웃한다
+     다음, 도착한 자리에서 scale로 줌인하고 그 상태를 유지한다
      (지구본 원 자체는 항상 같은 크기를 유지한다) */
   background-image: url('../assets/earth-texture.jpg');
   background-repeat: repeat-x;
@@ -68,6 +68,54 @@
    기존 평면 애니메이션이 그대로 동작한다. */
 .hero-globe.hero-globe-3d-active .hero-globe-surface {
   display: none;
+}
+
+/* 평면 폴백에서의 수도 핀포인트. 언어가 바뀌면 home.js가 .hero-globe-surface를
+   해당 국가가 원의 중앙 부근을 채우도록 pan/zoom하므로, 핀은 원 중앙에 고정해
+   두는 것만으로 "선택된 언어의 수도" 위치를 근사적으로 가리킬 수 있다.
+   실제 3D 버전이 활성화되면(.hero-globe-3d-active) 구체 위의 진짜 3D 마커가
+   대신 표시되므로 이 핀은 숨긴다. */
+.hero-globe-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #ff5252;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85), 0 0 10px rgba(255, 82, 82, 0.7);
+  z-index: 1;
+}
+
+.hero-globe-pin::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 82, 82, 0.55);
+  animation: hero-globe-pin-pulse 2.2s ease-out infinite;
+}
+
+@keyframes hero-globe-pin-pulse {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.hero-globe.hero-globe-3d-active .hero-globe-pin {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-globe-pin::after {
+    animation: none;
+  }
 }
 
 .hero-globe-canvas {
