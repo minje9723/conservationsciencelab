@@ -1075,6 +1075,11 @@ html.hero-landed .hero-globe-flags {
     left: calc(50% + var(--orbit-a) * var(--kx));
     top: calc(50% + var(--orbit-a) * var(--ky));
     scale: var(--depth);
+    /* 궤도 위치(left/top)·원근 배율(scale)·앞뒤 순서(z-index)는 hero-globe-3d.js가 매 프레임
+       바꾸므로 트랜지션을 걸면 안 된다. home.css의 transition: all이 여기에도 적용되면 매번
+       0.4초 늦게 따라가며 타원의 안쪽을 가로질러, 빠르게 돌수록 궤도가 중심 쪽으로 좁아져
+       보였다. hover 효과(transform·배경·테두리·그림자)만 트랜지션한다. */
+    transition-property: transform, background, border-color, box-shadow;
     animation:
       hero-ring-card-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards,
       hero-satellite-float 6s ease-in-out infinite;
@@ -1084,8 +1089,8 @@ html.hero-landed .hero-globe-flags {
   }
 
   /* 오른쪽: 연구 성과(프로젝트·논문), 왼쪽: 사람(연구진·졸업생) — 위에서부터 시계 방향 */
-  /* 쉬고 있을 때의 자리. 카드 링을 드래그·관성으로 돌리면 hero-globe-3d.js가 궤도를 따라 도는
-     위치를 같은 변수(--kx/--ky/--depth/--hole)에 인라인으로 덮어쓰고, 멈추면 지워 이 값으로 돌아온다 */
+  /* 착지했을 때의 처음 자리. 이후에는 hero-globe-3d.js가 카드마다 궤도 위의 위치(충돌·관성·자전
+     흐름 반영)를 같은 변수(--kx/--ky/--depth/--hole)에 인라인으로 덮어쓴다 */
   .hero-globe-card-ring .hero-impact-card:nth-of-type(1) { --kx: 0.7256;  --ky: -0.5883; --depth: 0.88; --hole: 1; --ring-i: 0; } /* 뒤 궤도, 오른쪽 위 */
   .hero-globe-card-ring .hero-impact-card:nth-of-type(2) { --kx: 0.8722;  --ky: -0.3343; --depth: 1.04; --hole: 0; --ring-i: 1; } /* 앞 궤도, 오른쪽 */
   .hero-globe-card-ring .hero-impact-card:nth-of-type(3) { --kx: -0.7256; --ky: 0.5883;  --depth: 1.04; --hole: 0; --ring-i: 2; } /* 앞 궤도, 왼쪽 아래 */

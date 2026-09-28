@@ -315,11 +315,17 @@ function initCommon() {
     }
   };
 
-  // Logo click event
+  // 로고를 누르면 홈으로 가면서 언어 선택 화면(지구본 + 국기)을 다시 보여준다.
+  // 뒤로 가기나 상단바 홈 버튼으로 돌아올 때는 이 표시가 없어 바로 착지 화면이 열린다(index.html <head>).
   const logo = document.querySelector('.logo');
   if (logo) {
     logo.addEventListener('click', (e) => {
       e.preventDefault();
+      try {
+        sessionStorage.setItem('hero-intro-requested', '1');
+      } catch (error) {
+        // 저장소를 쓸 수 없으면(사생활 보호 모드 등) 첫 방문처럼 언어 선택 화면이 뜬다
+      }
       window.location.href = 'index.html';
     });
   }

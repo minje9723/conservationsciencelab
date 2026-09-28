@@ -134,21 +134,36 @@ const FLING_FRICTION_MS = 700;       // 속도가 약 1/3로 줄어드는 시간
 const FLING_STOP_RAD_PER_MS = IDLE_SPIN_PER_MS; // 유휴 자전 속도까지 느려지면 멈추고 유휴 자전으로 넘긴다
 const flingVelocity = { yaw: 0, pitch: 0 }; // rad/ms
 
-// PC 착지 화면: 지구본은 그대로 두고, 통계 카드(위성) 링만 드래그·관성으로 궤도를 따라 돌고,
-// 관성이 멈추면 원래 자리로 돌아온다. 궤도 모양·카드 기준 각도는 styles/hero-globe.css의
-// PC 위성 궤도(--orbit-a, --kx/--ky/--depth)와 같은 값이어야 한다.
+// PC 착지 화면: 통계 카드(위성) 4장은 각자 궤도 위의 위치(θ)와 각속도(ω)를 가지고 움직인다.
+// - 궤도는 3D에서 원이고 화면의 타원은 그 원을 비스듬히 본 모습이라, 궤도각 θ가 곧 원 위의 실제
+//   각도다. 그래서 θ·ω로 계산한 충돌이 실제 3D 원 궤도 위의 충돌과 같다.
+// - 카드끼리 부딪히면 운동량과 운동에너지가 모두 보존되는 완전 탄성 충돌로 속도를 주고받는다
+//   (질량이 같으면 두 카드의 속도가 서로 바뀐다 — 뉴턴의 요람처럼).
+// - 지구본이 자전하는 동안 궤도에는 자전과 같은 각속도의 "흐름"이 있고, 카드는 흐름에 대한
+//   상대 속도만 공기 저항처럼 서서히 잃는다(드래그·관성으로 벌어진 간격은 그대로 남는다).
+// - 손으로 잡은 카드는 무한 질량처럼 다른 카드를 밀어낸다(움직이는 벽에 부딪히는 것과 같은 식).
+// 궤도 모양·카드 처음 각도는 styles/hero-globe.css의 PC 위성 궤도(--orbit-a, --kx/--ky/--depth)와
+// 같은 값이어야 한다.
 const CARD_ORBIT_BASE_DEG = [-22.7, 22.7, 157.3, 202.7]; // index.html 카드 순서: 프로젝트, 논문, 연구진, 졸업생
 const CARD_ORBIT_FLATTEN = 0.38;
 const CARD_ORBIT_TILT_DEG = -30;
 const CARD_ORBIT_A_RATIO = 0.59375; // 궤도 긴반지름 / 지구본 지름
-const CARD_FLING_STOP_RAD_PER_MS = 0.0003; // 이보다 느려지면 관성을 멈추고 원래 자리로 돌아간다
-const CARD_SETTLE_MS = 380;         // 관성이 멈춘 뒤 카드가 원래 자리로 돌아가는 시간 상수
+const CARD_DIAMETER_RATIO = 0.17;   // 카드 지름 / 지구본 지름(CSS --ring-card: 17cqw)
+const CARD_MASSES = [1, 1, 1, 1];   // 카드별 질량 — 바꾸면 충돌 때 그 비율대로 운동량·에너지를 나눈다
+// 같은 크기의 두 카드가 원 궤도 위에서 맞닿는 각도 간격(현의 길이 = 카드 지름)
+const CARD_CONTACT_RAD = 2 * Math.asin(CARD_DIAMETER_RATIO / (2 * CARD_ORBIT_A_RATIO));
+const CARD_MAX_SUBSTEP_RAD = CARD_CONTACT_RAD * 0.2; // 한 계산 단계에 이보다 많이 움직이지 않게 쪼갠다(빠른 카드가 서로 통과하지 않도록)
+const CARD_FRICTION_MS = FLING_FRICTION_MS; // 궤도 흐름에 대한 상대 속도가 약 1/3로 줄어드는 시간
+const CARD_GRAB_MAX_STEP_RAD = 0.5; // 포인터 한 번 움직임으로 잡은 카드가 이동할 수 있는 최대 각도
 const pcOrbitLayout = window.matchMedia('(min-width: 1401px)');
 let cardEls = [];
-let cardOrbitPhase = 0;        // 기준 자리에서 궤도를 따라 얼마나 돌았는지(rad)
-let cardOrbitVelocity = 0;     // 카드 링 관성 속도(rad/ms)
-let cardOrbitDirty = false;    // 인라인 위치를 써 둔 상태인지 — 원래 자리로 돌아오면 지우고 CSS 값으로 되돌린다
-let landedDragEnabled = false; // 착지 후 카드 링 드래그 허용 여부 — 다른 나라로 이동하는 동안엔 끈다
+let cardTheta = [];            // 카드별 궤도각(rad)
+let cardOmega = [];            // 카드별 각속도(rad/ms)
+let cardDrift = 0;             // 궤도 흐름 각속도 — 지구본이 자전 중이면 그 속도, 멈춰 있으면 0
+let cardGrab = null;           // 손으로 잡은 카드 { indices: [...], omega } — 카드 하나 또는 링 전체
+const cardLastTheta = [];      // 마지막으로 화면에 쓴 궤도각 — 바뀐 카드가 없으면 스타일을 다시 쓰지 않는다
+let cardStylesWritten = false; // 인라인 위치를 써 둔 상태인지(태블릿·휴대폰 배치로 바뀌면 지운다)
+let landedDragEnabled = false; // 착지 후 카드 드래그 허용 여부 — 다른 나라로 이동하는 동안엔 끈다
 
 // 실시간 태양 직하점(subsolar point, 태양이 머리 위 남중하는 지점) 계산.
 // 적위(태양 고도)와 균시차(equation of time)를 이용한 표준 근사 공식으로,
@@ -660,9 +675,8 @@ function setupDrag(surface, { isEnabled, allowZoom = false, cards = false }) {
     if (!isEnabled() || (e.pointerType === 'mouse' && e.button !== 0)) return;
     if (!allowZoom && activePointers.size > 0) return; // 줌이 없는 면에서는 두 번째 손가락을 무시한다
     if (e.pointerType === 'mouse') e.preventDefault(); // 마우스 누름으로 글자 선택이 시작되지 않게(click은 그대로 발생)
-    // 관성으로 돌고 있는 지구본(카드 링)을 잡으면 그 자리에서 멈춘다
-    if (cards) cardOrbitVelocity = 0;
-    else stopFling();
+    // 관성으로 돌고 있는 지구본(카드)을 잡으면 그 자리에서 멈춘다
+    if (!cards) stopFling();
     activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
     if (activePointers.size === 2) {
@@ -677,8 +691,19 @@ function setupDrag(surface, { isEnabled, allowZoom = false, cards = false }) {
     if (activePointers.size > 2 || pinchState) return;
     dragState = {
       id: e.pointerId, x: e.clientX, y: e.clientY, moved: false, lastT: performance.now(), samples: [],
-      side: cards ? cardOrbitSide(e.clientX, e.clientY) : 1
+      side: 1
     };
+    if (cards) {
+      // 카드를 잡으면 그 카드만, 카드 사이 빈 곳(지구본 원)을 잡으면 링 전체를 움직인다
+      const grabbedEl = e.target.closest ? e.target.closest('.hero-impact-card') : null;
+      const index = cardEls.indexOf(grabbedEl);
+      const indices = index >= 0 ? [index] : cardEls.map((_, i) => i);
+      indices.forEach((i) => { cardOmega[i] = 0; });
+      cardGrab = { indices, omega: 0 };
+      dragState.single = index >= 0;
+      dragState.side = cardOrbitSide(e.clientX, e.clientY);
+      dragState.pointerAngle = pointerOrbitAngle(e.clientX, e.clientY);
+    }
   });
 
   surface.addEventListener('pointermove', (e) => {
@@ -710,12 +735,19 @@ function setupDrag(surface, { isEnabled, allowZoom = false, cards = false }) {
     let yaw;
     let pitch = 0;
     if (cards) {
-      // 기울어진 궤도의 긴 축 방향으로 끈 만큼 링을 돌린다. 앞쪽(아래) 절반을 잡으면 앞쪽이,
-      // 뒤쪽(위) 절반을 잡으면 뒤쪽이 손을 따라가도록 잡은 쪽(side)에 따라 방향을 뒤집는다.
-      const tilt = THREE.MathUtils.degToRad(CARD_ORBIT_TILT_DEG);
-      const along = dx * Math.cos(tilt) + dy * Math.sin(tilt);
-      yaw = -dragState.side * along * cardDragRadPerPx();
-      cardOrbitPhase += yaw;
+      if (dragState.single) {
+        // 잡은 카드는 포인터 위치를 궤도 위로 옮긴 각도를 따라간다
+        const angle = pointerOrbitAngle(e.clientX, e.clientY);
+        yaw = THREE.MathUtils.clamp(wrapAngle(angle - dragState.pointerAngle), -CARD_GRAB_MAX_STEP_RAD, CARD_GRAB_MAX_STEP_RAD);
+        dragState.pointerAngle = angle;
+      } else {
+        // 링 전체: 기울어진 궤도의 긴 축 방향으로 끈 만큼 돌린다. 앞쪽(아래) 절반을 잡으면 앞쪽이,
+        // 뒤쪽(위) 절반을 잡으면 뒤쪽이 손을 따라가도록 잡은 쪽(side)에 따라 방향을 뒤집는다.
+        const tilt = THREE.MathUtils.degToRad(CARD_ORBIT_TILT_DEG);
+        const along = dx * Math.cos(tilt) + dy * Math.sin(tilt);
+        yaw = -dragState.side * along * cardDragRadPerPx();
+      }
+      moveGrabbedCards(yaw, performance.now() - dragState.lastT);
     } else {
       const radPerPx = DRAG_ROTATE_RAD_PER_PX * rotationScaleForZoom();
       yaw = dx * radPerPx;
@@ -746,13 +778,16 @@ function setupDrag(surface, { isEnabled, allowZoom = false, cards = false }) {
 
     if (!dragState || e.pointerId !== dragState.id) return;
     const { moved, samples, lastT } = dragState;
+    const grab = cards ? cardGrab : null;
     dragState = null;
+    if (cards) cardGrab = null;
     surface.classList.remove('is-dragging');
     if (!moved) return;
     suppressNextClick();
     if (cards) {
+      // 놓는 순간의 속도로 던진다(카드 하나면 그 카드만, 링이면 전부 같은 속도로)
       const velocity = e.type === 'pointerup' ? measureDragVelocity(samples, lastT) : null;
-      cardOrbitVelocity = velocity && Math.abs(velocity.yaw) > CARD_FLING_STOP_RAD_PER_MS ? velocity.yaw : 0;
+      if (grab) grab.indices.forEach((i) => { cardOmega[i] = velocity ? velocity.yaw : 0; });
       return;
     }
     // 관성 회전이 시작되면 유휴 자전은 관성이 잦아든 뒤(stepFling)에 다시 시작한다
@@ -780,6 +815,8 @@ function setupCardOrbit() {
   const ring = document.querySelector('.hero-globe-card-ring');
   if (!ring) return;
   cardEls = [...ring.querySelectorAll('.hero-impact-card')];
+  cardTheta = cardEls.map((_, i) => THREE.MathUtils.degToRad(CARD_ORBIT_BASE_DEG[i] ?? 0));
+  cardOmega = cardEls.map(() => 0);
   ring.classList.add('is-draggable');
   setupDrag(ring, {
     isEnabled: () => landedDragEnabled && pcOrbitLayout.matches,
@@ -796,46 +833,135 @@ function cardOrbitSide(clientX, clientY) {
   return px * -Math.sin(tilt) + py * Math.cos(tilt) >= 0 ? 1 : -1;
 }
 
-// 앞쪽 궤도의 카드가 대략 마우스를 따라오도록(궤도 긴반지름 px당 1rad)
+// 링 전체를 끌 때: 앞쪽 궤도의 카드가 대략 마우스를 따라오도록(궤도 긴반지름 px당 1rad)
 function cardDragRadPerPx() {
   return 1 / Math.max(80, (container.clientWidth || 640) * CARD_ORBIT_A_RATIO * 0.87);
 }
 
-// 드래그 중이거나 관성으로 도는 동안은 그대로 두고, 관성이 멈추면 카드를 가장 가까운 원래
-// 자리(한 바퀴 단위)로 되돌린다 — 쉬는 동안 카드가 지구본 뒤에 숨어 누를 수 없게 되지 않도록
+function wrapAngle(rad) {
+  return rad - Math.PI * 2 * Math.round(rad / (Math.PI * 2));
+}
+
+// 포인터 위치를 궤도면으로 되돌려(기울기 역회전, 납작한 비율 복원) 궤도각으로 바꾼다
+function pointerOrbitAngle(clientX, clientY) {
+  const rect = container.getBoundingClientRect();
+  const a = (container.clientWidth || 640) * CARD_ORBIT_A_RATIO;
+  const b = a * CARD_ORBIT_FLATTEN;
+  const px = clientX - (rect.left + rect.width / 2);
+  const py = clientY - (rect.top + rect.height / 2);
+  const tilt = THREE.MathUtils.degToRad(CARD_ORBIT_TILT_DEG);
+  const ox = px * Math.cos(tilt) + py * Math.sin(tilt);
+  const oy = -px * Math.sin(tilt) + py * Math.cos(tilt);
+  return Math.atan2(oy / b, ox / a);
+}
+
+// 잡은 카드를 yaw만큼 옮긴다. 한 번에 크게 옮기면 옆 카드를 뚫고 지나갈 수 있으므로 잘게
+// 나눠 옮기면서 매번 충돌을 풀어, 잡은 카드가 옆 카드를 밀어내게 한다.
+function moveGrabbedCards(yaw, moveMs) {
+  if (!cardGrab) return;
+  const instant = THREE.MathUtils.clamp(yaw / Math.max(moveMs, 4), -FLING_MAX_RAD_PER_MS, FLING_MAX_RAD_PER_MS);
+  cardGrab.omega = cardGrab.omega * 0.5 + instant * 0.5; // 밀려나는 카드가 받을 속도(손의 속도)
+  const steps = Math.max(1, Math.ceil(Math.abs(yaw) / CARD_MAX_SUBSTEP_RAD));
+  const step = yaw / steps;
+  for (let s = 0; s < steps; s++) {
+    cardGrab.indices.forEach((i) => { cardTheta[i] += step; });
+    resolveCardCollisions();
+  }
+}
+
+function isCardHeld(i) {
+  return !!cardGrab && cardGrab.indices.includes(i);
+}
+
+// 맞닿거나 겹친 카드 쌍을 떼어 놓고, 서로 다가가던 중이면 탄성 충돌로 속도를 주고받는다.
+// 여러 장이 한 줄로 붙어 있을 때(요람처럼) 충격이 끝까지 전달되도록 몇 번 반복한다.
+function resolveCardCollisions() {
+  const n = cardEls.length;
+  for (let pass = 0; pass < n; pass++) {
+    let touched = false;
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const d = wrapAngle(cardTheta[j] - cardTheta[i]); // j가 i보다 +θ 쪽에 있으면 양수
+        const gap = Math.abs(d);
+        if (gap >= CARD_CONTACT_RAD) continue;
+        const heldI = isCardHeld(i);
+        const heldJ = isCardHeld(j);
+        if (heldI && heldJ) continue; // 링 전체를 잡고 있으면 서로의 간격은 변하지 않는다
+        touched = true;
+        const dir = d >= 0 ? 1 : -1;
+        const mi = CARD_MASSES[i] ?? 1;
+        const mj = CARD_MASSES[j] ?? 1;
+
+        // 위치: 겹친 만큼 질량에 반비례해 벌린다(잡힌 카드는 움직이지 않는다)
+        const wi = heldI ? 0 : 1 / mi;
+        const wj = heldJ ? 0 : 1 / mj;
+        const overlap = CARD_CONTACT_RAD - gap;
+        cardTheta[i] -= dir * overlap * (wi / (wi + wj));
+        cardTheta[j] += dir * overlap * (wj / (wi + wj));
+
+        // 속도: 서로 다가가는 중일 때만 충돌 처리
+        const vi = heldI ? cardGrab.omega : cardOmega[i];
+        const vj = heldJ ? cardGrab.omega : cardOmega[j];
+        if ((vi - vj) * dir <= 0) continue;
+        if (heldI) {
+          cardOmega[j] = THREE.MathUtils.clamp(2 * vi - vj, -FLING_MAX_RAD_PER_MS, FLING_MAX_RAD_PER_MS);
+        } else if (heldJ) {
+          cardOmega[i] = THREE.MathUtils.clamp(2 * vj - vi, -FLING_MAX_RAD_PER_MS, FLING_MAX_RAD_PER_MS);
+        } else {
+          // 1차원 완전 탄성 충돌: m·v 합(운동량)과 ½·m·v² 합(운동에너지)이 충돌 전후로 같다
+          cardOmega[i] = ((mi - mj) * vi + 2 * mj * vj) / (mi + mj);
+          cardOmega[j] = ((mj - mi) * vj + 2 * mi * vi) / (mi + mj);
+        }
+      }
+    }
+    if (!touched) break;
+  }
+}
+
+// 한 프레임 동안의 카드 움직임. 빠를수록 잘게 나눠 계산해(서브스텝) 충돌을 놓치지 않는다.
+function stepCardPhysics(dt) {
+  let maxSpeed = Math.abs(cardDrift);
+  cardOmega.forEach((w, i) => { if (!isCardHeld(i)) maxSpeed = Math.max(maxSpeed, Math.abs(w)); });
+  const steps = THREE.MathUtils.clamp(Math.ceil((maxSpeed * dt) / CARD_MAX_SUBSTEP_RAD), 1, 32);
+  const h = dt / steps;
+  const relax = 1 - Math.exp(-h / CARD_FRICTION_MS);
+  for (let s = 0; s < steps; s++) {
+    for (let i = 0; i < cardEls.length; i++) {
+      if (isCardHeld(i)) continue;
+      cardOmega[i] += (cardDrift - cardOmega[i]) * relax; // 궤도 흐름에 대한 상대 속도만 서서히 잃는다
+      cardTheta[i] += cardOmega[i] * h;
+    }
+    resolveCardCollisions();
+  }
+  if (cardGrab) cardGrab.omega *= Math.exp(-dt / 60); // 잡고 멈춰 있으면 손의 속도는 곧 0이 된다
+}
+
 function updateCardOrbit(delta) {
   if (!cardEls.length) return;
-  if (cardOrbitVelocity) {
-    const dt = Math.min(delta, 50);
-    cardOrbitPhase += cardOrbitVelocity * dt;
-    cardOrbitVelocity *= Math.exp(-dt / FLING_FRICTION_MS);
-    if (Math.abs(cardOrbitVelocity) < CARD_FLING_STOP_RAD_PER_MS) cardOrbitVelocity = 0;
-  }
-  const moving = (dragState && landedDragEnabled) || cardOrbitVelocity;
-  if (!moving && cardOrbitPhase !== 0) {
-    const rest = Math.round(cardOrbitPhase / (Math.PI * 2)) * Math.PI * 2;
-    const diff = rest - cardOrbitPhase;
-    if (Math.abs(diff) < 0.002 || prefersReducedMotion()) {
-      cardOrbitPhase = 0;
-    } else {
-      cardOrbitPhase += diff * (1 - Math.exp(-Math.min(delta, 100) / CARD_SETTLE_MS));
-    }
-  }
-  if (cardOrbitPhase === 0) {
-    if (cardOrbitDirty) clearCardOrbitStyles();
+  if (!pcOrbitLayout.matches) {
+    // 태블릿·휴대폰은 카드가 지구본 안쪽 링에 고정된 배치라 궤도 위치를 쓰지 않는다
+    cardTheta = cardEls.map((_, i) => THREE.MathUtils.degToRad(CARD_ORBIT_BASE_DEG[i] ?? 0));
+    cardOmega = cardEls.map(() => 0);
+    cardGrab = null;
+    if (cardStylesWritten) clearCardOrbitStyles();
     return;
   }
+  const dt = Math.min(delta, 50); // 탭이 가려졌다 돌아온 첫 프레임에 한 번에 크게 튀지 않도록
+  if (dt > 0) stepCardPhysics(dt);
   writeCardOrbitStyles();
 }
 
 // 궤도각 θ인 카드의 화면 위치(긴반지름 단위) = 궤도면 (cosθ, 0.38·sinθ)을 -30° 돌린 것.
 // sinθ > 0(아래쪽 절반)이 앞이라 크게, 뒤쪽은 작게 그리고 지구본과 겹치는 부분을 가린다(--hole).
 function writeCardOrbitStyles() {
+  const changed = !cardStylesWritten || cardTheta.some((t, i) => Math.abs(t - (cardLastTheta[i] ?? Infinity)) > 1e-5);
+  if (!changed) return;
   const tilt = THREE.MathUtils.degToRad(CARD_ORBIT_TILT_DEG);
   const cosT = Math.cos(tilt);
   const sinT = Math.sin(tilt);
   cardEls.forEach((el, i) => {
-    const theta = THREE.MathUtils.degToRad(CARD_ORBIT_BASE_DEG[i] ?? 0) + cardOrbitPhase;
+    const theta = cardTheta[i];
+    cardLastTheta[i] = theta;
     const ox = Math.cos(theta);
     const oy = CARD_ORBIT_FLATTEN * Math.sin(theta);
     const kx = ox * cosT - oy * sinT;
@@ -850,9 +976,9 @@ function writeCardOrbitStyles() {
     el.style.zIndex = String(10 + Math.round(front * 10)); // 앞쪽 카드가 뒤쪽 카드 위로
     // 지구본 뒤로 거의 다 넘어간 카드는 클릭 대상에서 뺀다(중심 거리 < 지구본 반지름)
     const centerDist = Math.hypot(kx, ky) * CARD_ORBIT_A_RATIO; // 지구본 지름 단위
-    el.style.pointerEvents = behind && centerDist < 0.5 ? 'none' : '';
+    el.style.pointerEvents = behind && centerDist < 0.5 && !isCardHeld(i) ? 'none' : '';
   });
-  cardOrbitDirty = true;
+  cardStylesWritten = true;
 }
 
 function clearCardOrbitStyles() {
@@ -861,7 +987,8 @@ function clearCardOrbitStyles() {
     el.style.zIndex = '';
     el.style.pointerEvents = '';
   });
-  cardOrbitDirty = false;
+  cardLastTheta.length = 0;
+  cardStylesWritten = false;
 }
 
 // 착지 후 머무는 시간이 끝나면: (한국이면 영상을 내리고) 기본 거리로 천천히 줌아웃하면서
@@ -991,6 +1118,7 @@ function animate(now) {
   requestAnimationFrame(animate);
   const delta = now - lastFrameTime;
   lastFrameTime = now;
+  let cardFlow = 0; // 이번 프레임의 궤도 흐름 — 지구본이 자전하지 않으면 0(카드는 서서히 멈춘다)
   if (idleSpin && !flagHover && !prefersReducedMotion() && spinGroup) {
     let speedFactor = 1;
     if (spinRampStart !== null) {
@@ -999,8 +1127,13 @@ function animate(now) {
       if (t === 1) spinRampStart = null;
     }
     // 확대한 상태에서는 같은 각속도라도 지도가 훨씬 빨리 지나가 보이므로 그만큼 늦춘다
-    spinGroup.rotation.y += delta * IDLE_SPIN_PER_MS * speedFactor * rotationScaleForZoom();
+    const spinStep = delta * IDLE_SPIN_PER_MS * speedFactor * rotationScaleForZoom();
+    spinGroup.rotation.y += spinStep;
+    // 착지 화면에서는 궤도에 자전과 같은 각속도의 흐름을 둔다. 지구본이 오른쪽으로 돌면 앞쪽 표면이
+    // 오른쪽으로 움직이므로, 앞쪽(아래) 궤도의 카드도 오른쪽으로 가도록 궤도각이 줄어드는 방향이다.
+    if (landedDragEnabled && delta > 0) cardFlow = -spinStep / delta;
   }
+  cardDrift = cardFlow;
   if (flagsActive && (flingVelocity.yaw || flingVelocity.pitch)) stepFling(delta);
   if (flagsActive) stepZoom(delta);
   updateCardOrbit(delta);
@@ -1040,7 +1173,7 @@ function moveToLanguage(lang, place) {
   window.clearTimeout(resumeSpinTimer);
   flagsActive = false; // 언어가 정해졌으므로 국기 선택 화면(투영·드래그·줌·관성)은 더 이상 쓰지 않는다
   landedDragEnabled = false; // 새 나라로 이동하는 동안에는 카드 링 드래그도 막는다(착지하면 다시 켠다)
-  cardOrbitVelocity = 0;     // 돌던 카드는 원래 자리로 돌아간다
+  cardGrab = null;           // 잡고 있던 카드는 놓는다(돌던 카드는 궤도 흐름이 멈춘 만큼 서서히 선다)
   dragState = null;
   pinchState = null;
   activePointers.clear();

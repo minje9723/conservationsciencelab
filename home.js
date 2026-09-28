@@ -313,12 +313,23 @@ const HERO_GLOBE_RESUME_SPIN_MS = 5000; // 착지 후 이만큼 머문 뒤 다�
 let heroGlobeSpinResumed = false;
 
 // 히어로 첫 화면 상태(<html> 클래스, styles/hero-globe.css가 이 클래스로 표시 여부를 전환).
-// 홈에 들어올 때마다(재접속·다른 페이지에서 복귀 포함) 항상 (없음) 상태로 시작한다:
+// 이 탭에서 처음 들어왔거나 로고를 눌렀을 때는 (없음)으로, 이미 언어를 고른 뒤 뒤로 가기·상단바
+// 홈·새로고침으로 돌아오면 index.html <head>가 처음부터 hero-landed를 붙여 연다:
 //   (없음)          언어 선택 전 — 지구본 자전 + 수도별 국기만 표시, 상단바·스크롤·아래 콘텐츠 잠금
 //   hero-traveling  국기/선택 직후 착지 애니메이션 중 — 국기만 사라짐(잠금은 유지)
 //   hero-landed     착지 완료 — 제목·통계 카드 링·식단/포디움 패널 표시, 잠금 해제(이후 계속 유지)
 function isHeroLanded() {
   return document.documentElement.classList.contains('hero-landed');
+}
+
+// 바로 착지 화면으로 열린 경우, 지난번에 국기로 고른 나라(예: 영어라도 영국)로 착지한다.
+// common.js의 setLang()이 DOMContentLoaded에서 moveHeroGlobeToLanguage()를 부르기 전에 채워 둔다.
+if (isHeroLanded()) {
+  try {
+    heroGlobeRequestedPlace = sessionStorage.getItem('hero-globe-place');
+  } catch (error) {
+    // 저장소를 쓸 수 없으면 언어의 기본 나라로 착지한다
+  }
 }
 
 // 언어 선택 전에는 상단바와 히어로 아래 콘텐츠를 잠근다. 클릭·스크롤은 CSS(pointer-events,
@@ -338,15 +349,16 @@ function markHeroLanded() {
   root.classList.remove('hero-traveling');
   root.classList.add('hero-landed');
   setHomeLockedUntilLanguage(false);
+  // 이 탭에서는 언어를 골랐으니, 로고를 누르지 않는 한 다음부터는 바로 착지 화면으로 연다
+  try {
+    sessionStorage.setItem('hero-intro-done', '1');
+    if (heroGlobeCurrentPlace) sessionStorage.setItem('hero-globe-place', heroGlobeCurrentPlace);
+  } catch (error) {
+    // 저장소를 쓸 수 없으면 홈에 올 때마다 언어 선택 화면이 뜬다
+  }
 }
 
 window.addEventListener('heroglobe:landed', markHeroLanded);
-
-// 뒤로 가기로 돌아와 브라우저가 이전 화면을 그대로 복원(bfcache)하면 이미 착지한 상태가
-// 보이므로, 홈에 돌아올 때마다 언어 선택 화면이 나오도록 새로 불러온다.
-window.addEventListener('pageshow', (event) => {
-  if (event.persisted) window.location.reload();
-});
 
 function isHeroGlobe3DActive() {
   return !!document.querySelector('.hero-globe.hero-globe-3d-active');
