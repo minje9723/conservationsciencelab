@@ -50,6 +50,17 @@ const IDLE_SPIN_PER_MS = 0.00007; // 아무 언어도 선택되지 않은 초기
 const RESUME_SPIN_AFTER_LANDING_MS = 5000; // 착지한 나라에 이만큼 머문 뒤 다시 천천히 자전한다(모든 언어 공통)
 const RESUME_ZOOM_MS = 2200;  // 자전을 다시 시작할 때 기본 거리로 천천히 줌아웃하는 시간
 const SPIN_RAMP_MS = 2500;    // 자전을 다시 시작할 때 속도를 0에서 유휴 속도까지 서서히 올리는 시간
+// 언어 선택 화면에서 지구본 주위를 도는 달. 지구본 캔버스는 원형 프레임에 잘리므로 달은
+// 별도의 작은 캔버스(두 번째 렌더러)로 그려 지구본 바깥 궤도를 돌게 한다. 궤도는 장식용
+// 궤도(.hero-orbits)와 같은 기울기의 타원이고, 앞쪽 절반에서는 지구본 앞으로, 뒤쪽
+// 절반에서는 지구본 뒤로 지나간다. 지구본과 같은 실제 태양 방향으로 빛을 받아 위상이 맞는다.
+const MOON_TEXTURE_URL = 'assets/moon-texture.jpg'; // NASA SVS CGI Moon Kit(LRO, 퍼블릭 도메인)
+const MOON_SIZE_RATIO = 0.17;       // 달 지름 / 지구본 지름
+const MOON_ORBIT_RATIO = 0.8;       // 궤도 긴반지름 / 지구본 지름
+const MOON_ORBIT_FLATTEN = 0.38;    // 궤도 짧은반지름 / 긴반지름(.hero-orbit의 scaleY와 같은 값)
+const MOON_ORBIT_TILT_DEG = -30;    // 궤도 기울기(.hero-orbits의 rotate와 같은 값)
+const MOON_PERIOD_MS = 60000;       // 한 바퀴 도는 시간
+const MOON_FADE_MS = 450;           // 나타나고 사라지는 시간
 const HERO_GLOBE_MARKER_COLOR = 0x39ff14; // 형광 녹색(neon green)
 const HERO_GLOBE_MARKER_OPACITY = 0.7; // 핀포인트(코어 점) 투명도
 const MARKER_LANDED_SCALE = 0.6; // 착지(확대) 시 마커가 작아지는 배율 — 카메라가 가까워져 원근감으로도 커 보이므로, 마커 자체는 반비례로 줄여 균형을 맞춘다
@@ -57,6 +68,11 @@ const MARKER_LANDED_SCALE = 0.6; // 착지(확대) 시 마커가 작아지는 �
 let renderer, scene, camera, axialTiltGroup, framingGroup, spinGroup;
 let capitalMarker, capitalMarkerRing;
 let koreaVideoEl = null; // 한국 착지 시 재생하는 구글어스스튜디오 영상(.hero-globe-video)
+let moonRenderer = null;
+let moonScene, moonCamera, moonMesh, moonLight;
+let moonEl = null;
+let moonOpacity = 0;
+const sunWorldDir = new THREE.Vector3(0, 0, 1); // 실시간 태양 방향(world) — 지구본 셰이더와 달 조명이 함께 쓴다
 let globeShaderUniforms = null; // 지구본 커스텀 셰이더의 uniforms(day/night 텍스처 블렌딩용). init()의 onBeforeCompile에서 채워진다
 let container = null;
 let ready = false;
@@ -118,6 +134,22 @@ const FLING_FRICTION_MS = 700;       // 속도가 약 1/3로 줄어드는 시간
 const FLING_STOP_RAD_PER_MS = IDLE_SPIN_PER_MS; // 유휴 자전 속도까지 느려지면 멈추고 유휴 자전으로 넘긴다
 const flingVelocity = { yaw: 0, pitch: 0 }; // rad/ms
 
+// PC 착지 화면: 지구본은 그대로 두고, 통계 카드(위성) 링만 드래그·관성으로 궤도를 따라 돌고,
+// 관성이 멈추면 원래 자리로 돌아온다. 궤도 모양·카드 기준 각도는 styles/hero-globe.css의
+// PC 위성 궤도(--orbit-a, --kx/--ky/--depth)와 같은 값이어야 한다.
+const CARD_ORBIT_BASE_DEG = [-22.7, 22.7, 157.3, 202.7]; // index.html 카드 순서: 프로젝트, 논문, 연구진, 졸업생
+const CARD_ORBIT_FLATTEN = 0.38;
+const CARD_ORBIT_TILT_DEG = -30;
+const CARD_ORBIT_A_RATIO = 0.59375; // 궤도 긴반지름 / 지구본 지름
+const CARD_FLING_STOP_RAD_PER_MS = 0.0003; // 이보다 느려지면 관성을 멈추고 원래 자리로 돌아간다
+const CARD_SETTLE_MS = 380;         // 관성이 멈춘 뒤 카드가 원래 자리로 돌아가는 시간 상수
+const pcOrbitLayout = window.matchMedia('(min-width: 1401px)');
+let cardEls = [];
+let cardOrbitPhase = 0;        // 기준 자리에서 궤도를 따라 얼마나 돌았는지(rad)
+let cardOrbitVelocity = 0;     // 카드 링 관성 속도(rad/ms)
+let cardOrbitDirty = false;    // 인라인 위치를 써 둔 상태인지 — 원래 자리로 돌아오면 지우고 CSS 값으로 되돌린다
+let landedDragEnabled = false; // 착지 후 카드 링 드래그 허용 여부 — 다른 나라로 이동하는 동안엔 끈다
+
 // 실시간 태양 직하점(subsolar point, 태양이 머리 위 남중하는 지점) 계산.
 // 적위(태양 고도)와 균시차(equation of time)를 이용한 표준 근사 공식으로,
 // 장식용 조명 방향을 정하는 데 충분한 정확도(대략 ±0.5° 이내)를 가진다.
@@ -165,7 +197,7 @@ let cachedSubsolarPoint = null; // { lat, lon } — 실제 태양 위치는 천�
 // 맞춰 방향 자체는 매 프레임 다시 투영해야 한다(그렇지 않으면 2초마다
 // 명암 경계가 툭툭 튀어 보인다).
 function updateSunLight(now) {
-  if (!globeShaderUniforms || !spinGroup) return;
+  if (!spinGroup) return;
   if (!cachedSubsolarPoint || now - lastSunUpdateTime >= 2000) {
     lastSunUpdateTime = now;
     cachedSubsolarPoint = getSubsolarPoint(new Date());
@@ -173,8 +205,8 @@ function updateSunLight(now) {
 
   const localDir = latLonToLocalPosition(cachedSubsolarPoint.lat, cachedSubsolarPoint.lon, 1);
   spinGroup.updateMatrixWorld();
-  const worldDir = spinGroup.localToWorld(localDir).normalize(); // 원점이 이동하지 않으므로 방향과 동일
-  globeShaderUniforms.sunDirection.value.copy(worldDir);
+  sunWorldDir.copy(spinGroup.localToWorld(localDir)).normalize(); // 원점이 이동하지 않으므로 방향과 동일
+  if (globeShaderUniforms) globeShaderUniforms.sunDirection.value.copy(sunWorldDir);
 }
 
 function prefersReducedMotion() {
@@ -352,6 +384,8 @@ function init() {
   capitalMarker.visible = false; // 착지 전(국기 선택 화면)에는 선택된 수도가 없으므로 숨긴다
 
   setupFlags();
+  setupCardOrbit();
+  setupMoon();
 
   window.addEventListener('resize', onResize);
   onResize();
@@ -392,7 +426,7 @@ function setupFlags() {
   });
   // CSS 기본값(원 둘레에 고르게 놓인 정적 배치, 평면 폴백용) 대신 JS가 매 프레임 위치를 정한다
   flagsLayer.classList.add('is-projected');
-  setupDrag(flagsLayer);
+  setupDrag(flagsLayer, { isEnabled: () => flagsActive, allowZoom: true });
 }
 
 // 각 수도의 구체 표면 좌표를 현재 회전 상태의 world 좌표 → 카메라 화면 좌표(%)로
@@ -530,11 +564,11 @@ function stopFling() {
   flingVelocity.pitch = 0;
 }
 
-// 드래그를 놓기 직전 FLING_SAMPLE_MS 동안의 평균 속도로 관성 회전을 시작한다.
-// 놓기 전에 잠깐 멈춰 있었거나 너무 느리면 관성 없이 그 자리에 멈춘다.
-function startFling(samples, lastMoveTime) {
+// 드래그를 놓기 직전 FLING_SAMPLE_MS 동안의 평균 속도(rad/ms). 놓기 전에 잠깐 멈춰
+// 있었으면(또는 움직임 줄이기 설정이면) null — 관성 없이 그 자리에 멈춘다.
+function measureDragVelocity(samples, lastMoveTime) {
   const now = performance.now();
-  if (prefersReducedMotion() || now - lastMoveTime > FLING_HOLD_MS) return false;
+  if (prefersReducedMotion() || now - lastMoveTime > FLING_HOLD_MS) return null;
   let yaw = 0;
   let pitch = 0;
   let dt = 0;
@@ -544,10 +578,17 @@ function startFling(samples, lastMoveTime) {
     pitch += sample.pitch;
     dt += sample.dt;
   }
-  if (dt < 8) return false;
+  if (dt < 8) return null;
   const clampSpeed = (v) => THREE.MathUtils.clamp(v, -FLING_MAX_RAD_PER_MS, FLING_MAX_RAD_PER_MS);
-  flingVelocity.yaw = clampSpeed(yaw / dt);
-  flingVelocity.pitch = clampSpeed(pitch / dt);
+  return { yaw: clampSpeed(yaw / dt), pitch: clampSpeed(pitch / dt) };
+}
+
+// 지구본 관성 회전(언어 선택 화면)
+function startFling(samples, lastMoveTime) {
+  const velocity = measureDragVelocity(samples, lastMoveTime);
+  if (!velocity) return false;
+  flingVelocity.yaw = velocity.yaw;
+  flingVelocity.pitch = velocity.pitch;
   if (Math.hypot(flingVelocity.yaw, flingVelocity.pitch) <= FLING_STOP_RAD_PER_MS * 2) {
     stopFling();
     return false;
@@ -594,17 +635,20 @@ function pinchDistance() {
   return Math.max(1, Math.hypot(a.x - b.x, a.y - b.y));
 }
 
-function setupDrag(surface) {
+// surface: 드래그를 받는 요소. isEnabled: 지금 드래그를 받을지, allowZoom: 휠·핀치 줌 허용(언어 선택
+// 화면만), cards: true면 지구본 대신 착지 화면의 통계 카드 링만 궤도를 따라 돌린다
+function setupDrag(surface, { isEnabled, allowZoom = false, cards = false }) {
   // 국기 이미지의 기본 끌기(drag-and-drop)나 라벨 글자 선택, 길게 누르기 메뉴가 시작되면
   // 브라우저가 포인터 입력을 가져가(pointercancel) 드래그가 끊기고 연속 조작이 막히므로 모두 막는다.
   surface.addEventListener('dragstart', (e) => e.preventDefault());
   surface.addEventListener('selectstart', (e) => e.preventDefault());
-  surface.addEventListener('contextmenu', (e) => e.preventDefault());
+  // 길게 누르기 메뉴는 국기 화면(터치)에서만 막는다 — 착지 화면의 카드 링크는 PC에서 오른쪽 클릭 메뉴(새 탭 열기 등)가 그대로 떠야 한다
+  if (allowZoom) surface.addEventListener('contextmenu', (e) => e.preventDefault());
 
   // 휠을 위로 굴리면 확대, 아래로 굴리면 축소(지도 앱과 같은 방향). 트랙패드 핀치는
   // 브라우저가 ctrl+wheel로 보내므로 같은 처리로 받고, 페이지 전체 확대는 막는다.
-  surface.addEventListener('wheel', (e) => {
-    if (!flagsActive) return;
+  if (allowZoom) surface.addEventListener('wheel', (e) => {
+    if (!isEnabled()) return;
     e.preventDefault();
     const px = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
     const perPx = e.ctrlKey ? WHEEL_ZOOM_PER_PX * PINCH_WHEEL_BOOST : WHEEL_ZOOM_PER_PX;
@@ -613,9 +657,12 @@ function setupDrag(surface) {
   }, { passive: false });
 
   surface.addEventListener('pointerdown', (e) => {
-    if (!flagsActive || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (!isEnabled() || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (!allowZoom && activePointers.size > 0) return; // 줌이 없는 면에서는 두 번째 손가락을 무시한다
     if (e.pointerType === 'mouse') e.preventDefault(); // 마우스 누름으로 글자 선택이 시작되지 않게(click은 그대로 발생)
-    stopFling(); // 관성으로 돌고 있는 지구본을 잡으면 그 자리에서 멈춘다
+    // 관성으로 돌고 있는 지구본(카드 링)을 잡으면 그 자리에서 멈춘다
+    if (cards) cardOrbitVelocity = 0;
+    else stopFling();
     activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
     if (activePointers.size === 2) {
@@ -628,7 +675,10 @@ function setupDrag(surface) {
       return;
     }
     if (activePointers.size > 2 || pinchState) return;
-    dragState = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false, lastT: performance.now(), samples: [] };
+    dragState = {
+      id: e.pointerId, x: e.clientX, y: e.clientY, moved: false, lastT: performance.now(), samples: [],
+      side: cards ? cardOrbitSide(e.clientX, e.clientY) : 1
+    };
   });
 
   surface.addEventListener('pointermove', (e) => {
@@ -645,9 +695,11 @@ function setupDrag(surface) {
     if (!dragState.moved) {
       if (Math.hypot(dx, dy) < DRAG_START_THRESHOLD_PX) return;
       dragState.moved = true;
-      idleSpin = false;
-      spinRampStart = null;
-      window.clearTimeout(idleResumeTimer);
+      if (!cards) {
+        idleSpin = false;
+        spinRampStart = null;
+        window.clearTimeout(idleResumeTimer);
+      }
       window.getSelection()?.removeAllRanges();
       surface.setPointerCapture(e.pointerId);
       surface.classList.add('is-dragging');
@@ -655,11 +707,22 @@ function setupDrag(surface) {
     dragState.x = e.clientX;
     dragState.y = e.clientY;
 
-    const radPerPx = DRAG_ROTATE_RAD_PER_PX * rotationScaleForZoom();
-    const yaw = dx * radPerPx;
-    const pitch = dy * radPerPx;
-    spinGroup.rotation.y += yaw;
-    framingGroup.rotation.x = THREE.MathUtils.clamp(framingGroup.rotation.x + pitch, PITCH_MIN_RAD, PITCH_MAX_RAD);
+    let yaw;
+    let pitch = 0;
+    if (cards) {
+      // 기울어진 궤도의 긴 축 방향으로 끈 만큼 링을 돌린다. 앞쪽(아래) 절반을 잡으면 앞쪽이,
+      // 뒤쪽(위) 절반을 잡으면 뒤쪽이 손을 따라가도록 잡은 쪽(side)에 따라 방향을 뒤집는다.
+      const tilt = THREE.MathUtils.degToRad(CARD_ORBIT_TILT_DEG);
+      const along = dx * Math.cos(tilt) + dy * Math.sin(tilt);
+      yaw = -dragState.side * along * cardDragRadPerPx();
+      cardOrbitPhase += yaw;
+    } else {
+      const radPerPx = DRAG_ROTATE_RAD_PER_PX * rotationScaleForZoom();
+      yaw = dx * radPerPx;
+      pitch = dy * radPerPx;
+      spinGroup.rotation.y += yaw;
+      framingGroup.rotation.x = THREE.MathUtils.clamp(framingGroup.rotation.x + pitch, PITCH_MIN_RAD, PITCH_MAX_RAD);
+    }
 
     // 관성 속도 계산용으로 최근 움직임만 남겨 둔다
     const now = performance.now();
@@ -687,6 +750,11 @@ function setupDrag(surface) {
     surface.classList.remove('is-dragging');
     if (!moved) return;
     suppressNextClick();
+    if (cards) {
+      const velocity = e.type === 'pointerup' ? measureDragVelocity(samples, lastT) : null;
+      cardOrbitVelocity = velocity && Math.abs(velocity.yaw) > CARD_FLING_STOP_RAD_PER_MS ? velocity.yaw : 0;
+      return;
+    }
     // 관성 회전이 시작되면 유휴 자전은 관성이 잦아든 뒤(stepFling)에 다시 시작한다
     if (e.type === 'pointerup' && startFling(samples, lastT)) return;
     scheduleIdleResume();
@@ -702,7 +770,98 @@ function setupDrag(surface) {
 }
 
 function announceLanded(lang) {
+  landedDragEnabled = true;
   window.dispatchEvent(new CustomEvent('heroglobe:landed', { detail: { lang } }));
+}
+
+// 착지 화면의 드래그 면은 통계 카드 링(지구본 원과 같은 영역)이다. 드래그 면으로 쓸지는
+// CSS가 PC 위성 배치에서만(.is-draggable + 1401px 이상) 열어 두고, JS도 같은 조건을 본다.
+function setupCardOrbit() {
+  const ring = document.querySelector('.hero-globe-card-ring');
+  if (!ring) return;
+  cardEls = [...ring.querySelectorAll('.hero-impact-card')];
+  ring.classList.add('is-draggable');
+  setupDrag(ring, {
+    isEnabled: () => landedDragEnabled && pcOrbitLayout.matches,
+    cards: true
+  });
+}
+
+// 잡은 곳이 궤도 긴 축을 기준으로 앞쪽(아래, 1)인지 뒤쪽(위, -1)인지
+function cardOrbitSide(clientX, clientY) {
+  const rect = container.getBoundingClientRect();
+  const px = clientX - (rect.left + rect.width / 2);
+  const py = clientY - (rect.top + rect.height / 2);
+  const tilt = THREE.MathUtils.degToRad(CARD_ORBIT_TILT_DEG);
+  return px * -Math.sin(tilt) + py * Math.cos(tilt) >= 0 ? 1 : -1;
+}
+
+// 앞쪽 궤도의 카드가 대략 마우스를 따라오도록(궤도 긴반지름 px당 1rad)
+function cardDragRadPerPx() {
+  return 1 / Math.max(80, (container.clientWidth || 640) * CARD_ORBIT_A_RATIO * 0.87);
+}
+
+// 드래그 중이거나 관성으로 도는 동안은 그대로 두고, 관성이 멈추면 카드를 가장 가까운 원래
+// 자리(한 바퀴 단위)로 되돌린다 — 쉬는 동안 카드가 지구본 뒤에 숨어 누를 수 없게 되지 않도록
+function updateCardOrbit(delta) {
+  if (!cardEls.length) return;
+  if (cardOrbitVelocity) {
+    const dt = Math.min(delta, 50);
+    cardOrbitPhase += cardOrbitVelocity * dt;
+    cardOrbitVelocity *= Math.exp(-dt / FLING_FRICTION_MS);
+    if (Math.abs(cardOrbitVelocity) < CARD_FLING_STOP_RAD_PER_MS) cardOrbitVelocity = 0;
+  }
+  const moving = (dragState && landedDragEnabled) || cardOrbitVelocity;
+  if (!moving && cardOrbitPhase !== 0) {
+    const rest = Math.round(cardOrbitPhase / (Math.PI * 2)) * Math.PI * 2;
+    const diff = rest - cardOrbitPhase;
+    if (Math.abs(diff) < 0.002 || prefersReducedMotion()) {
+      cardOrbitPhase = 0;
+    } else {
+      cardOrbitPhase += diff * (1 - Math.exp(-Math.min(delta, 100) / CARD_SETTLE_MS));
+    }
+  }
+  if (cardOrbitPhase === 0) {
+    if (cardOrbitDirty) clearCardOrbitStyles();
+    return;
+  }
+  writeCardOrbitStyles();
+}
+
+// 궤도각 θ인 카드의 화면 위치(긴반지름 단위) = 궤도면 (cosθ, 0.38·sinθ)을 -30° 돌린 것.
+// sinθ > 0(아래쪽 절반)이 앞이라 크게, 뒤쪽은 작게 그리고 지구본과 겹치는 부분을 가린다(--hole).
+function writeCardOrbitStyles() {
+  const tilt = THREE.MathUtils.degToRad(CARD_ORBIT_TILT_DEG);
+  const cosT = Math.cos(tilt);
+  const sinT = Math.sin(tilt);
+  cardEls.forEach((el, i) => {
+    const theta = THREE.MathUtils.degToRad(CARD_ORBIT_BASE_DEG[i] ?? 0) + cardOrbitPhase;
+    const ox = Math.cos(theta);
+    const oy = CARD_ORBIT_FLATTEN * Math.sin(theta);
+    const kx = ox * cosT - oy * sinT;
+    const ky = ox * sinT + oy * cosT;
+    const front = Math.sin(theta);
+    const depth = 0.96 + 0.21 * front;
+    const behind = front < 0;
+    el.style.setProperty('--kx', kx.toFixed(4));
+    el.style.setProperty('--ky', ky.toFixed(4));
+    el.style.setProperty('--depth', depth.toFixed(3));
+    el.style.setProperty('--hole', behind ? '1' : '0');
+    el.style.zIndex = String(10 + Math.round(front * 10)); // 앞쪽 카드가 뒤쪽 카드 위로
+    // 지구본 뒤로 거의 다 넘어간 카드는 클릭 대상에서 뺀다(중심 거리 < 지구본 반지름)
+    const centerDist = Math.hypot(kx, ky) * CARD_ORBIT_A_RATIO; // 지구본 지름 단위
+    el.style.pointerEvents = behind && centerDist < 0.5 ? 'none' : '';
+  });
+  cardOrbitDirty = true;
+}
+
+function clearCardOrbitStyles() {
+  cardEls.forEach((el) => {
+    ['--kx', '--ky', '--depth', '--hole'].forEach((name) => el.style.removeProperty(name));
+    el.style.zIndex = '';
+    el.style.pointerEvents = '';
+  });
+  cardOrbitDirty = false;
 }
 
 // 착지 후 머무는 시간이 끝나면: (한국이면 영상을 내리고) 기본 거리로 천천히 줌아웃하면서
@@ -730,12 +889,95 @@ function resumeSpinAfterLanding(token) {
   idleSpin = true;
 }
 
+function setupMoon() {
+  const stage = container.parentElement; // .hero-background — .hero-globe와 같은 쌓임 맥락이라 z-index로 앞뒤를 바꿀 수 있다
+  if (!stage) return;
+  try {
+    moonRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+  } catch (error) {
+    moonRenderer = null; // 두 번째 WebGL 컨텍스트를 못 만들면 달 없이 진행한다
+    return;
+  }
+  moonRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  moonEl = moonRenderer.domElement;
+  moonEl.className = 'hero-moon';
+  moonEl.setAttribute('aria-hidden', 'true');
+  stage.appendChild(moonEl);
+
+  moonScene = new THREE.Scene();
+  // 반지름 1인 구가 캔버스를 거의 꽉 채우는 거리(1 / sin(FOV/2)보다 살짝 멀리)
+  moonCamera = new THREE.PerspectiveCamera(20, 1, 0.1, 20);
+  moonCamera.position.set(0, 0, 6);
+
+  const moonTexture = new THREE.TextureLoader().load(
+    MOON_TEXTURE_URL,
+    undefined,
+    undefined,
+    (error) => console.warn('[hero-globe-3d] 달 텍스처 로드 실패', error)
+  );
+  if ('colorSpace' in moonTexture) moonTexture.colorSpace = THREE.SRGBColorSpace;
+  moonTexture.anisotropy = moonRenderer.capabilities.getMaxAnisotropy();
+  moonMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 48), new THREE.MeshLambertMaterial({ map: moonTexture }));
+  moonScene.add(moonMesh);
+
+  // 태양빛(물리 기반 조명이라 π배여야 텍스처 본래 밝기가 된다) + 밤쪽이 완전히 검지 않도록 옅은 지구반사광
+  moonLight = new THREE.DirectionalLight(0xffffff, Math.PI * 1.05);
+  moonScene.add(moonLight);
+  moonScene.add(new THREE.AmbientLight(0xb8c8ff, 0.35));
+
+  resizeMoon();
+}
+
+function resizeMoon() {
+  if (!moonRenderer || !container) return;
+  const size = Math.max(24, Math.round((container.clientWidth || 640) * MOON_SIZE_RATIO));
+  moonRenderer.setSize(size, size);
+}
+
+// 언어 선택 화면(국기 표시 중)이고 확대하지 않았을 때만 보인다. 언어를 고르거나 지구본을
+// 확대하면 서서히 사라지고, 완전히 사라진 뒤에는 그리지 않는다.
+function updateMoon(now, delta) {
+  if (!moonRenderer) return;
+  const wantVisible = flagsActive && zoomMag < 1.03;
+  const step = Math.min(delta, 100) / MOON_FADE_MS;
+  moonOpacity = THREE.MathUtils.clamp(moonOpacity + (wantVisible ? step : -step), 0, 1);
+  if (moonOpacity === 0) {
+    moonEl.style.visibility = 'hidden';
+    return;
+  }
+  moonEl.style.visibility = 'visible';
+
+  // 궤도 위치: 궤도면에서 (a·cosθ, b·sinθ)를 화면에서 기울기만큼 돌린다. sinθ > 0인 아래쪽
+  // 절반이 보는 사람 쪽(지구본 앞)이다.
+  const theta = prefersReducedMotion() ? 0.45 : (now / MOON_PERIOD_MS) * Math.PI * 2;
+  const globeSize = container.clientWidth || 640;
+  const a = globeSize * MOON_ORBIT_RATIO;
+  const b = a * MOON_ORBIT_FLATTEN;
+  const ox = a * Math.cos(theta);
+  const oy = b * Math.sin(theta);
+  const tilt = THREE.MathUtils.degToRad(MOON_ORBIT_TILT_DEG);
+  const x = ox * Math.cos(tilt) - oy * Math.sin(tilt);
+  const y = ox * Math.sin(tilt) + oy * Math.cos(tilt);
+  const depth = Math.sin(theta); // 1 = 가장 앞, -1 = 가장 뒤
+  const scale = 1 + 0.14 * depth; // 앞으로 올수록 조금 크게(원근감)
+
+  moonEl.style.transform = `translate(-50%, -50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+  moonEl.style.zIndex = depth > 0 ? '4' : '2'; // .hero-globe(z-index:3)의 앞/뒤
+  moonEl.style.opacity = moonOpacity.toFixed(3);
+
+  // 달은 늘 같은 면이 지구를 향한다(조석 고정): 앞면(경도 0°, 로컬 +X)이 지구 쪽을 보게 돌린다
+  moonMesh.rotation.y = Math.PI - theta;
+  moonLight.position.copy(sunWorldDir);
+  moonRenderer.render(moonScene, moonCamera);
+}
+
 function onResize() {
   if (!container || !renderer) return;
   const size = container.clientWidth || 640;
   renderer.setSize(size, size);
   camera.aspect = 1;
   camera.updateProjectionMatrix();
+  resizeMoon();
   if (flagsActive) {
     // 화면 크기가 바뀌면 "화면을 덮는 배율"도 바뀌므로 현재 배율을 새 범위 안으로 맞춘다
     updateCoverScale();
@@ -759,13 +1001,13 @@ function animate(now) {
     // 확대한 상태에서는 같은 각속도라도 지도가 훨씬 빨리 지나가 보이므로 그만큼 늦춘다
     spinGroup.rotation.y += delta * IDLE_SPIN_PER_MS * speedFactor * rotationScaleForZoom();
   }
-  if (flagsActive) {
-    if (flingVelocity.yaw || flingVelocity.pitch) stepFling(delta);
-    stepZoom(delta);
-  }
+  if (flagsActive && (flingVelocity.yaw || flingVelocity.pitch)) stepFling(delta);
+  if (flagsActive) stepZoom(delta);
+  updateCardOrbit(delta);
   scene.updateMatrixWorld(); // 드래그·관성으로 바뀐 회전까지 반영한 뒤 태양 방향·국기 위치를 계산
   updateSunLight(now);
   updateFlags();
+  updateMoon(now, delta);
   if (capitalMarkerRing && !prefersReducedMotion()) {
     const pulse = 1 + 0.35 * (0.5 + 0.5 * Math.sin(now * 0.0035));
     capitalMarkerRing.scale.setScalar(pulse);
@@ -797,6 +1039,8 @@ function moveToLanguage(lang, place) {
   spinRampStart = null;
   window.clearTimeout(resumeSpinTimer);
   flagsActive = false; // 언어가 정해졌으므로 국기 선택 화면(투영·드래그·줌·관성)은 더 이상 쓰지 않는다
+  landedDragEnabled = false; // 새 나라로 이동하는 동안에는 카드 링 드래그도 막는다(착지하면 다시 켠다)
+  cardOrbitVelocity = 0;     // 돌던 카드는 원래 자리로 돌아간다
   dragState = null;
   pinchState = null;
   activePointers.clear();

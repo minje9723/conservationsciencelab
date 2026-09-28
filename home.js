@@ -1580,7 +1580,9 @@ function openResearchPodiumOverview(type, koName, triggerEl) {
   void dialog.offsetWidth; // reflow 강제
   dialog.style.animation = '';
 
-  document.body.style.overflow = 'hidden';
+  // 이 사이트는 html에도 overflow-x:hidden이 걸려 있어 실제 스크롤은 body가 아니라 html(뷰포트)에서
+  // 일어난다. body만 잠그면 뒤 화면이 계속 스크롤되므로 html까지 함께 잠근다(styles/home.css).
+  document.documentElement.classList.add('modal-scroll-lock');
   const closeBtn = modal.querySelector('.research-podium-modal-close');
   if (closeBtn) closeBtn.focus();
 }
@@ -1625,7 +1627,7 @@ function closeResearchPodiumOverview() {
   const modal = document.getElementById('researchPodiumModal');
   if (!modal || modal.style.display !== 'block') return;
   modal.style.display = 'none';
-  document.body.style.overflow = '';
+  document.documentElement.classList.remove('modal-scroll-lock');
 }
 
 // 수상 상장 이미지를 클릭했을 때 뜨는 2차 팝업: 원본 크기 이미지와 함께

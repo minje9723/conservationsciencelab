@@ -1043,6 +1043,19 @@ main {
 
 .research-league-card-link:hover { color: #f5c86b; }
 
+/* 리서치 포디움 팝업이 열려 있는 동안 뒤 화면 스크롤을 잠근다(home.js가 <html>에 클래스를 붙임).
+   공통 스타일이 html에도 overflow-x:hidden을 걸어 실제 스크롤은 html에서 일어나므로 html까지 잠그고,
+   스크롤바가 사라지며 페이지가 옆으로 밀리지 않도록 그 자리(gutter)는 남겨 둔다. */
+html.modal-scroll-lock,
+html.modal-scroll-lock body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html.modal-scroll-lock {
+  scrollbar-gutter: stable;
+}
+
 /* Research Podium overview 모달. 공통 .modal/.modal-content/.close-btn(styles/common.css)
    기반이지만, 화면 중앙에 뜨는 기본 동작 대신 클릭한 스텝블록 바로 아래(공간이
    없으면 왼쪽)에서 파생되는 팝오버처럼 보이게 한다. top/left는 home.js가 매번
@@ -1058,6 +1071,7 @@ main {
   padding: clamp(1.5rem, 4vw, 2rem);
   max-height: min(560px, 82vh);
   overflow-y: auto;
+  overscroll-behavior: contain; /* 팝업 목록 끝까지 스크롤해도 뒤 화면으로 스크롤이 넘어가지 않게 */
   transform: none;
   transform-origin: var(--reveal-origin-x, 50%) var(--reveal-origin-y, 0%);
   animation: researchPodiumReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -1377,25 +1391,38 @@ main {
 }
 
 /* Scroll Indicator */
+/* 배경 없이 짙은 청록 글씨에 옅은 그림자만 둬서 밝은 배경 위에서도 읽히게 한다.
+   지구본(.hero-globe-hud z-index:4)과 겹쳐도 가려지지 않게 그 위에 둔다. */
 .scroll-indicator {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  color: rgba(255, 255, 255, 0.8);
+  color: #24535c;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 30, 40, 0.25);
   cursor: pointer;
-  z-index: 1;
+  z-index: 5;
   animation: bounce 2s infinite;
 }
 
 .scroll-arrow {
-  margin-top: 0.5rem;
+  margin-top: 0.2rem;
+  color: #087f8c;
+  line-height: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 30, 40, 0.25));
 }
 
 .scroll-arrow svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   animation: bounceArrow 2s infinite;
 }
 

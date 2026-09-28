@@ -324,6 +324,20 @@
   }
 }
 
+/* 언어 선택 화면에서 지구본 주위를 도는 달(hero-globe-3d.js가 만드는 작은 WebGL 캔버스).
+   기준점은 지구본 중심이고, 궤도 위치·크기·앞뒤(z-index 2/4)·투명도는 JS가 매 프레임 정한다. */
+.hero-moon {
+  position: absolute;
+  top: var(--hero-globe-top);
+  left: 50%;
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 10px rgba(205, 220, 240, 0.35));
+}
+
 /* 토성의 고리처럼 지구본을 감싸고 도는 환영 문구(장식용, 실제 제목은 .hero-title).
    SVG viewBox(0 0 800 800) 안에 반지름 360의 원형 path를 정의하고, 각 언어의
    <text><textPath>가 그 위를 따라 흐른다. 문구를 " · "로 구분해 두 번 반복해
@@ -640,10 +654,10 @@ html.hero-landed .hero-globe-flags {
   animation-delay: calc(0.15s + var(--ring-i) * 0.12s);
 }
 
-.hero-globe-card-ring .hero-impact-card:nth-child(1) { --ring-x: 30.5%; --ring-y: 22.1%; --ring-i: 0; }
-.hero-globe-card-ring .hero-impact-card:nth-child(2) { --ring-x: 69.5%; --ring-y: 22.1%; --ring-i: 1; }
-.hero-globe-card-ring .hero-impact-card:nth-child(3) { --ring-x: 30.5%; --ring-y: 77.9%; --ring-i: 3; }
-.hero-globe-card-ring .hero-impact-card:nth-child(4) { --ring-x: 69.5%; --ring-y: 77.9%; --ring-i: 2; }
+.hero-globe-card-ring .hero-impact-card:nth-of-type(1) { --ring-x: 30.5%; --ring-y: 22.1%; --ring-i: 0; }
+.hero-globe-card-ring .hero-impact-card:nth-of-type(2) { --ring-x: 69.5%; --ring-y: 22.1%; --ring-i: 1; }
+.hero-globe-card-ring .hero-impact-card:nth-of-type(3) { --ring-x: 30.5%; --ring-y: 77.9%; --ring-i: 3; }
+.hero-globe-card-ring .hero-impact-card:nth-of-type(4) { --ring-x: 69.5%; --ring-y: 77.9%; --ring-i: 2; }
 
 .hero-globe-card-ring .hero-impact-card:hover {
   transform: scale(1.08);
@@ -1007,5 +1021,141 @@ html.hero-landed .hero-globe-flags {
   .hero-panels-dots span.is-active {
     width: 20px;
     background: #087f8c;
+  }
+}
+
+/* ==========================================================================
+   PC(1401px 이상): 통계 카드를 지구본을 도는 위성처럼 궤도 위에 놓는다.
+   궤도는 장식 궤도(.hero-orbit--1)·달과 같은 크기·기울기의 타원(긴반지름 = 지구본 지름의
+   59.375%, 짧은/긴 = 0.38, -30° 기울기)이고, 카드 4장은 이 궤도가 환영 문구 링과 만나는
+   네 지점(궤도각 ±22.7°, 180±22.7°)에 지구본 중심 기준 점대칭으로 놓인다.
+   위치 = 중심 + 긴반지름 × (--kx, --ky), 여기서
+     --kx = cos30·cosθ + 0.5·0.38·sinθ,  --ky = -0.5·cosθ + cos30·0.38·sinθ
+   sinθ > 0(아래쪽 절반)이 보는 사람 쪽이라 앞 궤도 카드는 크게, 뒤 궤도 카드는 작게 두고,
+   뒤 궤도 카드가 지구본 원과 겹치는 부분은 지구 뒤로 넘어간 것처럼 가린다.
+   ========================================================================== */
+.hero-card-orbit {
+  display: none;
+}
+
+@media (min-width: 1401px) {
+  .hero-globe-card-ring {
+    --ring-card: 17cqw;
+    --orbit-a: 59.375cqw;
+  }
+
+  .hero-card-orbit {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(var(--orbit-a) * 2.2); /* viewBox(-110~110)가 긴반지름(100)의 1.1배 여유를 둔다 */
+    height: calc(var(--orbit-a) * 2.2);
+    transform: translate(-50%, -50%);
+    overflow: visible;
+    pointer-events: none;
+    animation: hero-card-orbit-in 1.2s ease 0.1s backwards;
+  }
+
+  .hero-card-orbit path {
+    fill: none;
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .hero-card-orbit-back {
+    stroke: rgba(58, 166, 180, 0.45);
+  }
+
+  .hero-card-orbit-front {
+    stroke: rgba(58, 166, 180, 0.75);
+  }
+
+  .hero-globe-card-ring .hero-impact-card {
+    left: calc(50% + var(--orbit-a) * var(--kx));
+    top: calc(50% + var(--orbit-a) * var(--ky));
+    scale: var(--depth);
+    animation:
+      hero-ring-card-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards,
+      hero-satellite-float 6s ease-in-out infinite;
+    animation-delay:
+      calc(0.25s + var(--ring-i) * 0.12s),
+      calc(var(--ring-i) * -1.5s);
+  }
+
+  /* 오른쪽: 연구 성과(프로젝트·논문), 왼쪽: 사람(연구진·졸업생) — 위에서부터 시계 방향 */
+  /* 쉬고 있을 때의 자리. 카드 링을 드래그·관성으로 돌리면 hero-globe-3d.js가 궤도를 따라 도는
+     위치를 같은 변수(--kx/--ky/--depth/--hole)에 인라인으로 덮어쓰고, 멈추면 지워 이 값으로 돌아온다 */
+  .hero-globe-card-ring .hero-impact-card:nth-of-type(1) { --kx: 0.7256;  --ky: -0.5883; --depth: 0.88; --hole: 1; --ring-i: 0; } /* 뒤 궤도, 오른쪽 위 */
+  .hero-globe-card-ring .hero-impact-card:nth-of-type(2) { --kx: 0.8722;  --ky: -0.3343; --depth: 1.04; --hole: 0; --ring-i: 1; } /* 앞 궤도, 오른쪽 */
+  .hero-globe-card-ring .hero-impact-card:nth-of-type(3) { --kx: -0.7256; --ky: 0.5883;  --depth: 1.04; --hole: 0; --ring-i: 2; } /* 앞 궤도, 왼쪽 아래 */
+  .hero-globe-card-ring .hero-impact-card:nth-of-type(4) { --kx: -0.8722; --ky: 0.3343;  --depth: 0.88; --hole: 1; --ring-i: 3; } /* 뒤 궤도, 왼쪽 */
+
+  /* 뒤 궤도 카드(--hole: 1): 지구본 원과 겹치는 부분을 가려 지구 뒤로 넘어가는 것처럼 보이게 한다.
+     앞 궤도 카드(--hole: 0)는 구멍 반지름이 0이라 가려지는 곳이 없다.
+     마스크는 카드 자신의 좌표(scale 적용 전)라 지구본 중심·반지름을 --depth로 나눠 맞춘다. */
+  .hero-globe-card-ring .hero-impact-card {
+    --globe-hole: radial-gradient(
+      circle at calc(50% - var(--orbit-a) * var(--kx) / var(--depth)) calc(50% - var(--orbit-a) * var(--ky) / var(--depth)),
+      transparent calc(50cqw * var(--hole) / var(--depth)),
+      #000 calc(50cqw * var(--hole) / var(--depth) + 1px)
+    );
+    -webkit-mask-image: var(--globe-hole);
+    mask-image: var(--globe-hole);
+  }
+
+  /* 착지 화면에서는 지구본 원 영역을 카드 링 드래그 면으로 연다(지구본은 돌지 않는다. 3D일 때만 .is-draggable을
+     붙인다). 원 바깥에 걸친 카드는 자식이라 border-radius와 상관없이 그대로 눌린다. */
+  html.hero-landed .hero-globe-card-ring.is-draggable {
+    pointer-events: auto;
+    border-radius: 50%;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  html.hero-landed .hero-globe-card-ring.is-draggable.is-dragging {
+    cursor: grabbing;
+  }
+
+  /* 카드가 작아진 만큼 내용도 줄인다 */
+  .hero-globe-card-ring .hero-metric-icon {
+    width: 3.6cqw;
+    height: 3.6cqw;
+  }
+
+  .hero-globe-card-ring .hero-metric-number {
+    font-size: clamp(1rem, 4.8cqw, 2.1rem);
+  }
+
+  .hero-globe-card-ring .hero-metric-label {
+    max-width: 13.5cqw;
+    font-size: clamp(0.56rem, 1.5cqw, 0.75rem);
+  }
+}
+
+@keyframes hero-card-orbit-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 위성이 제자리에서 천천히 떠오르내리는 움직임 — 개별 translate 속성이라 hover·등장
+   애니메이션의 transform, 원근 배율(scale 속성)과 서로 덮어쓰지 않고 합쳐진다 */
+@keyframes hero-satellite-float {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@media (min-width: 1401px) and (prefers-reduced-motion: reduce) {
+  .hero-card-orbit,
+  .hero-globe-card-ring .hero-impact-card {
+    animation: none;
   }
 }

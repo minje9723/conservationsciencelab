@@ -79,8 +79,8 @@
 
   <link rel="stylesheet" href="styles/variables.css">
   <link rel="stylesheet" href="styles/common.css">
-  <link rel="stylesheet" href="styles/home.css?v=20260929-11">
-  <link rel="stylesheet" href="styles/hero-globe.css?v=20260929-11">
+  <link rel="stylesheet" href="styles/home.css?v=20260929-18">
+  <link rel="stylesheet" href="styles/hero-globe.css?v=20260929-18">
   <link rel="stylesheet" href="styles/hero-weather.css">
 </head>
 <body class="home-page">
@@ -450,6 +450,25 @@
         </div>
 
         <div class="hero-globe-card-ring">
+          <!-- PC 화면에서만 보이는 위성 궤도 선(styles/hero-globe.css). 장식 궤도(.hero-orbit--1)와
+               같은 크기·기울기의 타원으로, 단위는 궤도 긴반지름 = 100, 지구본 반지름 = 84.2.
+               뒤쪽 절반은 지구본 원 안에서 가려지고, 앞쪽 절반은 지구본 위에서 옅게 보인다. -->
+          <svg class="hero-card-orbit" viewBox="-110 -110 220 220" aria-hidden="true" focusable="false">
+            <defs>
+              <mask id="heroCardOrbitBackMask" maskUnits="userSpaceOnUse" x="-110" y="-110" width="220" height="220">
+                <rect x="-110" y="-110" width="220" height="220" fill="#fff"/>
+                <circle r="84.2" fill="#000"/>
+              </mask>
+              <mask id="heroCardOrbitFrontMask" maskUnits="userSpaceOnUse" x="-110" y="-110" width="220" height="220">
+                <rect x="-110" y="-110" width="220" height="220" fill="#fff"/>
+                <circle r="84.2" fill="#666"/>
+              </mask>
+            </defs>
+            <g transform="rotate(-30)">
+              <path class="hero-card-orbit-back" d="M -100 0 A 100 38 0 0 1 100 0" mask="url(#heroCardOrbitBackMask)"/>
+              <path class="hero-card-orbit-front" d="M 100 0 A 100 38 0 0 1 -100 0" mask="url(#heroCardOrbitFrontMask)"/>
+            </g>
+          </svg>
           <a href="projects.html" class="hero-impact-card" data-metric="projects">
             <div class="hero-metric-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -1096,13 +1115,13 @@
 
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="common.js?v=20260929-11"></script>
+  <script src="common.js?v=20260929-18"></script>
   <!-- Load data from other pages -->
   <script src="projects.js"></script>
-  <script src="members.js?v=20260929-11"></script>
-  <script src="achievements.js?v=20260929-11"></script>
+  <script src="members.js?v=20260929-18"></script>
+  <script src="achievements.js?v=20260929-18"></script>
   <script src="gallery.js"></script>
-  <script src="home.js?v=20260929-11"></script>
-  <script type="module" src="hero-globe-3d.js?v=20260929-11"></script>
+  <script src="home.js?v=20260929-18"></script>
+  <script type="module" src="hero-globe-3d.js?v=20260929-18"></script>
 </body>
 </html>
