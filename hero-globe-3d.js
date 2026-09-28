@@ -91,6 +91,26 @@ let dragState = null;
 let dragJustEnded = false;
 let idleResumeTimer = null;
 
+// 언어 선택 화면에서 마우스 휠·트랙패드·두 손가락 핀치로 확대/축소한다. 기본 거리보다
+// 멀어지면 원형 프레임 안에 빈 테두리가 생기므로 최대값은 기본 거리, 최소값은 텍스처가
+// 심하게 깨지지 않는 착지 거리(1.75)로 둔다.
+const ZOOM_MIN_Z = 1.75;
+const ZOOM_MAX_Z = CAMERA_Z_DEFAULT;
+const WHEEL_ZOOM_PER_PX = 0.0015; // 휠 1px당 거리 배율(지수) — 마우스 휠 한 칸(약 100px)에 약 14%
+const PINCH_WHEEL_BOOST = 4;      // 트랙패드 핀치(ctrl+wheel)는 한 번에 오는 값이 작아서 키운다
+const ZOOM_SMOOTHING_MS = 110;    // 목표 거리로 따라가는 시간 상수(작을수록 즉각적)
+let zoomTargetZ = CAMERA_Z_DEFAULT;
+const activePointers = new Map(); // 누르고 있는 포인터들(pointerId → {x, y}) — 두 손가락이면 핀치
+let pinchState = null; // { startDist, startZ }
+
+// 드래그를 놓는 순간의 속도로 계속 돌다가 마찰로 서서히 멈춘다(관성 회전).
+const FLING_SAMPLE_MS = 100;         // 놓기 직전 이 시간 동안의 움직임으로 속도를 잰다
+const FLING_HOLD_MS = 80;            // 마지막 움직임 후 이만큼 멈춰 있다가 놓으면 관성 없이 멈춘다
+const FLING_MAX_RAD_PER_MS = 0.012;  // 아주 세게 튕겨도 이보다 빨리 돌지는 않는다(약 0.5초에 한 바퀴)
+const FLING_FRICTION_MS = 700;       // 속도가 약 1/3로 줄어드는 시간 — 클수록 오래 돈다
+const FLING_STOP_RAD_PER_MS = IDLE_SPIN_PER_MS; // 유휴 자전 속도까지 느려지면 멈추고 유휴 자전으로 넘긴다
+const flingVelocity = { yaw: 0, pitch: 0 }; // rad/ms
+
 // 실시간 태양 직하점(subsolar point, 태양이 머리 위 남중하는 지점) 계산.
 // 적위(태양 고도)와 균시차(equation of time)를 이용한 표준 근사 공식으로,
 // 장식용 조명 방향을 정하는 데 충분한 정확도(대략 ±0.5° 이내)를 가진다.
@@ -372,9 +392,13 @@ function updateFlags() {
     spinGroup.localToWorld(flagWorld);
     flagToCamera.copy(camera.position).sub(flagWorld).normalize();
     const facing = flagWorld.dot(flagToCamera);
-    const visibility = THREE.MathUtils.smoothstep(facing, 0.08, 0.4);
 
     flagWorld.project(camera);
+    // 확대해서 수도가 원형 프레임 밖으로 밀려나면(화면 중심에서 반지름 1 이상) 국기도 숨긴다.
+    // 기본 거리에서는 이 범위에 들어가기 전에 위의 앞/뒷면 판정으로 이미 사라진다.
+    const radial = Math.hypot(flagWorld.x, flagWorld.y);
+    const visibility = THREE.MathUtils.smoothstep(facing, 0.08, 0.4)
+      * (1 - THREE.MathUtils.smoothstep(radial, 0.97, 1.05));
     el.style.left = `${(flagWorld.x + 1) * 50}%`;
     el.style.top = `${(1 - flagWorld.y) * 50}%`;
     el.style.opacity = visibility.toFixed(3);
@@ -384,6 +408,95 @@ function updateFlags() {
   }
 }
 
+// 확대할수록 같은 손 움직임에 덜 돌게 해서, 확대해도 손가락 아래 지도가 따라오는 느낌을 유지한다
+function rotationScaleForZoom() {
+  return THREE.MathUtils.clamp((camera.position.z - 1) / (CAMERA_Z_DEFAULT - 1), 0.25, 1);
+}
+
+function setZoomTarget(z) {
+  zoomTargetZ = THREE.MathUtils.clamp(z, ZOOM_MIN_Z, ZOOM_MAX_Z);
+}
+
+// 언어 선택 화면에서만 카메라 거리를 목표값으로 부드럽게 따라가게 한다(언어가 정해진 뒤에는
+// 이동·착지 애니메이션이 카메라를 직접 움직인다)
+function stepZoom(delta) {
+  const diff = zoomTargetZ - camera.position.z;
+  if (Math.abs(diff) < 1e-4 || prefersReducedMotion()) {
+    camera.position.z = zoomTargetZ;
+    return;
+  }
+  camera.position.z += diff * (1 - Math.exp(-Math.min(delta, 100) / ZOOM_SMOOTHING_MS));
+}
+
+function stopFling() {
+  flingVelocity.yaw = 0;
+  flingVelocity.pitch = 0;
+}
+
+// 드래그를 놓기 직전 FLING_SAMPLE_MS 동안의 평균 속도로 관성 회전을 시작한다.
+// 놓기 전에 잠깐 멈춰 있었거나 너무 느리면 관성 없이 그 자리에 멈춘다.
+function startFling(samples, lastMoveTime) {
+  const now = performance.now();
+  if (prefersReducedMotion() || now - lastMoveTime > FLING_HOLD_MS) return false;
+  let yaw = 0;
+  let pitch = 0;
+  let dt = 0;
+  for (const sample of samples) {
+    if (now - sample.t > FLING_SAMPLE_MS) continue;
+    yaw += sample.yaw;
+    pitch += sample.pitch;
+    dt += sample.dt;
+  }
+  if (dt < 8) return false;
+  const clampSpeed = (v) => THREE.MathUtils.clamp(v, -FLING_MAX_RAD_PER_MS, FLING_MAX_RAD_PER_MS);
+  flingVelocity.yaw = clampSpeed(yaw / dt);
+  flingVelocity.pitch = clampSpeed(pitch / dt);
+  if (Math.hypot(flingVelocity.yaw, flingVelocity.pitch) <= FLING_STOP_RAD_PER_MS * 2) {
+    stopFling();
+    return false;
+  }
+  return true;
+}
+
+function stepFling(delta) {
+  const dt = Math.min(delta, 50); // 탭이 가려졌다 돌아온 첫 프레임에 한 번에 크게 튀지 않도록
+  spinGroup.rotation.y += flingVelocity.yaw * dt;
+  const pitch = framingGroup.rotation.x + flingVelocity.pitch * dt;
+  const clampedPitch = THREE.MathUtils.clamp(pitch, PITCH_MIN_RAD, PITCH_MAX_RAD);
+  if (clampedPitch !== pitch) flingVelocity.pitch = 0; // 위아래 끝에 닿으면 그 방향 관성만 멈춘다
+  framingGroup.rotation.x = clampedPitch;
+
+  const decay = Math.exp(-dt / FLING_FRICTION_MS);
+  flingVelocity.yaw *= decay;
+  flingVelocity.pitch *= decay;
+  if (Math.hypot(flingVelocity.yaw, flingVelocity.pitch) < FLING_STOP_RAD_PER_MS) {
+    stopFling();
+    scheduleIdleResume();
+  }
+}
+
+// 손을 뗀 뒤 잠시 쉬었다가 유휴 자전을 0에서부터 서서히 다시 시작한다
+function scheduleIdleResume() {
+  window.clearTimeout(idleResumeTimer);
+  idleResumeTimer = window.setTimeout(() => {
+    if (!flagsActive || idleSpin || dragState || pinchState) return;
+    idleSpin = true;
+    spinRampStart = performance.now();
+  }, IDLE_RESUME_AFTER_DRAG_MS);
+}
+
+// 드래그·핀치를 끝낸 손가락/마우스가 국기 위에서 떨어져도 그 국기가 눌린 것으로 처리되지
+// 않도록, 바로 뒤따르는 click 한 번을 무시한다(click은 pointerup 직후 같은 흐름에서 발생)
+function suppressNextClick() {
+  dragJustEnded = true;
+  window.setTimeout(() => { dragJustEnded = false; }, 0);
+}
+
+function pinchDistance() {
+  const [a, b] = [...activePointers.values()];
+  return Math.max(1, Math.hypot(a.x - b.x, a.y - b.y));
+}
+
 function setupDrag(surface) {
   // 국기 이미지의 기본 끌기(drag-and-drop)나 라벨 글자 선택, 길게 누르기 메뉴가 시작되면
   // 브라우저가 포인터 입력을 가져가(pointercancel) 드래그가 끊기고 연속 조작이 막히므로 모두 막는다.
@@ -391,13 +504,42 @@ function setupDrag(surface) {
   surface.addEventListener('selectstart', (e) => e.preventDefault());
   surface.addEventListener('contextmenu', (e) => e.preventDefault());
 
+  // 휠을 위로 굴리면 확대, 아래로 굴리면 축소(지도 앱과 같은 방향). 트랙패드 핀치는
+  // 브라우저가 ctrl+wheel로 보내므로 같은 처리로 받고, 페이지 전체 확대는 막는다.
+  surface.addEventListener('wheel', (e) => {
+    if (!flagsActive) return;
+    e.preventDefault();
+    const px = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
+    const perPx = e.ctrlKey ? WHEEL_ZOOM_PER_PX * PINCH_WHEEL_BOOST : WHEEL_ZOOM_PER_PX;
+    setZoomTarget(zoomTargetZ * Math.exp(px * perPx));
+  }, { passive: false });
+
   surface.addEventListener('pointerdown', (e) => {
     if (!flagsActive || (e.pointerType === 'mouse' && e.button !== 0)) return;
     if (e.pointerType === 'mouse') e.preventDefault(); // 마우스 누름으로 글자 선택이 시작되지 않게(click은 그대로 발생)
-    dragState = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false };
+    stopFling(); // 관성으로 돌고 있는 지구본을 잡으면 그 자리에서 멈춘다
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (activePointers.size === 2) {
+      // 두 번째 손가락이 닿으면 회전 대신 핀치 줌으로 전환한다
+      if (dragState?.moved) suppressNextClick();
+      dragState = null;
+      surface.classList.remove('is-dragging');
+      pinchState = { startDist: pinchDistance(), startZ: zoomTargetZ };
+      return;
+    }
+    if (activePointers.size > 2 || pinchState) return;
+    dragState = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false, lastT: performance.now(), samples: [] };
   });
 
   surface.addEventListener('pointermove', (e) => {
+    if (activePointers.has(e.pointerId)) activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pinchState) {
+      if (activePointers.size >= 2) setZoomTarget(pinchState.startZ * pinchState.startDist / pinchDistance());
+      return;
+    }
+
     if (!dragState || e.pointerId !== dragState.id) return;
     const dx = e.clientX - dragState.x;
     const dy = e.clientY - dragState.y;
@@ -405,6 +547,7 @@ function setupDrag(surface) {
       if (Math.hypot(dx, dy) < DRAG_START_THRESHOLD_PX) return;
       dragState.moved = true;
       idleSpin = false;
+      spinRampStart = null;
       window.clearTimeout(idleResumeTimer);
       window.getSelection()?.removeAllRanges();
       surface.setPointerCapture(e.pointerId);
@@ -412,30 +555,45 @@ function setupDrag(surface) {
     }
     dragState.x = e.clientX;
     dragState.y = e.clientY;
-    spinGroup.rotation.y += dx * DRAG_ROTATE_RAD_PER_PX;
-    framingGroup.rotation.x = THREE.MathUtils.clamp(
-      framingGroup.rotation.x + dy * DRAG_ROTATE_RAD_PER_PX,
-      PITCH_MIN_RAD,
-      PITCH_MAX_RAD
-    );
+
+    const radPerPx = DRAG_ROTATE_RAD_PER_PX * rotationScaleForZoom();
+    const yaw = dx * radPerPx;
+    const pitch = dy * radPerPx;
+    spinGroup.rotation.y += yaw;
+    framingGroup.rotation.x = THREE.MathUtils.clamp(framingGroup.rotation.x + pitch, PITCH_MIN_RAD, PITCH_MAX_RAD);
+
+    // 관성 속도 계산용으로 최근 움직임만 남겨 둔다
+    const now = performance.now();
+    dragState.samples.push({ t: now, dt: now - dragState.lastT, yaw, pitch });
+    dragState.lastT = now;
+    while (dragState.samples.length && now - dragState.samples[0].t > FLING_SAMPLE_MS) dragState.samples.shift();
   });
 
-  const endDrag = (e) => {
+  const endPointer = (e) => {
+    if (!activePointers.delete(e.pointerId)) return;
+
+    if (pinchState) {
+      // 한 손가락이라도 떼면 핀치를 끝낸다(남은 손가락은 떼었다 다시 대야 회전)
+      if (activePointers.size < 2) {
+        pinchState = null;
+        suppressNextClick();
+        scheduleIdleResume();
+      }
+      return;
+    }
+
     if (!dragState || e.pointerId !== dragState.id) return;
-    const moved = dragState.moved;
+    const { moved, samples, lastT } = dragState;
     dragState = null;
     surface.classList.remove('is-dragging');
     if (!moved) return;
-    // 드래그를 끝낸 손가락/마우스가 국기 위에서 떨어져도 그 국기가 눌린 것으로 처리되지
-    // 않도록, 바로 뒤따르는 click 한 번을 무시한다(click은 pointerup 직후 같은 흐름에서 발생)
-    dragJustEnded = true;
-    window.setTimeout(() => { dragJustEnded = false; }, 0);
-    idleResumeTimer = window.setTimeout(() => {
-      if (flagsActive) idleSpin = true;
-    }, IDLE_RESUME_AFTER_DRAG_MS);
+    suppressNextClick();
+    // 관성 회전이 시작되면 유휴 자전은 관성이 잦아든 뒤(stepFling)에 다시 시작한다
+    if (e.type === 'pointerup' && startFling(samples, lastT)) return;
+    scheduleIdleResume();
   };
-  surface.addEventListener('pointerup', endDrag);
-  surface.addEventListener('pointercancel', endDrag);
+  surface.addEventListener('pointerup', endPointer);
+  surface.addEventListener('pointercancel', endPointer);
 
   surface.addEventListener('click', (e) => {
     if (!dragJustEnded) return;
@@ -492,9 +650,14 @@ function animate(now) {
       speedFactor = t * t; // 멈춰 있던 지구가 툭 튀지 않고 서서히 가속되도록 ease-in
       if (t === 1) spinRampStart = null;
     }
-    spinGroup.rotation.y += delta * IDLE_SPIN_PER_MS * speedFactor;
+    // 확대한 상태에서는 같은 각속도라도 지도가 훨씬 빨리 지나가 보이므로 그만큼 늦춘다
+    spinGroup.rotation.y += delta * IDLE_SPIN_PER_MS * speedFactor * rotationScaleForZoom();
   }
-  scene.updateMatrixWorld(); // 드래그로 바뀐 framingGroup 회전까지 반영한 뒤 태양 방향·국기 위치를 계산
+  if (flagsActive) {
+    if (flingVelocity.yaw || flingVelocity.pitch) stepFling(delta);
+    stepZoom(delta);
+  }
+  scene.updateMatrixWorld(); // 드래그·관성으로 바뀐 회전까지 반영한 뒤 태양 방향·국기 위치를 계산
   updateSunLight(now);
   updateFlags();
   if (capitalMarkerRing && !prefersReducedMotion()) {
@@ -527,8 +690,11 @@ function moveToLanguage(lang, place) {
   spinResumed = false;
   spinRampStart = null;
   window.clearTimeout(resumeSpinTimer);
-  flagsActive = false; // 언어가 정해졌으므로 국기 선택 화면(투영·드래그)은 더 이상 쓰지 않는다
+  flagsActive = false; // 언어가 정해졌으므로 국기 선택 화면(투영·드래그·줌·관성)은 더 이상 쓰지 않는다
   dragState = null;
+  pinchState = null;
+  activePointers.clear();
+  stopFling();
   window.clearTimeout(idleResumeTimer);
   if (capitalMarker) capitalMarker.visible = true;
   hideKoreaVideo(); // 착지 상태였다면(한국) 이동이 시작되는 즉시 영상을 내리고 지구본으로 되돌린다
