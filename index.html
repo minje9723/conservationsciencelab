@@ -80,8 +80,8 @@
 
   <link rel="stylesheet" href="styles/variables.css">
   <link rel="stylesheet" href="styles/common.css">
-  <link rel="stylesheet" href="styles/home.css?v=20260929">
-  <link rel="stylesheet" href="styles/hero-globe.css?v=20260929">
+  <link rel="stylesheet" href="styles/home.css?v=20260929-3">
+  <link rel="stylesheet" href="styles/hero-globe.css?v=20260929-3">
   <link rel="stylesheet" href="styles/hero-weather.css">
 </head>
 <body class="home-page">
@@ -357,21 +357,6 @@
         <div class="hero-overlay"></div>
       </div>
       <div class="hero-content" id="heroContent">
-        <aside class="hero-side-panel daily-menu-overview" aria-labelledby="dailyMenuTitle">
-          <div class="research-league-overview-heading">
-            <h2 id="dailyMenuTitle">
-              <span class="lang lang-en">Chef's Recommendation 👨‍🍳</span>
-              <span class="lang lang-ko" style="display:none;">셰프의 추천 👨‍🍳</span>
-              <span class="lang lang-ja" style="display:none;">シェフのおすすめ 👨‍🍳</span>
-              <span class="lang lang-uz" style="display:none;">Oshpazning tavsiyasi 👨‍🍳</span>
-              <span class="lang lang-fr" style="display:none;">Recommandation du chef 👨‍🍳</span>
-              <span class="lang lang-ar" style="display:none;">توصية الشيف 👨‍🍳</span>
-            </h2>
-          </div>
-          <p class="daily-menu-date" id="dailyMenuDate"></p>
-          <div class="daily-menu-grid" id="dailyMenuGrid"></div>
-        </aside>
-
         <div class="hero-main">
         <h1 class="hero-title">
           <span class="lang lang-en">Welcome to<br><strong>Conservation Science Lab</strong></span>
@@ -383,20 +368,40 @@
         </h1>
         </div>
 
-        <aside class="hero-side-panel research-league-overview" aria-labelledby="researchLeagueTitle">
-          <div class="research-league-overview-heading">
-            <h2 id="researchLeagueTitle">
-              <span class="lang lang-en"><span class="research-podium-year"></span> Research Podium 🏁</span>
-              <span class="lang lang-ko" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
-              <span class="lang lang-ja" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
-              <span class="lang lang-uz" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
-              <span class="lang lang-fr" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
-              <span class="lang lang-ar" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
-            </h2>
-          </div>
+        <!-- 식단·포디움 패널 묶음. 넓은 화면에서는 display:contents로 사라져 두 패널이
+             제목 좌우에 놓이고(order), 휴대폰에서는 좌우로 넘기는 카드가 된다(styles/hero-globe.css). -->
+        <div class="hero-panels">
+          <aside class="hero-side-panel daily-menu-overview" aria-labelledby="dailyMenuTitle">
+            <div class="research-league-overview-heading">
+              <h2 id="dailyMenuTitle">
+                <span class="lang lang-en">Chef's Recommendation 👨‍🍳</span>
+                <span class="lang lang-ko" style="display:none;">셰프의 추천 👨‍🍳</span>
+                <span class="lang lang-ja" style="display:none;">シェフのおすすめ 👨‍🍳</span>
+                <span class="lang lang-uz" style="display:none;">Oshpazning tavsiyasi 👨‍🍳</span>
+                <span class="lang lang-fr" style="display:none;">Recommandation du chef 👨‍🍳</span>
+                <span class="lang lang-ar" style="display:none;">توصية الشيف 👨‍🍳</span>
+              </h2>
+            </div>
+            <p class="daily-menu-date" id="dailyMenuDate"></p>
+            <div class="daily-menu-grid" id="dailyMenuGrid"></div>
+          </aside>
 
-          <div class="research-league-grid" id="researchLeagueGrid"></div>
-        </aside>
+          <aside class="hero-side-panel research-league-overview" aria-labelledby="researchLeagueTitle">
+            <div class="research-league-overview-heading">
+              <h2 id="researchLeagueTitle">
+                <span class="lang lang-en"><span class="research-podium-year"></span> Research Podium 🏁</span>
+                <span class="lang lang-ko" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
+                <span class="lang lang-ja" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
+                <span class="lang lang-uz" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
+                <span class="lang lang-fr" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
+                <span class="lang lang-ar" style="display:none;"><span class="research-podium-year"></span> Research Podium 🏁</span>
+              </h2>
+            </div>
+
+            <div class="research-league-grid" id="researchLeagueGrid"></div>
+          </aside>
+        </div>
+        <div class="hero-panels-dots" aria-hidden="true"><span></span><span></span></div>
       </div>
 
       <!-- 지구본 원과 똑같은 크기·위치로 겹쳐지는 인터랙션 레이어(styles/hero-globe.css).
@@ -430,6 +435,11 @@
             <span class="hero-globe-flag-badge"><img src="assets/flags/sa.svg" alt="" width="34" height="34"></span>
             <span class="hero-globe-flag-code">ARA</span>
           </button>
+          <!-- 좁은 화면(마우스 hover가 없는 휴대폰·태블릿)에서만 보이는 안내 문구 -->
+          <p class="hero-globe-hint">
+            <span>국기를 눌러 언어를 선택하세요</span>
+            <span>Tap a flag to choose your language</span>
+          </p>
         </div>
 
         <div class="hero-globe-card-ring">
@@ -1079,13 +1089,13 @@
 
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="common.js?v=20260929"></script>
+  <script src="common.js?v=20260929-3"></script>
   <!-- Load data from other pages -->
   <script src="projects.js"></script>
-  <script src="members.js?v=20260929"></script>
-  <script src="achievements.js?v=20260929"></script>
+  <script src="members.js?v=20260929-3"></script>
+  <script src="achievements.js?v=20260929-3"></script>
   <script src="gallery.js"></script>
-  <script src="home.js?v=20260929"></script>
-  <script type="module" src="hero-globe-3d.js?v=20260929"></script>
+  <script src="home.js?v=20260929-3"></script>
+  <script type="module" src="hero-globe-3d.js?v=20260929-3"></script>
 </body>
 </html>

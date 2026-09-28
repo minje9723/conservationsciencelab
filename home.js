@@ -409,6 +409,21 @@ function moveHeroGlobeToLanguage(lang, userSelected = false) {
   }, panDelay));
 }
 
+// 휴대폰에서 좌우로 넘기는 식단·포디움 카드(.hero-panels) 아래 점 표시를 현재 스크롤
+// 위치에 맞춘다. 넓은 화면에서는 .hero-panels가 display:contents라 스크롤이 생기지 않는다.
+function initHeroPanelsPager() {
+  const scroller = document.querySelector('.hero-panels');
+  const dots = document.querySelectorAll('.hero-panels-dots span');
+  if (!scroller || !dots.length) return;
+  const update = () => {
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    const index = max > 0 ? Math.round((scroller.scrollLeft / max) * (dots.length - 1)) : 0;
+    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+  };
+  scroller.addEventListener('scroll', update, { passive: true });
+  update();
+}
+
 // 지구본 위 국기를 누르면 상단 언어 드롭다운에서 같은 언어를 고른 것과 완전히 똑같이
 // 처리한다(common.js의 .lang-option 클릭 핸들러: 버튼 상태 갱신 + setLang(lang, true)).
 function initHeroGlobeFlags() {
@@ -1687,7 +1702,7 @@ async function renderDailyMenu() {
         <div class="daily-menu-row">
           <div class="daily-menu-row-label">${getLabel(mealLabels[meal], lang)}</div>
           <ul class="daily-menu-row-items">
-            ${items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
+            ${items.map(item => `<li>${escapeHtml(item).replace(/&amp;/g, '&amp;<wbr>')}</li>`).join('')}
           </ul>
         </div>
       `;
@@ -1721,6 +1736,7 @@ function initHomePage() {
       initHeroVideoAnimation();
       initHeroGlobeIdleState();
       initHeroGlobeFlags();
+      initHeroPanelsPager();
       renderHeroGlobeSky();
       startHeroGlobeSkyRefresh();
       animateCounters();
@@ -1742,6 +1758,7 @@ function initHomePage() {
     initHeroVideoAnimation();
     initHeroGlobeIdleState();
     initHeroGlobeFlags();
+    initHeroPanelsPager();
     renderHeroGlobeSky();
     startHeroGlobeSkyRefresh();
     animateCounters();
