@@ -67,6 +67,26 @@ function setLang(lang, userSelected = false) {
       el.style.setProperty('display', 'none', 'important');
     }
   });
+
+  // 해당 언어 번역이 누락된 요소는 영어(또는 한국어)로 안전하게 폴백하여 빈 텍스트 방지
+  const langContainers = new Set();
+  document.querySelectorAll('.lang').forEach(el => {
+    if (el.parentElement) langContainers.add(el.parentElement);
+  });
+  langContainers.forEach(container => {
+    const hasActiveLang = container.querySelector('.lang-' + lang);
+    if (!hasActiveLang) {
+      const fallback = container.querySelector('.lang-en') || container.querySelector('.lang-ko');
+      if (fallback) {
+        fallback.classList.add('lang-visible');
+        if (fallback.classList.contains('nav-text') && window.innerWidth <= 1002) {
+          fallback.style.setProperty('display', 'none', 'important');
+        } else {
+          fallback.style.setProperty('display', 'inline', 'important');
+        }
+      }
+    }
+  });
   
   // Update navigation tooltips for mobile
   updateNavTooltips(lang);
@@ -220,6 +240,69 @@ function updateNavTooltips(lang) {
       'achievements': 'نتائج البحث',
       'facilities': 'المرافق والمعدات',
       'gallery': 'المعرض'
+    },
+    'uz': {
+      'home': 'Bosh sahifa',
+      'history': 'Tarix',
+      'members': 'Jamoa',
+      'projects': 'Loyihalar',
+      'achievements': 'Yutuqlar',
+      'facilities': 'Jihozlar',
+      'gallery': 'Galereya'
+    },
+    'it': {
+      'home': 'Home',
+      'history': 'Storia',
+      'members': 'Membri',
+      'projects': 'Progetti',
+      'achievements': 'Risultati',
+      'facilities': 'Strumenti e attrezzature',
+      'gallery': 'Galleria'
+    },
+    'de': {
+      'home': 'Startseite',
+      'history': 'Geschichte',
+      'members': 'Team',
+      'projects': 'Projekte',
+      'achievements': 'Leistungen',
+      'facilities': 'Ausstattung',
+      'gallery': 'Galerie'
+    },
+    'es': {
+      'home': 'Inicio',
+      'history': 'Historia',
+      'members': 'Miembros',
+      'projects': 'Proyectos',
+      'achievements': 'Logros',
+      'facilities': 'Instalaciones',
+      'gallery': 'Galería'
+    },
+    'el': {
+      'home': 'Αρχική',
+      'history': 'Ιστορικό',
+      'members': 'Μέλη',
+      'projects': 'Έργα',
+      'achievements': 'Επιτεύγματα',
+      'facilities': 'Εγκαταστάσεις',
+      'gallery': 'Συλλογή'
+    },
+    'nl': {
+      'home': 'Home',
+      'history': 'Geschiedenis',
+      'members': 'Leden',
+      'projects': 'Projecten',
+      'achievements': 'Resultaten',
+      'facilities': 'Faciliteiten',
+      'gallery': 'Galerij'
+    },
+    'sv': {
+      'home': 'Hem',
+      'history': 'Historia',
+      'members': 'Medlemmar',
+      'projects': 'Projekt',
+      'achievements': 'Prestationer',
+      'facilities': 'Faciliteter',
+      'gallery': 'Galleri'
     }
   };
   

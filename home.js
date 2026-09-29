@@ -250,12 +250,24 @@ const HERO_GLOBE_PLACE_POSITIONS = {
   uz: { position: '88.4% 0', landingScale: 2.8 },   // 우즈베키스탄 (타슈켄트 69.2°E, 경도 폭 약 17°)
   fr: { position: '51.3% 0', landingScale: 2.8 },   // 프랑스 (파리 2.35°E, 경도 폭 약 13°)
   sa: { position: '75.9% 0', landingScale: 2.8 },   // 사우디아라비아 (리야드 46.7°E, 경도 폭 약 21°)
-  eg: { position: '67.4% 0', landingScale: 2.8 }    // 이집트 (카이로 31.2°E, 경도 폭 약 12°)
+  eg: { position: '67.4% 0', landingScale: 2.8 },   // 이집트 (카이로 31.2°E, 경도 폭 약 12°)
+  it: { position: '56.9% 0', landingScale: 2.8 },   // 이탈리아 (로마 12.5°E, 경도 폭 약 12°)
+  de: { position: '57.4% 0', landingScale: 2.8 },   // 독일 (베를린 13.4°E, 경도 폭 약 9°)
+  es: { position: '47.9% 0', landingScale: 2.8 },   // 스페인 (마드리드 -3.7°E, 경도 폭 약 13°)
+  gr: { position: '63.2% 0', landingScale: 2.8 },   // 그리스 (아테네 23.7°E, 경도 폭 약 10°)
+  nl: { position: '52.7% 0', landingScale: 2.8 },   // 네덜란드 (암스테르담 4.9°E, 경도 폭 약 4°)
+  se: { position: '60.0% 0', landingScale: 2.8 }    // 스웨덴 (스톡홀름 18.1°E, 경도 폭 약 14°)
 };
 
 // 장소별 언어, 그리고 국기 없이 언어만 정해졌을 때(상단 언어 드롭다운 등) 갈 기본 장소
-const HERO_GLOBE_PLACE_LANG = { kr: 'ko', us: 'en', gb: 'en', jp: 'ja', uz: 'uz', fr: 'fr', sa: 'ar', eg: 'ar' };
-const HERO_GLOBE_DEFAULT_PLACE = { ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'eg' };
+const HERO_GLOBE_PLACE_LANG = {
+  kr: 'ko', us: 'en', gb: 'en', jp: 'ja', uz: 'uz', fr: 'fr', sa: 'ar', eg: 'ar',
+  it: 'it', de: 'de', es: 'es', gr: 'el', nl: 'nl', se: 'sv'
+};
+const HERO_GLOBE_DEFAULT_PLACE = {
+  ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'eg',
+  it: 'it', de: 'de', es: 'es', el: 'gr', nl: 'nl', sv: 'se'
+};
 
 // 장소별 수도 좌표(위도, 경도) — hero-globe-3d.js의 HERO_GLOBE_PLACES와
 // 같은 나라를 가리킨다. renderHeroGlobeSky()가 "그 나라가 지금 실제로 낮인지 밤인지"를
@@ -268,7 +280,13 @@ const HERO_GLOBE_CAPITAL_COORDS = {
   uz: { lat: 41.2995, lon: 69.2401 },
   fr: { lat: 48.8566, lon: 2.3522 },
   sa: { lat: 24.7136, lon: 46.6753 },
-  eg: { lat: 30.0444, lon: 31.2357 }
+  eg: { lat: 30.0444, lon: 31.2357 },
+  it: { lat: 41.9028, lon: 12.4964 },
+  de: { lat: 52.5200, lon: 13.4050 },
+  es: { lat: 40.4168, lon: -3.7038 },
+  gr: { lat: 37.9838, lon: 23.7275 },
+  nl: { lat: 52.3676, lon: 4.9041 },
+  se: { lat: 59.3293, lon: 18.0686 }
 };
 
 // 지구본 원 자체는 그대로 두고, 안쪽 지도(.hero-globe-surface)만 그 나라로
@@ -1438,6 +1456,12 @@ function renderResearchLeague() {
         <span class="lang lang-uz" style="display:none;">Yozuvlarni ko'rish</span>
         <span class="lang lang-fr" style="display:none;">Voir les résultats</span>
         <span class="lang lang-ar" style="display:none;">عرض السجلات</span>
+        <span class="lang lang-it" style="display:none;">Visualizza risultati</span>
+        <span class="lang lang-de" style="display:none;">Einträge anzeigen</span>
+        <span class="lang lang-es" style="display:none;">Ver registros</span>
+        <span class="lang lang-el" style="display:none;">Προβολή αποτελεσμάτων</span>
+        <span class="lang lang-nl" style="display:none;">Bekijk resultaten</span>
+        <span class="lang lang-sv" style="display:none;">Visa resultat</span>
       </a>
     </article>
   `).join('');

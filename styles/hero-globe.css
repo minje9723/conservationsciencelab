@@ -540,14 +540,20 @@ html.hero-landed .hero-globe-flags {
   -webkit-tap-highlight-color: transparent;
 }
 
-.hero-globe-flag:nth-child(1) { --flag-x: 50%;   --flag-y: 24%; }
-.hero-globe-flag:nth-child(2) { --flag-x: 75.5%; --flag-y: 34%; }
-.hero-globe-flag:nth-child(3) { --flag-x: 86%;   --flag-y: 58%; }
-.hero-globe-flag:nth-child(4) { --flag-x: 75.5%; --flag-y: 82%; }
-.hero-globe-flag:nth-child(5) { --flag-x: 50%;   --flag-y: 92%; }
-.hero-globe-flag:nth-child(6) { --flag-x: 24.5%; --flag-y: 82%; }
-.hero-globe-flag:nth-child(7) { --flag-x: 14%;   --flag-y: 58%; }
-.hero-globe-flag:nth-child(8) { --flag-x: 24.5%; --flag-y: 34%; }
+.hero-globe-flag:nth-child(1)  { --flag-x: 50%;   --flag-y: 22%; }
+.hero-globe-flag:nth-child(2)  { --flag-x: 65.6%; --flag-y: 25.6%; }
+.hero-globe-flag:nth-child(3)  { --flag-x: 78.1%; --flag-y: 35.5%; }
+.hero-globe-flag:nth-child(4)  { --flag-x: 85.1%; --flag-y: 50%; }
+.hero-globe-flag:nth-child(5)  { --flag-x: 85.1%; --flag-y: 66%; }
+.hero-globe-flag:nth-child(6)  { --flag-x: 78.1%; --flag-y: 80.5%; }
+.hero-globe-flag:nth-child(7)  { --flag-x: 65.6%; --flag-y: 90.4%; }
+.hero-globe-flag:nth-child(8)  { --flag-x: 50%;   --flag-y: 94%; }
+.hero-globe-flag:nth-child(9)  { --flag-x: 34.4%; --flag-y: 90.4%; }
+.hero-globe-flag:nth-child(10) { --flag-x: 21.9%; --flag-y: 80.5%; }
+.hero-globe-flag:nth-child(11) { --flag-x: 14.9%; --flag-y: 66%; }
+.hero-globe-flag:nth-child(12) { --flag-x: 14.9%; --flag-y: 50%; }
+.hero-globe-flag:nth-child(13) { --flag-x: 21.9%; --flag-y: 35.5%; }
+.hero-globe-flag:nth-child(14) { --flag-x: 34.4%; --flag-y: 25.6%; }
 
 /* 수도를 가리키는 꼬리 */
 .hero-globe-flag::after {
