@@ -83,13 +83,17 @@ const MOON_ORBIT_FLATTEN = 0.38;    // 궤도 짧은반지름 / 긴반지름(.he
 const MOON_ORBIT_TILT_DEG = -30;    // 궤도 기울기(.hero-orbits의 rotate와 같은 값)
 const MOON_PERIOD_MS = 60000;       // 한 바퀴 도는 시간
 const MOON_FADE_MS = 450;           // 나타나고 사라지는 시간
-// 야경 텍스처는 가벼운 저해상도판으로 먼저 띄우고, 기기가 감당할 수 있으면 뒤에서 고해상도판을
-// 받아 바꿔 끼운다(확대해도 도시 불빛이 뭉개지지 않게). 둘 다 NASA Black Marble 2016(퍼블릭 도메인):
-// 저해상도판은 0.1°판(3600×1800) 원본, 고해상도판은 3km판(13500×6750)을 8192×4096으로 줄인 것.
+// 주간·야경 텍스처는 가벼운 저해상도판으로 먼저 띄우고, 기기가 감당할 수 있으면 뒤에서 고해상도판을
+// 받아 바꿔 끼운다(확대해도 지형·도시 불빛이 뭉개지지 않게). 모두 NASA 퍼블릭 도메인:
+// 주간은 Blue Marble Next Generation 2004년 7월판(지형·해저 지형) — 저해상도판은 5400×2700 원본,
+// 고해상도판은 21600×10800을 8192×4096으로 줄인 것. 야경은 Black Marble 2016 — 저해상도판은
+// 0.1°판(3600×1800) 원본, 고해상도판은 3km판(13500×6750)을 8192×4096으로 줄인 것.
+const DAY_TEXTURE_URL = 'assets/earth-texture.jpg';
+const DAY_TEXTURE_HD_URL = 'assets/earth-texture-8k.jpg';
 const NIGHT_TEXTURE_URL = 'assets/earth-lights.jpg';
 const NIGHT_TEXTURE_HD_URL = 'assets/earth-lights-8k.jpg';
-const NIGHT_TEXTURE_HD_SIZE = 8192;
-const NIGHT_TEXTURE_HD_MIN_MEMORY_GB = 4; // navigator.deviceMemory가 이보다 작은 기기는 저해상도판 유지
+const HD_TEXTURE_SIZE = 8192;
+const HD_TEXTURE_MIN_MEMORY_GB = 4; // navigator.deviceMemory가 이보다 작은 기기는 저해상도판 유지
 const HERO_GLOBE_MARKER_COLOR = 0x39ff14; // 형광 녹색(neon green)
 const HERO_GLOBE_MARKER_OPACITY = 0.7; // 핀포인트(코어 점) 투명도
 const MARKER_LANDED_SCALE = 0.6; // 착지(확대) 시 마커가 작아지는 배율 — 카메라가 가까워져 원근감으로도 커 보이므로, 마커 자체는 반비례로 줄여 균형을 맞춘다
@@ -110,7 +114,7 @@ let coreSphereMesh = null;
 let dayTextureLoaded = false;
 let nightTextureLoaded = false;
 let activeNightTexture = null;     // 셰이더의 nightMap이 가리키는 텍스처(고해상도판이 오면 교체된다)
-let nightTextureUpgradeStarted = false;
+let hdTextureUpgradeStarted = false;
 let textureFadeStart = null;
 let currentTextureFade = 0; // 0: 뼈대만 표시, 0 -> 1: 텍스처 및 언어/국기 아이콘 동시 페이드인
 let gridFormationStart = 0;
@@ -333,29 +337,41 @@ function latLonToLocalPosition(lat, lon, radius) {
 }
 
 // 주간·야간 텍스처가 모두 뜬 뒤(첫 화면 로딩과 대역폭을 다투지 않게) 브라우저가 한가할 때
-// 고해상도 야경을 받아 셰이더의 nightMap을 바꿔 끼우고 저해상도판은 GPU 메모리에서 내린다.
-// 8K 텍스처를 못 올리는 기기나 메모리가 적은 기기(deviceMemory는 크롬 계열만 제공)는 그대로 둔다.
-function maybeUpgradeNightTexture() {
-  if (nightTextureUpgradeStarted || !dayTextureLoaded || !nightTextureLoaded) return;
-  nightTextureUpgradeStarted = true;
-  if (renderer.capabilities.maxTextureSize < NIGHT_TEXTURE_HD_SIZE) return;
-  if (navigator.deviceMemory && navigator.deviceMemory < NIGHT_TEXTURE_HD_MIN_MEMORY_GB) return;
+// 고해상도판을 받아 바꿔 끼우고(주간은 material.map, 야경은 셰이더의 nightMap) 저해상도판은
+// GPU 메모리에서 내린다. 8K 텍스처를 못 올리는 기기나 메모리가 적은 기기(deviceMemory는
+// 크롬 계열만 제공)는 그대로 둔다. 하나가 실패해도 다른 하나는 따로 교체된다.
+function maybeUpgradeGlobeTextures() {
+  if (hdTextureUpgradeStarted || !dayTextureLoaded || !nightTextureLoaded) return;
+  hdTextureUpgradeStarted = true;
+  if (renderer.capabilities.maxTextureSize < HD_TEXTURE_SIZE) return;
+  if (navigator.deviceMemory && navigator.deviceMemory < HD_TEXTURE_MIN_MEMORY_GB) return;
 
-  const load = () => new THREE.TextureLoader().load(
-    NIGHT_TEXTURE_HD_URL,
+  const loadHd = (url, label, swapIn) => new THREE.TextureLoader().load(
+    url,
     (hdTexture) => {
       if ('colorSpace' in hdTexture) hdTexture.colorSpace = THREE.SRGBColorSpace;
       hdTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      swapIn(hdTexture);
+    },
+    undefined,
+    (error) => console.warn(`[hero-globe-3d] 고해상도 ${label} 텍스처 로드 실패, 저해상도판을 계속 씁니다`, error)
+  );
+  const start = () => {
+    loadHd(NIGHT_TEXTURE_HD_URL, '야경', (hdTexture) => {
       const previous = activeNightTexture;
       activeNightTexture = hdTexture;
       if (globeShaderUniforms) globeShaderUniforms.nightMap.value = hdTexture;
       if (previous) previous.dispose();
-    },
-    undefined,
-    (error) => console.warn('[hero-globe-3d] 고해상도 야경 텍스처 로드 실패, 저해상도판을 계속 씁니다', error)
-  );
-  if ('requestIdleCallback' in window) window.requestIdleCallback(load, { timeout: 3000 });
-  else window.setTimeout(load, 1000);
+    });
+    loadHd(DAY_TEXTURE_HD_URL, '주간', (hdTexture) => {
+      if (!globeMaterial) return;
+      const previous = globeMaterial.map;
+      globeMaterial.map = hdTexture;
+      if (previous) previous.dispose();
+    });
+  };
+  if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout: 3000 });
+  else window.setTimeout(start, 1000);
 }
 
 function init() {
@@ -416,14 +432,14 @@ function init() {
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   const loader = new THREE.TextureLoader();
   const dayTexture = loader.load(
-    'assets/earth-texture.jpg',
+    DAY_TEXTURE_URL,
     () => {
       dayTextureLoaded = true;
       if (shouldSkipIntro() && globeMaterial) {
         globeMaterial.opacity = 1.0;
         currentTextureFade = 1.0;
       }
-      maybeUpgradeNightTexture();
+      maybeUpgradeGlobeTextures();
     },
     undefined,
     (error) => console.warn('[hero-globe-3d] 지구(주간) 텍스처 로드 실패, 평면 폴백을 유지합니다', error)
@@ -432,7 +448,7 @@ function init() {
     NIGHT_TEXTURE_URL,
     () => {
       nightTextureLoaded = true;
-      maybeUpgradeNightTexture();
+      maybeUpgradeGlobeTextures();
     },
     undefined,
     (error) => console.warn('[hero-globe-3d] 지구(야간) 텍스처 로드 실패, 야경 표현 없이 진행합니다', error)
