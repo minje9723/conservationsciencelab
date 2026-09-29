@@ -1744,7 +1744,7 @@ header.transparent-header::before {
   }
   
   /* 그리???�이?�웃 최적??*/
-  .grid, .showcase-grid, .gallery-grid {
+  .grid, .showcase-grid {
     grid-template-columns: 1fr !important;
     gap: 1rem;
   }

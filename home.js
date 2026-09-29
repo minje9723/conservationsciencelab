@@ -1196,73 +1196,6 @@ window.addEventListener('pageshow', () => {
   startHomeCurtainAnimations();
 });
 
-// Load Gallery Preview
-function loadGalleryPreview() {
-  const galleryGrid = document.getElementById('galleryPreviewGrid');
-  if (!galleryGrid || typeof galleryItems === 'undefined') return;
-
-  // Get 6 most recent gallery items
-  const previewItems = galleryItems
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 6);
-  const currentLang = document.documentElement.lang || 'ko';
-
-  const categoryNames = {
-    'lab-activities': currentLang === 'ko' ? '연구실 활동' : 'Lab Activities',
-    'equipment': currentLang === 'ko' ? '장비' : 'Equipment',
-    'research': currentLang === 'ko' ? '연구' : 'Research',
-    'conferences': currentLang === 'ko' ? '컨퍼런스' : 'Conferences',
-    'achievements': currentLang === 'ko' ? '성과' : 'Achievements'
-  };
-
-  const galleryIcons = {
-    'lab-activities': '🔬',
-    'equipment': '⚙️',
-    'research': '📊',
-    'conferences': '🎤',
-    'achievements': '🏆'
-  };
-
-  const galleryGradients = {
-    'lab-activities': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    'equipment': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    'research': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    'conferences': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-    'achievements': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
-  };
-
-  galleryGrid.innerHTML = previewItems.map(item => {
-    const title = currentLang === 'ko' ? item.title_ko : item.title_en;
-    const description = currentLang === 'ko' ? item.description_ko : item.description_en;
-
-    // Use placeholder gradient with category-specific icon if no image
-    const imageHtml = item.image
-      ? `<img src="${item.image}" alt="${title}" class="gallery-item-image" loading="lazy">`
-      : `<div class="gallery-item-image" style="background:${galleryGradients[item.category] || galleryGradients['lab-activities']};display:flex;align-items:center;justify-content:center;color:white;font-size:2.5rem;">${galleryIcons[item.category] || '📸'}</div>`;
-
-    return `
-      <div class="gallery-item" data-gallery-id="${item.id}">
-        ${imageHtml}
-        <span class="gallery-item-category">${categoryNames[item.category] || item.category}</span>
-        <div class="gallery-item-overlay">
-          <h3 class="gallery-item-title">${title}</h3>
-          <p class="gallery-item-description">${description}</p>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  // Add click handlers
-  galleryGrid.querySelectorAll('.gallery-item').forEach(item => {
-    item.addEventListener('click', () => {
-      window.location.href = 'gallery.html';
-    });
-  });
-
-  // Initialize animations for the newly added gallery items
-  initScrollAnimations('.gallery-item');
-}
-
 // Handle Home Contact Form Submission
 function handleHomeContactForm() {
   const form = document.getElementById('homeContactForm');
@@ -1863,7 +1796,6 @@ function initHomePage() {
       initResearchLeague();
       renderDailyMenu();
       startHomeCurtainAnimations();
-      loadGalleryPreview();
       handleHomeContactForm();
     });
   } else {
@@ -1885,7 +1817,6 @@ function initHomePage() {
     initResearchLeague();
     renderDailyMenu();
     startHomeCurtainAnimations();
-    loadGalleryPreview();
     handleHomeContactForm();
   }
 }
@@ -1983,6 +1914,5 @@ window.homePageFunctions = {
   renderHeroGlobeSky,
   moveHeroGlobeToLanguage,
   startHomeCurtainAnimations,
-  loadGalleryPreview,
   handleHomeContactForm
 };

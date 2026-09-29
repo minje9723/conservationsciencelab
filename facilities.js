@@ -752,23 +752,6 @@ function createFacilityCard(facility, lang) {
   `;
 }
 
-// Filter facilities
-function filterFacilities(category = 'all') {
-  // For static HTML items
-  const facilityItems = document.querySelectorAll('.facility-list .facility-item');
-  
-  facilityItems.forEach(item => {
-    const itemCategory = item.getAttribute('data-category');
-    
-    if (category === 'all' || itemCategory === category) {
-      item.style.display = '';
-    } else {
-      item.style.display = 'none';
-    }
-  });
-  
-}
-
 // Render all facilities
 function renderFacilities() {
   const facilitiesList = document.querySelector('.facilities-list');
@@ -861,19 +844,6 @@ function getCategoryDisplayName(category, lang) {
   };
   
   return categoryNames[category] ? categoryNames[category][lang] : category;
-}
-
-function getImageForFacility(facility) {
-  const imageMap = {
-    1: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=300&fit=crop',
-    2: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=300&fit=crop',
-    3: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=300&fit=crop',
-    4: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=300&fit=crop',
-    5: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=300&fit=crop',
-    6: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=300&fit=crop'
-  };
-  
-  return imageMap[facility.id] || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=300&fit=crop';
 }
 
 // Initialize when DOM is loaded or immediately if already loaded

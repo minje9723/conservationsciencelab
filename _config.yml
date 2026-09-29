@@ -1,0 +1,25 @@
+# GitHub Pages(Jekyll) 빌드 설정
+# 아래 파일은 저장소에는 남기되 웹사이트(csllso.co.kr)로는 배포하지 않습니다.
+# 설정이 없으면 Jekyll이 .md 문서를 공개 HTML 페이지로 변환해 검색엔진에 노출됩니다.
+exclude:
+  # 내부 개발/협업 문서
+  - ANALYSIS_SUMMARY.md
+  - CODE_ANALYSIS_REPORT.md
+  - COLLABORATION_GUIDE.md
+  - DETAILED_ISSUES.md
+  - FINAL_OPTIMIZATION_REPORT.md
+  - GITHUB_PROTECTION_SETUP.md
+  - HOME_PAGE_UPDATES.md
+  - HOME_PAGE_UPDATE_GUIDE.md
+  - IMPLEMENTATION_GUIDE.md
+  - MEDIUM_IMPROVEMENTS.md
+  - ONBOARDING_CHECKLIST.md
+  - UPDATE_SUMMARY.md
+  - assets/achievements/IMAGE_GUIDELINES.md
+  - assets/facilities/README.md
+  - assets/projects/IMAGE_GUIDELINES.md
+  # 빌드/자동화 전용 파일 (사이트에서 사용하지 않음)
+  - package.json
+  - package-lock.json
+  - scripts
+  - node_modules

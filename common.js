@@ -120,9 +120,6 @@ function setLang(lang, userSelected = false) {
     if (window.homePageFunctions.startHomeCurtainAnimations) {
       window.homePageFunctions.startHomeCurtainAnimations();
     }
-    if (window.homePageFunctions.loadGalleryPreview) {
-      window.homePageFunctions.loadGalleryPreview();
-    }
   }
 }
 
@@ -198,120 +195,94 @@ function updateNavTooltips(lang) {
   const tooltips = {
     'en': {
       'home': 'Home',
-      'history': 'History',
       'members': 'Members',
       'projects': 'Projects',
       'achievements': 'Achievements',
-      'facilities': 'Facilities',
-      'gallery': 'Gallery'
+      'facilities': 'Facilities'
     },
     'ko': {
       'home': '홈',
-      'history': '연혁',
       'members': '연구진',
       'projects': '프로젝트',
       'achievements': '연구성과',
-      'facilities': '시설장비',
-      'gallery': '갤러리'
+      'facilities': '시설장비'
     },
     'ja': {
       'home': 'ホーム',
-      'history': '沿革',
       'members': '研究チーム',
       'projects': 'プロジェクト',
       'achievements': '研究成果',
-      'facilities': '施設・設備',
-      'gallery': 'ギャラリー'
+      'facilities': '施設・設備'
     },
     'fr': {
       'home': 'Accueil',
-      'history': 'Historique',
       'members': 'Équipe',
       'projects': 'Projets',
       'achievements': 'Résultats de recherche',
-      'facilities': 'Installations et équipements',
-      'gallery': 'Galerie'
+      'facilities': 'Installations et équipements'
     },
     'ar': {
       'home': 'الرئيسية',
-      'history': 'تاريخنا',
       'members': 'الفريق',
       'projects': 'المشاريع',
       'achievements': 'نتائج البحث',
-      'facilities': 'المرافق والمعدات',
-      'gallery': 'المعرض'
+      'facilities': 'المرافق والمعدات'
     },
     'uz': {
       'home': 'Bosh sahifa',
-      'history': 'Tarix',
       'members': 'Jamoa',
       'projects': 'Loyihalar',
       'achievements': 'Yutuqlar',
-      'facilities': 'Jihozlar',
-      'gallery': 'Galereya'
+      'facilities': 'Jihozlar'
     },
     'it': {
       'home': 'Home',
-      'history': 'Storia',
       'members': 'Membri',
       'projects': 'Progetti',
       'achievements': 'Risultati',
-      'facilities': 'Strumenti e attrezzature',
-      'gallery': 'Galleria'
+      'facilities': 'Strumenti e attrezzature'
     },
     'de': {
       'home': 'Startseite',
-      'history': 'Geschichte',
       'members': 'Team',
       'projects': 'Projekte',
       'achievements': 'Leistungen',
-      'facilities': 'Ausstattung',
-      'gallery': 'Galerie'
+      'facilities': 'Ausstattung'
     },
     'es': {
       'home': 'Inicio',
-      'history': 'Historia',
       'members': 'Miembros',
       'projects': 'Proyectos',
       'achievements': 'Logros',
-      'facilities': 'Instalaciones',
-      'gallery': 'Galería'
+      'facilities': 'Instalaciones'
     },
     'el': {
       'home': 'Αρχική',
-      'history': 'Ιστορικό',
       'members': 'Μέλη',
       'projects': 'Έργα',
       'achievements': 'Επιτεύγματα',
-      'facilities': 'Εγκαταστάσεις',
-      'gallery': 'Συλλογή'
+      'facilities': 'Εγκαταστάσεις'
     },
     'nl': {
       'home': 'Home',
-      'history': 'Geschiedenis',
       'members': 'Leden',
       'projects': 'Projecten',
       'achievements': 'Resultaten',
-      'facilities': 'Faciliteiten',
-      'gallery': 'Galerij'
+      'facilities': 'Faciliteiten'
     },
     'sv': {
       'home': 'Hem',
-      'history': 'Historia',
       'members': 'Medlemmar',
       'projects': 'Projekt',
       'achievements': 'Prestationer',
-      'facilities': 'Faciliteter',
-      'gallery': 'Galleri'
+      'facilities': 'Faciliteter'
     },
     'zh': {
       'home': '首页',
-      'history': '沿革',
       'members': '研究团队',
       'projects': '研究课题',
       'achievements': '研究成果',
-      'facilities': '仪器设备',
-      'gallery': '画廊'
+      'facilities': '仪器设备'
     }
   };
   
@@ -322,8 +293,6 @@ function updateNavTooltips(lang) {
     
     if (href.includes('index.html') || href === '#') {
       page = 'home';
-    } else if (href.includes('history')) {
-      page = 'history';
     } else if (href.includes('members')) {
       page = 'members';
     } else if (href.includes('projects')) {
@@ -332,8 +301,6 @@ function updateNavTooltips(lang) {
       page = 'achievements';
     } else if (href.includes('facilities')) {
       page = 'facilities';
-    } else if (href.includes('gallery')) {
-      page = 'gallery';
     }
     
     if (page && tooltips[lang] && tooltips[lang][page]) {
@@ -777,7 +744,7 @@ function initMobileOptimizations() {
     }
     
     // 터치 스크롤 최적화
-    const scrollElements = document.querySelectorAll('.gallery-grid, .team-grid, .project-list');
+    const scrollElements = document.querySelectorAll('.team-grid, .project-list');
     scrollElements.forEach(element => {
       element.style.webkitOverflowScrolling = 'touch';
     });
