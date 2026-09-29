@@ -25,9 +25,9 @@ const HERO_GLOBE_PLACES = {
   us: { lat: 38.9072, lon: -77.0369, landedZoom: 3.15 },  // 워싱턴 D.C. (미국 본토 경도 폭 약 57°)
   gb: { lat: 51.5074, lon: -0.1278, landedZoom: 1.75 },   // 런던 (영국 경도 폭 약 10°)
   jp: { lat: 35.6762, lon: 139.6503, landedZoom: 1.75 },  // 도쿄 (일본 경도 폭 약 17°)
+  cn: { lat: 39.9042, lon: 116.4074, landedZoom: 2.20 },  // 베이징 (중국 경도 폭 약 62°)
   uz: { lat: 41.2995, lon: 69.2401, landedZoom: 1.75 },   // 타슈켄트 (우즈베키스탄 경도 폭 약 17°)
   fr: { lat: 48.8566, lon: 2.3522, landedZoom: 1.75 },    // 파리 (프랑스 경도 폭 약 13°)
-  sa: { lat: 24.7136, lon: 46.6753, landedZoom: 1.80 },   // 리야드 (사우디아라비아 경도 폭 약 21°)
   eg: { lat: 30.0444, lon: 31.2357, landedZoom: 1.75 },   // 카이로 (이집트 경도 폭 약 12°)
   it: { lat: 41.9028, lon: 12.4964, landedZoom: 1.75 },   // 로마 (이탈리아 경도 폭 약 12°)
   de: { lat: 52.5200, lon: 13.4050, landedZoom: 1.75 },   // 베를린 (독일 경도 폭 약 9°)
@@ -38,7 +38,7 @@ const HERO_GLOBE_PLACES = {
 };
 
 // 국기 없이 언어만 정해졌을 때(상단 언어 드롭다운 등) 착지할 기본 장소
-const DEFAULT_PLACE_BY_LANG = { ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'eg', it: 'it', de: 'de', es: 'es', el: 'gr', nl: 'nl', sv: 'se' };
+const DEFAULT_PLACE_BY_LANG = { ko: 'kr', en: 'us', ja: 'jp', zh: 'cn', uz: 'uz', fr: 'fr', ar: 'eg', it: 'it', de: 'de', es: 'es', el: 'gr', nl: 'nl', sv: 'se' };
 
 const EARTH_AXIAL_TILT_DEG = 23.4; // 실제 지구 자전축 기울기
 const CAMERA_FOV_DEG = 32;

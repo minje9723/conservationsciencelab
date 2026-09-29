@@ -247,9 +247,9 @@ const HERO_GLOBE_PLACE_POSITIONS = {
   us: { position: '197.2% 0', landingScale: 2.53 }, // 미국 (중부 -95°E, 본토 경도 폭 약 57°)
   gb: { position: '49.9% 0', landingScale: 2.8 },   // 영국 (런던 -0.13°E, 경도 폭 약 10°)
   jp: { position: '127.6% 0', landingScale: 2.8 },  // 일본 (도쿄 139.7°E, 경도 폭 약 17°)
+  cn: { position: '115.0% 0', landingScale: 2.3 },  // 중국 (베이징 116.4°E, 경도 폭 약 62°)
   uz: { position: '88.4% 0', landingScale: 2.8 },   // 우즈베키스탄 (타슈켄트 69.2°E, 경도 폭 약 17°)
   fr: { position: '51.3% 0', landingScale: 2.8 },   // 프랑스 (파리 2.35°E, 경도 폭 약 13°)
-  sa: { position: '75.9% 0', landingScale: 2.8 },   // 사우디아라비아 (리야드 46.7°E, 경도 폭 약 21°)
   eg: { position: '67.4% 0', landingScale: 2.8 },   // 이집트 (카이로 31.2°E, 경도 폭 약 12°)
   it: { position: '56.9% 0', landingScale: 2.8 },   // 이탈리아 (로마 12.5°E, 경도 폭 약 12°)
   de: { position: '57.4% 0', landingScale: 2.8 },   // 독일 (베를린 13.4°E, 경도 폭 약 9°)
@@ -261,11 +261,11 @@ const HERO_GLOBE_PLACE_POSITIONS = {
 
 // 장소별 언어, 그리고 국기 없이 언어만 정해졌을 때(상단 언어 드롭다운 등) 갈 기본 장소
 const HERO_GLOBE_PLACE_LANG = {
-  kr: 'ko', us: 'en', gb: 'en', jp: 'ja', uz: 'uz', fr: 'fr', sa: 'ar', eg: 'ar',
+  kr: 'ko', us: 'en', gb: 'en', jp: 'ja', cn: 'zh', uz: 'uz', fr: 'fr', eg: 'ar',
   it: 'it', de: 'de', es: 'es', gr: 'el', nl: 'nl', se: 'sv'
 };
 const HERO_GLOBE_DEFAULT_PLACE = {
-  ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'eg',
+  ko: 'kr', en: 'us', ja: 'jp', zh: 'cn', uz: 'uz', fr: 'fr', ar: 'eg',
   it: 'it', de: 'de', es: 'es', el: 'gr', nl: 'nl', sv: 'se'
 };
 
@@ -277,9 +277,9 @@ const HERO_GLOBE_CAPITAL_COORDS = {
   us: { lat: 38.9072, lon: -77.0369 },
   gb: { lat: 51.5074, lon: -0.1278 },
   jp: { lat: 35.6762, lon: 139.6503 },
+  cn: { lat: 39.9042, lon: 116.4074 },
   uz: { lat: 41.2995, lon: 69.2401 },
   fr: { lat: 48.8566, lon: 2.3522 },
-  sa: { lat: 24.7136, lon: 46.6753 },
   eg: { lat: 30.0444, lon: 31.2357 },
   it: { lat: 41.9028, lon: 12.4964 },
   de: { lat: 52.5200, lon: 13.4050 },
@@ -1462,6 +1462,7 @@ function renderResearchLeague() {
         <span class="lang lang-el" style="display:none;">Προβολή αποτελεσμάτων</span>
         <span class="lang lang-nl" style="display:none;">Bekijk resultaten</span>
         <span class="lang lang-sv" style="display:none;">Visa resultat</span>
+        <span class="lang lang-zh" style="display:none;">查看记录</span>
       </a>
     </article>
   `).join('');

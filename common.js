@@ -303,6 +303,15 @@ function updateNavTooltips(lang) {
       'achievements': 'Prestationer',
       'facilities': 'Faciliteter',
       'gallery': 'Galleri'
+    },
+    'zh': {
+      'home': '首页',
+      'history': '沿革',
+      'members': '研究团队',
+      'projects': '研究课题',
+      'achievements': '研究成果',
+      'facilities': '仪器设备',
+      'gallery': '画廊'
     }
   };
   
