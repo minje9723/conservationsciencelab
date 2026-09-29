@@ -3856,7 +3856,8 @@ function createAchievementCard(achievement, lang) {
   // Special layout for awards with images
   if (achievement.type === 'award' && achievement.award_image) {
     const title = lang === 'ko' ? achievement.title_ko : achievement.title_en;
-    const enlargeText = lang === 'ko' ? '클릭하여 확대' : lang === 'ja' ? 'クリックして拡大' : lang === 'uz' ? 'Kattalashtirish uchun bosing' : 'Click to enlarge';
+    const enlargeLabels = { en: 'Click to enlarge', ko: '클릭하여 확대', ja: 'クリックして拡大', uz: 'Kattalashtirish uchun bosing', fr: 'Cliquez pour agrandir', ar: 'انقر للتكبير', it: 'Clicca per ingrandire', de: 'Zum Vergrößern klicken', es: 'Haga clic para ampliar', el: 'Κάντε κλικ για μεγέθυνση', nl: 'Klik om te vergroten', sv: 'Klicka för att förstora', zh: '点击放大' };
+    const enlargeText = enlargeLabels[lang] || enlargeLabels.en;
     return `
       <li data-type="${achievement.type}" data-id="${achievement.id}" class="animate-on-scroll award-with-image">
         <div class="achievement-icon">
@@ -3895,7 +3896,8 @@ function createAchievementCard(achievement, lang) {
     : isJapanese
       ? (achievement.summary_ja || achievement.summary_en)
       : achievement.summary_en;
-  const linkText = lang === 'ko' ? '세부 정보 보기' : lang === 'ja' ? '詳細を見る' : lang === 'uz' ? 'Batafsil ko\'rish' : 'View Details';
+  const linkLabels = { en: 'View Details', ko: '세부 정보 보기', ja: '詳細を見る', uz: 'Batafsil ko\'rish', fr: 'Voir les détails', ar: 'عرض التفاصيل', it: 'Vedi dettagli', de: 'Details anzeigen', es: 'Ver detalles', el: 'Προβολή λεπτομερειών', nl: 'Details bekijken', sv: 'Visa detaljer', zh: '查看详情' };
+  const linkText = linkLabels[lang] || linkLabels.en;
   
   // Create indexing badge for publications
   let indexingBadge = '';
@@ -3973,18 +3975,49 @@ function renderAchievements() {
         <div class="notice-status lang lang-en">Application in progress</div>
         <div class="notice-status lang lang-ko" style="display:none;">특허 출원 진행 중</div>
         <div class="notice-status lang lang-ja" style="display:none;">特許出願中</div>
+        <div class="notice-status lang lang-uz" style="display:none;">Ariza jarayonda</div>
+        <div class="notice-status lang lang-fr" style="display:none;">Demande en cours</div>
+        <div class="notice-status lang lang-ar" style="display:none;">الطلب قيد الإجراء</div>
+        <div class="notice-status lang lang-it" style="display:none;">Domanda in corso</div>
+        <div class="notice-status lang lang-de" style="display:none;">Anmeldung läuft</div>
+        <div class="notice-status lang lang-es" style="display:none;">Solicitud en trámite</div>
+        <div class="notice-status lang lang-el" style="display:none;">Αίτηση σε εξέλιξη</div>
+        <div class="notice-status lang lang-nl" style="display:none;">Aanvraag in behandeling</div>
+        <div class="notice-status lang lang-sv" style="display:none;">Ansökan pågår</div>
+        <div class="notice-status lang lang-zh" style="display:none;">申请进行中</div>
         <h3 class="notice-title lang lang-en">Patent Applications in Progress</h3>
         <h3 class="notice-title lang lang-ko" style="display:none;">특허 출원중</h3>
         <h3 class="notice-title lang lang-ja" style="display:none;">特許出願を進行中</h3>
+        <h3 class="notice-title lang lang-uz" style="display:none;">Patent arizalari jarayonda</h3>
+        <h3 class="notice-title lang lang-fr" style="display:none;">Demandes de brevet en cours</h3>
+        <h3 class="notice-title lang lang-ar" style="display:none;">طلبات براءات الاختراع قيد الإجراء</h3>
+        <h3 class="notice-title lang lang-it" style="display:none;">Domande di brevetto in corso</h3>
+        <h3 class="notice-title lang lang-de" style="display:none;">Patentanmeldungen in Bearbeitung</h3>
+        <h3 class="notice-title lang lang-es" style="display:none;">Solicitudes de patente en trámite</h3>
+        <h3 class="notice-title lang lang-el" style="display:none;">Αιτήσεις διπλωμάτων ευρεσιτεχνίας σε εξέλιξη</h3>
+        <h3 class="notice-title lang lang-nl" style="display:none;">Octrooiaanvragen in behandeling</h3>
+        <h3 class="notice-title lang lang-sv" style="display:none;">Patentansökningar pågår</h3>
+        <h3 class="notice-title lang lang-zh" style="display:none;">科研专利申请进行中</h3>
         <p class="notice-description lang lang-en">Patent applications for our innovative conservation technologies and methodologies are currently in progress.</p>
         <p class="notice-description lang lang-ko" style="display:none;">혁신적인 보존 기술 및 방법론에 대한 특허 출원이 진행 중입니다.</p>
         <p class="notice-description lang lang-ja" style="display:none;">革新的な保存技術と方法論に関する特許出願を進めています。</p>
+        <p class="notice-description lang lang-uz" style="display:none;">Innovatsion konservatsiya texnologiyalari va metodologiyalarimiz bo'yicha patent arizalari hozirda jarayonda.</p>
+        <p class="notice-description lang lang-fr" style="display:none;">Des demandes de brevet sont en cours pour nos technologies et méthodologies de conservation innovantes.</p>
+        <p class="notice-description lang lang-ar" style="display:none;">طلبات براءات الاختراع الخاصة بتقنياتنا ومنهجياتنا المبتكرة في مجال الصون قيد الإجراء حاليًا.</p>
+        <p class="notice-description lang lang-it" style="display:none;">Sono in corso le domande di brevetto per le nostre tecnologie e metodologie innovative di conservazione.</p>
+        <p class="notice-description lang lang-de" style="display:none;">Für unsere innovativen Konservierungstechnologien und -methoden laufen derzeit Patentanmeldungen.</p>
+        <p class="notice-description lang lang-es" style="display:none;">Actualmente están en trámite las solicitudes de patente de nuestras tecnologías y metodologías innovadoras de conservación.</p>
+        <p class="notice-description lang lang-el" style="display:none;">Βρίσκονται σε εξέλιξη αιτήσεις διπλωμάτων ευρεσιτεχνίας για τις καινοτόμες τεχνολογίες και μεθοδολογίες συντήρησης που αναπτύσσουμε.</p>
+        <p class="notice-description lang lang-nl" style="display:none;">Voor onze innovatieve conserveringstechnologieën en -methoden lopen momenteel octrooiaanvragen.</p>
+        <p class="notice-description lang lang-sv" style="display:none;">Patentansökningar för våra innovativa konserveringstekniker och metoder pågår för närvarande.</p>
+        <p class="notice-description lang lang-zh" style="display:none;">我们在文物保护领域的创新技术与方法的专利申请正在进行中。</p>
       </div>
     `;
     
-    // Apply current language to notice
+    // Apply current language to notice (번역이 없는 언어는 영어로 대체해 빈 안내를 막는다)
+    const noticeLang = achievementsList.querySelector('.lang-' + lang) ? lang : 'en';
     achievementsList.querySelectorAll('.lang').forEach(el => {
-      if (el.classList.contains('lang-' + lang)) {
+      if (el.classList.contains('lang-' + noticeLang)) {
         el.style.display = '';
         el.classList.add('lang-visible');
       } else {

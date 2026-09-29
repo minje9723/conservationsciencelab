@@ -1262,11 +1262,11 @@ let researchPodiumAwardRecords = [];
 // renderResearchLeague()의 카드 헤더와 overview 모달 헤더가 같은 분야명을 써야 하므로
 // 모듈 스코프로 공유한다.
 const RESEARCH_PODIUM_TYPE_LABELS = {
-  publication: { en: 'Publications', ko: '논문 분야', ja: '論文分野', uz: 'Nashrlar', fr: 'Publications', ar: 'المنشورات' },
-  conference: { en: 'Presentations', ko: '발표 분야', ja: '発表分野', uz: 'Taqdimotlar', fr: 'Présentations', ar: 'العروض' },
-  award: { en: 'Awards', ko: '수상 분야', ja: '受賞分野', uz: 'Mukofotlar', fr: 'Distinctions', ar: 'الجوائز' }
+  publication: { en: 'Publications', ko: '논문 분야', ja: '論文分野', uz: 'Nashrlar', fr: 'Publications', ar: 'المنشورات', it: 'Pubblicazioni', de: 'Publikationen', es: 'Publicaciones', el: 'Δημοσιεύσεις', nl: 'Publicaties', sv: 'Publikationer', zh: '学术论文' },
+  conference: { en: 'Presentations', ko: '발표 분야', ja: '発表分野', uz: 'Taqdimotlar', fr: 'Présentations', ar: 'العروض', it: 'Contributi a convegni', de: 'Vorträge', es: 'Ponencias', el: 'Ανακοινώσεις σε συνέδρια', nl: 'Congresbijdragen', sv: 'Konferensbidrag', zh: '学术报告' },
+  award: { en: 'Awards', ko: '수상 분야', ja: '受賞分野', uz: 'Mukofotlar', fr: 'Distinctions', ar: 'الجوائز', it: 'Premi', de: 'Auszeichnungen', es: 'Premios', el: 'Βραβεία', nl: 'Onderscheidingen', sv: 'Utmärkelser', zh: '学术荣誉' }
 };
-const RESEARCH_PODIUM_COUNT_LABELS = { en: 'records', ko: '건', ja: '件', uz: 'ta yozuv', fr: 'entrées', ar: 'سجلات' };
+const RESEARCH_PODIUM_COUNT_LABELS = { en: 'records', ko: '건', ja: '件', uz: 'ta yozuv', fr: 'entrées', ar: 'سجلات', it: 'voci', de: 'Einträge', es: 'registros', el: 'εγγραφές', nl: 'vermeldingen', sv: 'poster', zh: '项' };
 
 function renderResearchLeague() {
   const grid = document.getElementById('researchLeagueGrid');
@@ -1354,7 +1354,7 @@ function renderResearchLeague() {
     };
   });
 
-  const totalLabels = { en: 'total', ko: '전체', ja: '全体', uz: 'jami', fr: 'total', ar: 'الإجمالي' };
+  const totalLabels = { en: 'total', ko: '전체', ja: '全体', uz: 'jami', fr: 'total', ar: 'الإجمالي', it: 'totali', de: 'insgesamt', es: 'en total', el: 'συνολικά', nl: 'in totaal', sv: 'totalt', zh: '总计' };
   const getLabel = (dictionary, key) => dictionary[key] || dictionary.en;
   researchPodiumStepKeys = [];
   grid.innerHTML = rankings.map(ranking => `
@@ -1715,15 +1715,16 @@ async function renderDailyMenu() {
   dateEl.style.display = 'none';
 
   const lang = document.documentElement.lang || 'ko';
-  const localeByLang = { ko: 'ko-KR', en: 'en-US', ja: 'ja-JP', uz: 'uz-UZ', fr: 'fr-FR', ar: 'ar-SA' };
+  const localeByLang = { ko: 'ko-KR', en: 'en-US', ja: 'ja-JP', uz: 'uz-UZ', fr: 'fr-FR', ar: 'ar-SA', it: 'it-IT', de: 'de-DE', es: 'es-ES', el: 'el-GR', nl: 'nl-NL', sv: 'sv-SE', zh: 'zh-CN' };
   const locale = localeByLang[lang] || localeByLang.en;
 
   const mealLabels = {
-    lunch: { en: 'Lunch', ko: '중식', ja: '昼食', uz: 'Tushlik', fr: 'Déjeuner', ar: 'الغداء' },
-    dinner: { en: 'Dinner', ko: '석식', ja: '夕食', uz: 'Kechki ovqat', fr: 'Dîner', ar: 'العشاء' }
+    lunch: { en: 'Lunch', ko: '중식', ja: '昼食', uz: 'Tushlik', fr: 'Déjeuner', ar: 'الغداء', it: 'Pranzo', de: 'Mittagessen', es: 'Almuerzo', el: 'Μεσημεριανό', nl: 'Lunch', sv: 'Lunch', zh: '午餐' },
+    dinner: { en: 'Dinner', ko: '석식', ja: '夕食', uz: 'Kechki ovqat', fr: 'Dîner', ar: 'العشاء', it: 'Cena', de: 'Abendessen', es: 'Cena', el: 'Βραδινό', nl: 'Diner', sv: 'Middag', zh: '晚餐' }
   };
   const emptyLabel = {
-    en: 'Menu not yet updated', ko: '메뉴 준비 중입니다', ja: '準備中です', uz: 'Tayyorlanmoqda', fr: 'Menu à venir', ar: 'القائمة قيد التحضير'
+    en: 'Menu not yet updated', ko: '메뉴 준비 중입니다', ja: '準備中です', uz: 'Tayyorlanmoqda', fr: 'Menu à venir', ar: 'القائمة قيد التحضير',
+    it: 'Menù in arrivo', de: 'Speiseplan folgt', es: 'Menú próximamente', el: 'Το μενού ετοιμάζεται', nl: 'Menu volgt', sv: 'Menyn kommer snart', zh: '菜单准备中'
   };
   const getLabel = (dictionary, key) => dictionary[key] || dictionary.en;
   const mealOrder = ['lunch', 'dinner'];
