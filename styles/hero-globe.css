@@ -100,9 +100,17 @@
 
 /* WebGL 환경에서는 hero-globe-3d.js가 초기화되기 전에 평면(2D) 폴백 레이어와
    조명, 핀이 화면에 번쩍 노출되었다가 사라지는 깜빡임(FOUC)을 사전에 차단한다.
-   구체 바탕색을 3D 다크 코어 구체(#050e19)와 일치시켜 초기 진입 시 일관된 비주얼을 제공한다. */
+   인트로(블루프린트) 동안은 원 자체를 칠하지 않고 입체 음영도 꺼서, 아래 ::before의 반투명
+   청색 도면 바탕과 흰 점선 위경도선만 보이게 한다. 그 위로 위성 텍스처가 북동쪽부터 입혀지고, 다 입혀지면
+   hero-globe-3d.js가 .is-textured를 붙여 다크 바탕과 입체 음영을 1.4s에 걸쳐 되살린다. */
 html.has-webgl .hero-globe {
   background-color: #050e19;
+  transition: background-color 1.4s ease, box-shadow 1.4s ease;
+}
+
+html.has-webgl .hero-globe:not(.is-textured) {
+  background-color: transparent;
+  box-shadow: none;
 }
 
 html.has-webgl .hero-globe-surface,
@@ -225,12 +233,30 @@ html.has-webgl .hero-globe-pin,
   pointer-events: none;
 }
 
-/* 3D 지구본은 셰이더가 실제 태양 위치로 픽셀마다 주야간을 계산하므로, 평면 폴백용
-   근사 명암 막과 흰 구름 얼룩을 겹치면 표면이 뿌옇게 흐려질 뿐이다.
-   WebGL 환경에서는 초기 진입 시에도 평면용 막이 번쩍이지 않도록 미리 숨긴다. */
+/* 3D 지구본은 셰이더가 실제 태양 위치로 픽셀마다 주야간을 계산하므로 평면 폴백용 명암 막과
+   구름 얼룩은 쓰지 않는다. 대신 WebGL 환경의 ::before는 인트로의 블루프린트 도면 바탕이 된다:
+   반투명 청색 원과 가는 흰 윤곽선. z-index를 풀어 3D 캔버스(흰 점선 위경도선)보다 아래에 깔고,
+   위성 텍스처가 다 입혀지면(.is-textured) 걷어낸다. */
 html.has-webgl .hero-globe::before,
 .hero-globe.hero-globe-3d-active::before {
-  display: none;
+  z-index: auto;
+  border-radius: 50%;
+  background: rgba(30, 80, 150, 0.62);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.85);
+  opacity: 1;
+  transition: opacity 1.4s ease;
+}
+
+html.has-webgl .hero-globe.is-textured::before,
+.hero-globe.hero-globe-3d-active.is-textured::before {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.has-webgl .hero-globe,
+  html.has-webgl .hero-globe::before {
+    transition: none;
+  }
 }
 
 .hero-globe::after {
@@ -876,6 +902,11 @@ html.hero-landed .hero-globe-card-ring.is-draggable.is-dragging {
   .hero-globe-hud,
   .hero-orbits {
     transition: top 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* 위 WebGL 블루프린트 규칙의 transition이 더 구체적이라 top 전환을 덮어쓰지 않도록 함께 적는다 */
+  html.has-webgl .hero-globe {
+    transition: top 1.6s cubic-bezier(0.22, 1, 0.36, 1), background-color 1.4s ease, box-shadow 1.4s ease;
   }
 
   .hero-main {

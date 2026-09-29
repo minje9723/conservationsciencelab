@@ -111,7 +111,6 @@ let globeShaderUniforms = null; // 지구본 커스텀 셰이더의 uniforms(day
 let globeMesh = null;
 let globeMaterial = null;
 let graticuleMesh = null;
-let coreSphereMesh = null;
 let dayTextureLoaded = false;
 let nightTextureLoaded = false;
 let activeNightTexture = null;     // 셰이더의 nightMap이 가리키는 텍스처(고해상도판이 오면 교체된다)
@@ -121,10 +120,17 @@ let lastHdSwapAt = -Infinity;
 let travelling = false;            // 나라로 이동·착지·다시 줌아웃하는 애니메이션 중(이때는 텍스처 교체를 미룬다)
 let textureFadeStart = null;
 let currentTextureFade = 0; // 0: 뼈대만 표시, 0 -> 1: 텍스처 및 언어/국기 아이콘 동시 페이드인
-let gridFormationStart = 0;
-const TEXTURE_FADE_MS = 1400;
-const GRID_MIN_SOLO_MS = 900;
-const GRID_FORMATION_MS = 1400;
+let gridFormationStart = 0; // 인트로 시작 시각(흰 점선 도면이 나타난 때)
+const TEXTURE_FADE_MS = 2400;  // 위성 텍스처가 북동쪽부터 남서쪽으로 대각선을 따라 차례로 입혀지는 시간
+const GRID_MIN_SOLO_MS = 900;  // 텍스처를 입히기 전 도면(투명 지구본의 흰 점선 위경도선)만 보여 주는 최소 시간
+const REVEAL_EDGE = 0.3;       // 입히기 경계(빛 띠)의 폭 — 북동 방향 투영값(-1~1) 기준, 약 17°
+const FLAGS_START_COAT = 0.98; // 텍스처가 이만큼(눈으로 보기에 다) 입혀지는 순간 국기가 나오기 시작한다
+let flagsStartTime = null;     // 국기가 나오기 시작한 시각(performance.now)
+const globeReveal = { value: 0 }; // 텍스처가 입혀진 정도(0~1). 지구본 셰이더의 uReveal과 같은 객체라 값만 바꾸면 된다
+const GRATICULE_OPACITY = 0.9; // 인트로(블루프린트)에서 흰 점선 위경도선의 불투명도
+const GRATICULE_LABEL_HEIGHT = 0.03; // 각도 표기 글자판 높이(반지름 1 기준 — 지름 640px 지구본에서 약 10px)
+const GRATICULE_LABEL_FONT = '600 40px Consolas, "SF Mono", Menlo, "Courier New", monospace';
+let graticuleLabels = null; // 인트로 도면의 위도·경도 각도 표기(THREE.Group)
 let container = null;
 let ready = false;
 let pendingMove = null; // init() 전에 들어온 이동 요청 { lang, place }
@@ -147,6 +153,27 @@ let flagsActive = true;
 let flagHover = false; // 마우스가 국기 위에 있으면 유휴 자전을 잠시 멈춰 누르기 쉽게 한다
 const flagWorld = new THREE.Vector3();
 const flagToCamera = new THREE.Vector3();
+let flagAppearOrderSet = false; // 국기 등장 순서(appearRank)를 정했는지 — 국기가 나오기 시작하는 순간 한 번 정한다
+
+// 국기가 나오기 시작하는 순간, 지금 보이는 앞면의 나라부터 화면 오른쪽(동쪽)→왼쪽(서쪽) 순서로 등장 순서를
+// 정한다. 경도만으로 정하면 지구본이 보고 있는 쪽에 따라 첫 몇 차례가 뒤쪽 나라라서 아무것도 나오지 않는
+// 공백이 생긴다. 뒤쪽 나라는 그다음 차례로, 동쪽(경도가 큰) 나라부터.
+function setFlagAppearOrder() {
+  const ranked = flagEntries.map((entry) => {
+    flagWorld.copy(entry.local);
+    spinGroup.localToWorld(flagWorld);
+    flagToCamera.copy(camera.position).sub(flagWorld).normalize();
+    const visible = flagWorld.dot(flagToCamera) > 0.08;
+    flagWorld.project(camera);
+    return { entry, visible, x: flagWorld.x };
+  });
+  ranked.sort((a, b) => {
+    if (a.visible !== b.visible) return a.visible ? -1 : 1;
+    return a.visible ? b.x - a.x : a.entry.eastRank - b.entry.eastRank;
+  });
+  ranked.forEach(({ entry }, idx) => { entry.appearRank = idx; });
+  flagAppearOrderSet = true;
+}
 
 // 국기 레이어를 드래그해서 지구본을 직접 돌려볼 수 있다(언어 선택 화면에서만).
 const DRAG_ROTATE_RAD_PER_PX = 0.0055;
@@ -467,13 +494,13 @@ function init() {
   }
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
-  // 위경도선 형성 애니메이션 도중에 올라가는 텍스처라, 디코딩을 백그라운드에서 끝낸 뒤 넘겨받는다
+  // 인트로 도면이 보이는 동안 올라가는 텍스처라, 디코딩을 백그라운드에서 끝낸 뒤 넘겨받는다
   const dayTexture = loadDecodedTexture(
     DAY_TEXTURE_URL,
     () => {
       dayTextureLoaded = true;
-      if (shouldSkipIntro() && globeMaterial) {
-        globeMaterial.opacity = 1.0;
+      if (shouldSkipIntro()) {
+        globeReveal.value = 1.0;
         currentTextureFade = 1.0;
       }
       maybeUpgradeGlobeTextures();
@@ -496,23 +523,20 @@ function init() {
   dayTexture.anisotropy = maxAnisotropy;
   nightTexture.anisotropy = maxAnisotropy;
 
-  // 텍스처 로딩 중 지구의 입체 볼륨을 형성하고 뒷면 위경도선을 자연스럽게 차폐하는 다크 코어 구체
-  const coreSphereGeo = new THREE.SphereGeometry(0.997, 48, 48);
-  const coreSphereMat = new THREE.MeshBasicMaterial({ color: 0x050e19 });
-  coreSphereMesh = new THREE.Mesh(coreSphereGeo, coreSphereMat);
-  if (!skipIntro) {
-    spinGroup.add(coreSphereMesh);
+  // 인트로 도면: 처음부터 다 그려진 흰 점선 위도·경도 격자(Graticule). 구 자체는 칠하지 않고
+  // (반투명 청색 도면 바탕은 CSS ::before), 위성 텍스처가 모두 입혀지면 .is-textured로 원래 음영을 되살린다.
+  if (skipIntro) {
+    container.classList.add('is-textured');
+    globeReveal.value = 1.0;
   }
-
-  // 초기 로딩 딜레이 동안 지구본의 뼈대를 형성하는 위도·경도 격자(Graticule)
   graticuleMesh = createGraticuleMesh();
   if (!skipIntro) {
     spinGroup.add(graticuleMesh);
+    graticuleLabels = createGraticuleLabels();
+    spinGroup.add(graticuleLabels);
     gridFormationStart = performance.now();
   } else {
     graticuleMesh.visible = false;
-    graticuleMesh.material.uniforms.uProgress.value = 1.0;
-    graticuleMesh.material.uniforms.uOpacity.value = 0.0;
   }
 
   // 낮/밤 텍스처를 실시간 태양 방향(worldNormal·sunDirection)에 따라 섞는 커스텀
@@ -521,18 +545,28 @@ function init() {
   globeMaterial = new THREE.MeshBasicMaterial({
     map: dayTexture,
     transparent: true,
-    opacity: skipIntro ? 1.0 : 0, // 홈 복귀/재방문 시 위도경도 애니메이션 없이 즉시 100% 월드맵 표시
+    opacity: 1.0, // 보이는 정도는 셰이더의 uReveal(globeReveal)이 위도별로 정한다(재방문 시에는 처음부터 1)
     depthWrite: true,
     depthTest: true
   });
   globeMaterial.onBeforeCompile = (shader) => {
     shader.uniforms.nightMap = { value: activeNightTexture };
     shader.uniforms.sunDirection = { value: new THREE.Vector3(0, 0, 1) };
+    shader.uniforms.uReveal = globeReveal;
+    shader.uniforms.uRevealEdge = { value: REVEAL_EDGE };
     shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', '#include <common>\nvarying vec3 vWorldNormal;')
-      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvWorldNormal = normalize(mat3(modelMatrix) * normal);');
+      .replace('#include <common>', '#include <common>\nvarying vec3 vWorldNormal;\nvarying float vRevealS;')
+      .replace('#include <begin_vertex>', `#include <begin_vertex>
+        vWorldNormal = normalize(mat3(modelMatrix) * normal);
+        // 보는 사람 기준 북동 방향(지구 자전축의 북쪽 + 화면 기준 동쪽)으로의 투영값: 북동쪽 가장자리 +1, 남서쪽 가장자리 -1.
+        // 입히기 경계는 이 값이 같은 곡선(구를 비스듬히 자른 원호)이라 북동→남서로 대각선을 그리며 내려온다.
+        vec3 revealAxis = normalize(mat3(modelMatrix) * vec3(0.0, 1.0, 0.0));
+        vec3 revealToCam = normalize(cameraPosition - modelMatrix[3].xyz);
+        vec3 revealFront = normalize(revealToCam - revealAxis * dot(revealToCam, revealAxis) + vec3(1e-5));
+        vec3 revealEast = cross(revealAxis, revealFront);
+        vRevealS = dot(vWorldNormal, normalize(revealEast + revealAxis));`);
     shader.fragmentShader = shader.fragmentShader
-      .replace('#include <common>', '#include <common>\nuniform sampler2D nightMap;\nuniform vec3 sunDirection;\nvarying vec3 vWorldNormal;')
+      .replace('#include <common>', '#include <common>\nuniform sampler2D nightMap;\nuniform vec3 sunDirection;\nuniform float uReveal;\nuniform float uRevealEdge;\nvarying vec3 vWorldNormal;\nvarying float vRevealS;')
       .replace('#include <map_fragment>', `
         #ifdef USE_MAP
           vec4 dayColor = texture2D( map, vMapUv );
@@ -545,6 +579,14 @@ function init() {
           // 야간: 완전한 검정 대신 아주 옅은 남색 바탕 위에 대륙 윤곽과 도시 불빛이 보이게 한다
           vec3 nightSide = dayRgb * 0.07 + vec3( 0.004, 0.008, 0.02 ) + nightColor.rgb * 1.6;
           diffuseColor.rgb *= mix( nightSide, dayRgb, dayMix );
+          // 인트로: 위성 텍스처가 북동쪽 가장자리(+1)에서 남서쪽 가장자리(-1)로 대각선을 그리며 차례로 입혀진다.
+          // 경계에는 은은한 빛 띠가 지나가고, 아직 입혀지지 않은 곳은 투명해서 뒤의 블루프린트 도면이 보인다.
+          // (updateGraticuleLabels()도 각도 표기를 같은 식으로 걷어낸다)
+          float revealFront = mix( 1.0, -1.0 - uRevealEdge, uReveal );
+          float revealMask = smoothstep( revealFront, revealFront + uRevealEdge, vRevealS );
+          float revealBand = revealMask * ( 1.0 - revealMask ) * 4.0;
+          diffuseColor.rgb += vec3( 0.55, 0.8, 1.0 ) * revealBand * 0.35;
+          diffuseColor.a *= revealMask;
         #endif
       `);
     globeShaderUniforms = shader.uniforms;
@@ -647,7 +689,7 @@ function setupFlags() {
 
   // CSS 기본값(원 둘레에 고르게 놓인 정적 배치, 평면 폴백용) 대신 JS가 매 프레임 위치를 정한다
   flagsLayer.classList.add('is-projected');
-  setupDrag(flagsLayer, { isEnabled: () => flagsActive && currentTextureFade > 0.1, allowZoom: true });
+  setupDrag(flagsLayer, { isEnabled: () => flagsActive && currentTextureFade >= 1.0, allowZoom: true });
 }
 
 // 각 수도의 구체 표면 좌표를 현재 회전 상태의 world 좌표 → 카메라 화면 좌표(%)로
@@ -657,18 +699,22 @@ function setupFlags() {
 function updateFlags() {
   if (!flagsActive || !flagEntries.length) return;
 
-  const flagsFade = currentTextureFade;
+  // 국기는 위성 텍스처가 눈으로 보기에 다 입혀지는 순간(FLAGS_START_COAT) 바로 하나씩 나타나기 시작한다.
+  // (입히기는 끝으로 갈수록 느려지는 곡선이라, 수치상 완료를 기다리면 다 입혀진 뒤에도 한참 비어 보인다)
   const now = performance.now();
-  const hasFadeStarted = textureFadeStart !== null;
-  const elapsedSinceFade = hasFadeStarted ? Math.max(0, now - textureFadeStart) : 0;
   const reducedMotion = prefersReducedMotion();
+  if (flagsStartTime === null && textureFadeStart !== null && currentTextureFade >= FLAGS_START_COAT) {
+    flagsStartTime = now;
+  }
+  const flagsReady = flagsStartTime !== null;
+  const elapsedSinceFlagsStart = flagsReady ? now - flagsStartTime : 0;
 
   if (flagsLayer) {
-    flagsLayer.style.opacity = hasFadeStarted ? flagsFade.toFixed(3) : '0';
-    flagsLayer.style.pointerEvents = flagsFade > 0.1 ? 'auto' : 'none';
+    flagsLayer.style.opacity = flagsReady ? '1' : '0';
+    flagsLayer.style.pointerEvents = flagsReady ? 'auto' : 'none';
   }
 
-  if (!hasFadeStarted || flagsFade <= 0.001) {
+  if (!flagsReady) {
     for (const { el } of flagEntries) {
       el.style.opacity = '0';
       el.style.pointerEvents = 'none';
@@ -676,12 +722,12 @@ function updateFlags() {
     return;
   }
 
-  const INITIAL_FLAG_DELAY_MS = 150; // 월드맵 이미지가 페이드인되기 시작하면서 국기들과 함께 호흡을 맞추는 초기 딜레이
-  const STAGGER_DELAY_MS = 280;      // 각 국가별 등장 간격 (기존 180ms -> 280ms로 순차적 등장 딜레이를 더 여유롭게 부여)
-  const APPEAR_DURATION_MS = 600;    // 각 핀이 부드럽게 팝업되는 시간
+  const STAGGER_DELAY_MS = 160;   // 각 국가별 등장 간격(14개국이 약 2.7초 안에 모두 나타난다)
+  const APPEAR_DURATION_MS = 600; // 각 핀이 부드럽게 팝업되는 시간
 
   camera.updateMatrixWorld();
-  for (const { el, local, eastRank } of flagEntries) {
+  if (!flagAppearOrderSet) setFlagAppearOrder();
+  for (const { el, local, appearRank } of flagEntries) {
     flagWorld.copy(local);
     spinGroup.localToWorld(flagWorld);
     flagToCamera.copy(camera.position).sub(flagWorld).normalize();
@@ -693,13 +739,13 @@ function updateFlags() {
     const visibility = THREE.MathUtils.smoothstep(facing, 0.08, 0.4)
       * (1 - THREE.MathUtils.smoothstep(radial, 0.97, 1.05));
 
-    // 동경에 있는 국가부터 순차적으로 등장하는 진행도 계산
+    // 지금 보이는 앞면의 나라부터(화면 오른쪽 → 왼쪽) 순차적으로 등장하는 진행도 계산
     let itemAlpha = 1.0;
     let itemPop = 1.0;
 
     if (!reducedMotion) {
-      const itemStart = INITIAL_FLAG_DELAY_MS + (eastRank ?? 0) * STAGGER_DELAY_MS;
-      const itemElapsed = elapsedSinceFade - itemStart;
+      const itemStart = (appearRank ?? 0) * STAGGER_DELAY_MS;
+      const itemElapsed = elapsedSinceFlagsStart - itemStart;
       if (itemElapsed <= 0) {
         itemAlpha = 0;
         itemPop = 0;
@@ -1343,14 +1389,18 @@ function updateMoon(now, delta) {
   moonRenderer.render(moonScene, moonCamera);
 }
 
-// 위도·경도 뼈대 격자망(Graticule) 지오메트리 및 셰이더 생성.
-// - 위도선: -75° ~ +75° (15° 간격의 평행 원형 링, 적도는 네온 액센트)
-// - 경도선: 0° ~ 330° (30° 간격의 대원, 본초자오선은 네온 액센트)
-// - aProgress 속성을 통해 0 -> 1로 회전하며 스캔 스파크 효과와 함께 드로잉
+// 위도·경도 뼈대 격자망(Graticule) 지오메트리 및 셰이더 생성 — 블루프린트(도면) 스타일.
+// - 위도선: -75° ~ +75° (15° 간격의 평행 원형 링)
+// - 경도선: 15° 간격(위도선과 같은 촘촘한 격자) — 대원 하나가 경도 λ와 λ+180°를 함께 그리므로 0°~165° 대원
+//   12개로 24개 경선을 모두 그린다(0°~345° 대원 24개를 그리면 같은 원이 두 번 겹쳐, 점선의 빈칸이 서로 메워져 실선처럼 보인다)
+// - 흰 점선. 적도·본초자오선은 도면의 중심선처럼 일점쇄선(긴 선–짧은 점)
+// - aDist(원을 따라 잰 호의 길이)로 점선 간격을 위도와 상관없이 일정하게 맞춘다
+// - 뒤쪽 반구의 선은 도면의 숨은선처럼 옅게 비친다(반투명 청색 바탕은 styles/hero-globe.css의 ::before)
+// - 인트로 처음부터 다 그려진 채로 나타나고(uOpacity 0 -> GRATICULE_OPACITY), 그 위로 위성 텍스처가 입혀진다
 function createGraticuleMesh() {
   const positions = [];
-  const progressList = [];
-  const typeList = []; // 0: 일반 위선, 1: 적도/자오선 액센트, 2: 일반 경선
+  const distList = [];
+  const typeList = []; // 0: 일반 위선, 1: 적도/본초자오선(중심선), 2: 일반 경선
 
   const R = 1.002;
   const segmentsPerCircle = 96;
@@ -1378,14 +1428,14 @@ function createGraticuleMesh() {
 
       const p1 = i / segmentsPerCircle;
       const p2 = (i + 1) / segmentsPerCircle;
-      progressList.push(p1, p2);
+      distList.push(p1 * Math.PI * 2 * r, p2 * Math.PI * 2 * r);
       typeList.push(typeVal, typeVal);
     }
   });
 
-  // 2. 경도선 (Meridians, 0° ~ 330°, 30° 간격 대원)
-  for (let lonDeg = 0; lonDeg < 360; lonDeg += 30) {
-    const isPrime = lonDeg === 0 || lonDeg === 180;
+  // 2. 경도선 (Meridians, 15° 간격 — 0°~165° 대원 12개가 반대편 경선까지 함께 그린다)
+  for (let lonDeg = 0; lonDeg < 180; lonDeg += 15) {
+    const isPrime = lonDeg === 0; // 0° 대원이 본초자오선과 180° 경선을 함께 그린다
     const typeVal = isPrime ? 1.0 : 2.0;
     const phi = THREE.MathUtils.degToRad(lonDeg + 180);
     const cosPhi = Math.cos(phi);
@@ -1409,14 +1459,14 @@ function createGraticuleMesh() {
 
       const p1 = i / segmentsPerCircle;
       const p2 = (i + 1) / segmentsPerCircle;
-      progressList.push(p1, p2);
+      distList.push(p1 * Math.PI * 2 * R, p2 * Math.PI * 2 * R);
       typeList.push(typeVal, typeVal);
     }
   }
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  geometry.setAttribute('aProgress', new THREE.Float32BufferAttribute(progressList, 1));
+  geometry.setAttribute('aDist', new THREE.Float32BufferAttribute(distList, 1));
   geometry.setAttribute('aType', new THREE.Float32BufferAttribute(typeList, 1));
 
   const material = new THREE.ShaderMaterial({
@@ -1424,39 +1474,45 @@ function createGraticuleMesh() {
     depthTest: true,
     depthWrite: false,
     uniforms: {
-      uProgress: { value: 0.0 },
-      uOpacity: { value: 0.75 },
-      uColorBase: { value: new THREE.Color(0x2fa4b8) },   // 연구실 메인 시안/청록
-      uColorAccent: { value: new THREE.Color(0x39ff14) } // 적도·본초자오선 네온 그린
+      uOpacity: { value: 0.0 }, // updateGraticuleAndTextures()가 GRATICULE_OPACITY까지 부드럽게 올린다
+      uColor: { value: new THREE.Color(0xffffff) },
+      uDashSize: { value: 0.05 } // 점선 한 주기(선+빈칸)의 길이 — 반지름 1 기준(지름 640px 지구본에서 약 16px)
     },
     vertexShader: `
-      attribute float aProgress;
+      attribute float aDist;
       attribute float aType;
-      varying float vProgress;
+      varying float vDist;
       varying float vType;
+      varying float vFacing;
       void main() {
-        vProgress = aProgress;
+        vDist = aDist;
         vType = aType;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        // 구 위의 점이므로 위치가 곧 법선: 카메라를 향하면 +, 뒤쪽 반구면 -
+        vFacing = dot(normalize(normalMatrix * position), normalize(-mvPosition.xyz));
+        gl_Position = projectionMatrix * mvPosition;
       }
     `,
     fragmentShader: `
-      uniform float uProgress;
       uniform float uOpacity;
-      uniform vec3 uColorBase;
-      uniform vec3 uColorAccent;
-      varying float vProgress;
+      uniform vec3 uColor;
+      uniform float uDashSize;
+      varying float vDist;
       varying float vType;
+      varying float vFacing;
       void main() {
-        if (vProgress > uProgress) discard;
+        float u = vDist / uDashSize;
+        if (vType > 0.5 && vType < 1.5) {
+          // 중심선(적도·본초자오선): 두 주기에 긴 선 하나와 짧은 점 하나를 두는 일점쇄선
+          float t = fract(u * 0.5);
+          if (!(t < 0.55 || (t > 0.7 && t < 0.8))) discard;
+        } else {
+          if (fract(u) > 0.55) discard;
+        }
 
-        // 선두에서 빛을 내며 그려지는 스파크(spark) 헤드
-        float head = smoothstep(0.07, 0.0, abs(vProgress - uProgress));
-        vec3 baseCol = (vType > 0.5 && vType < 1.5) ? uColorAccent : uColorBase;
-        vec3 col = mix(baseCol, vec3(0.9, 1.0, 0.95), head * 0.85);
-
-        float alpha = clamp(uOpacity * (0.8 + head * 0.6), 0.0, 1.0);
-        gl_FragColor = vec4(col, alpha);
+        // 뒤쪽 반구의 선은 도면의 숨은선처럼 옅게
+        float side = mix(0.3, 1.0, smoothstep(-0.08, 0.08, vFacing));
+        gl_FragColor = vec4(uColor, clamp(uOpacity * side, 0.0, 1.0));
       }
     `
   });
@@ -1464,69 +1520,171 @@ function createGraticuleMesh() {
   return new THREE.LineSegments(geometry, material);
 }
 
-// 위도·경도 선의 형성 진행도 및 텍스처 페이드인 갱신 루프
+function formatLatLabel(lat) {
+  return lat === 0 ? '0°' : `${Math.abs(lat)}°${lat > 0 ? 'N' : 'S'}`;
+}
+
+function formatLonLabel(lon) {
+  return lon === 0 || Math.abs(lon) === 180 ? `${Math.abs(lon)}°` : `${Math.abs(lon)}°${lon > 0 ? 'E' : 'W'}`;
+}
+
+// 흰 글씨를 캔버스에 그려 텍스처로 쓰는 작은 글자판. 폭은 글자 길이에 맞춘다.
+function createGraticuleLabelMesh(text) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const padding = 6;
+  const height = 52;
+  ctx.font = GRATICULE_LABEL_FONT;
+  const width = Math.ceil(ctx.measureText(text).width) + padding * 2;
+  canvas.width = width;
+  canvas.height = height;
+  ctx.font = GRATICULE_LABEL_FONT; // 캔버스 크기를 바꾸면 그리기 설정이 초기화되므로 다시 지정
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, width / 2, height / 2 + 1);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  if ('colorSpace' in texture) texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  const planeHeight = GRATICULE_LABEL_HEIGHT;
+  const planeWidth = planeHeight * (width / height);
+  const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(planeWidth, planeHeight),
+    new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0, depthWrite: false })
+  );
+  mesh.userData.halfWidth = planeWidth / 2;
+  return mesh;
+}
+
+// 글자판을 구 표면 (lat, lon)에 접하게 놓는다: 판의 +Z는 바깥(법선), +Y는 북쪽, +X는 동쪽
+function placeOnSphere(mesh, lat, lon, radius) {
+  const normal = latLonToLocalPosition(lat, lon, 1).normalize();
+  const east = new THREE.Vector3(0, 1, 0).cross(normal).normalize();
+  const north = new THREE.Vector3().crossVectors(normal, east);
+  mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(east, north, normal));
+  mesh.position.copy(normal).multiplyScalar(radius);
+  mesh.userData.normal = normal;
+}
+
+// 인트로 도면의 위도·경도 각도 표기 — 도면의 치수처럼 작은 흰 글씨를 구 표면에 인쇄한 듯 붙여 지구본과 함께 돈다.
+// 모든 표기는 해당 선 바로 위(북쪽)에 놓인다(모두 204개, 앞면에 보이는 것은 그 절반 정도).
+// - 경도: 적도·북위/남위 30° 위선 위에 15°마다, 경선 사이가 좁아지는 북위/남위 60° 위선 위에는 30°마다
+//   — 각 경선의 동쪽(오른쪽) 옆
+// - 위도: 60°S~60°N을 15°마다 — 30°마다 고른 모든 경선의 서쪽(왼쪽) 옆
+//   (같은 경선의 경도 표기와 좌우로 나뉘어 "30°N | 30°E"처럼 겹치지 않는다)
+function createGraticuleLabels() {
+  const group = new THREE.Group();
+  const radius = 1.004;
+  const gap = 0.012; // 선과 글자 사이 여백(라디안)
+  const liftDeg = THREE.MathUtils.radToDeg(GRATICULE_LABEL_HEIGHT / 2 + gap);
+
+  // side: +1이면 경선의 동쪽, -1이면 서쪽에 글자 폭만큼 비켜 놓는다. 고위도일수록 경도 1°의 길이가
+  // cos(위도)만큼 짧아지므로 그만큼 더 비킨다.
+  const addLabel = (text, lat, lon, side) => {
+    const mesh = createGraticuleLabelMesh(text);
+    const labelLat = lat + liftDeg;
+    const shiftDeg = THREE.MathUtils.radToDeg((mesh.userData.halfWidth + gap) / Math.cos(THREE.MathUtils.degToRad(labelLat)));
+    placeOnSphere(mesh, labelLat, lon + side * shiftDeg, radius);
+    group.add(mesh);
+  };
+
+  [0, 30, -30].forEach((lat) => {
+    for (let lon = -165; lon <= 180; lon += 15) addLabel(formatLonLabel(lon), lat, lon, 1);
+  });
+  [60, -60].forEach((lat) => {
+    for (let lon = -150; lon <= 180; lon += 30) addLabel(formatLonLabel(lon), lat, lon, 1);
+  });
+  for (let lon = -150; lon <= 180; lon += 30) {
+    for (let lat = -60; lat <= 60; lat += 15) addLabel(formatLatLabel(lat), lat, lon, -1);
+  }
+  return group;
+}
+
+// 각도 표기의 투명도: 도면 선과 함께 떠오르고, 뒤쪽 반구나 가장자리 가까이(비스듬히 눌려 보이는 곳)에서는
+// 사라지며, 입히기 경계(북동→남서)가 지나가면 걷힌다 — 지구본 셰이더의 uReveal 마스크와 같은 계산.
+const labelAxis = new THREE.Vector3();
+const labelCenter = new THREE.Vector3();
+const labelToCam = new THREE.Vector3();
+const labelFront = new THREE.Vector3();
+const labelNorthEast = new THREE.Vector3();
+const labelNormal = new THREE.Vector3();
+function updateGraticuleLabels(baseOpacity) {
+  if (!graticuleLabels || !graticuleLabels.visible) return;
+  const matrix = graticuleLabels.matrixWorld;
+  labelCenter.setFromMatrixPosition(matrix);
+  labelAxis.set(0, 1, 0).transformDirection(matrix);
+  labelToCam.copy(camera.position).sub(labelCenter).normalize();
+  labelFront.copy(labelToCam).addScaledVector(labelAxis, -labelToCam.dot(labelAxis)).normalize();
+  labelNorthEast.crossVectors(labelAxis, labelFront).add(labelAxis).normalize(); // 동쪽 + 북쪽
+  const revealFront = THREE.MathUtils.lerp(1, -1 - REVEAL_EDGE, globeReveal.value);
+
+  graticuleLabels.children.forEach((mesh) => {
+    labelNormal.copy(mesh.userData.normal).transformDirection(matrix);
+    const facing = THREE.MathUtils.smoothstep(labelNormal.dot(labelToCam), 0.35, 0.6);
+    const coated = THREE.MathUtils.smoothstep(labelNormal.dot(labelNorthEast), revealFront, revealFront + REVEAL_EDGE);
+    mesh.material.opacity = baseOpacity * 0.85 * facing * (1 - coated);
+  });
+}
+
+// 인트로 갱신 루프: 다 그려진 흰 점선 도면(과 각도 표기)이 떠오르고(GRID_MIN_SOLO_MS 동안 도면만), 그 위로
+// 위성 텍스처가 북동쪽부터 남서쪽으로 대각선을 그리며 차례로 입혀진다(TEXTURE_FADE_MS)
 function updateGraticuleAndTextures(now) {
   if (!graticuleMesh || !globeMaterial) return;
 
   if (shouldSkipIntro() || (!flagsActive && currentTextureFade >= 1.0)) {
-    // 홈 복귀/재방문: 위도와 경도 애니메이션을 완전히 빼고 바로 월드맵 이미지 즉시 표시
-    graticuleMesh.material.uniforms.uProgress.value = 1.0;
+    // 홈 복귀/재방문: 도면 단계를 완전히 빼고 바로 월드맵 이미지 즉시 표시
     graticuleMesh.material.uniforms.uOpacity.value = 0.0;
     if (graticuleMesh.visible) graticuleMesh.visible = false;
-    if (coreSphereMesh && coreSphereMesh.visible) coreSphereMesh.visible = false;
+    if (graticuleLabels && graticuleLabels.visible) graticuleLabels.visible = false;
+    if (container && !container.classList.contains('is-textured')) container.classList.add('is-textured');
     if (dayTextureLoaded) {
-      globeMaterial.opacity = 1.0;
+      globeReveal.value = 1.0;
       currentTextureFade = 1.0;
     }
     return;
   }
 
   const reducedMotion = prefersReducedMotion();
-
-  // 1. 위경도 선 드로잉 형성 (uProgress: 0 -> 1)
-  if (reducedMotion) {
-    graticuleMesh.material.uniforms.uProgress.value = 1.0;
-  } else {
-    const formT = Math.min(1.0, (now - gridFormationStart) / GRID_FORMATION_MS);
-    graticuleMesh.material.uniforms.uProgress.value = easeOutCubic(formT);
-  }
-
-  // 2. 텍스처 로드 완료 후 페이드인
-  const formElapsed = now - gridFormationStart;
+  const introElapsed = now - gridFormationStart;
   const isLanded = !flagsActive || currentPlace !== null || (camera && camera.position.z < CAMERA_Z_DEFAULT - 0.2);
 
-  if (dayTextureLoaded && (formElapsed >= GRID_MIN_SOLO_MS || reducedMotion)) {
+  if (dayTextureLoaded && (introElapsed >= GRID_MIN_SOLO_MS || reducedMotion)) {
     if (textureFadeStart === null) textureFadeStart = now;
     const fadeT = reducedMotion ? 1.0 : Math.min(1.0, (now - textureFadeStart) / TEXTURE_FADE_MS);
-    // 초반 dead-zone 없이 시작부터 부드럽게 살아나는 사인 곡선으로 국기와 동시 표현 극대화
+    // 초반 dead-zone 없이 시작부터 부드럽게 움직이고 끝에서 사뿐히 멈추는 사인 곡선
     const easedFade = reducedMotion ? 1.0 : (1 - Math.cos(fadeT * Math.PI)) / 2;
     currentTextureFade = easedFade;
 
-    // 지구본 텍스처 페이드인 (언어/국기 아이콘도 updateFlags에서 이 수치와 동기화되어 함께 페이드인)
-    globeMaterial.opacity = easedFade;
+    // 위성 텍스처를 북동쪽부터 입힌다 (국기 아이콘은 눈으로 보기에 다 입혀지는 순간부터 updateFlags에서 하나씩 나타난다)
+    globeReveal.value = easedFade;
 
-    // 텍스처가 나타나면 위경도 선은 초기 강조(0.75)에서 은은한 정밀 HUD(0.18)로 전환, 착지 시 0으로 페이드
-    const targetGridOpacity = isLanded ? 0.0 : THREE.MathUtils.lerp(0.75, 0.18, easedFade);
+    // 다 입혀지면 청색 도면 바탕을 걷고 입체 음영을 되살린다(CSS 1.4s). 도중에 걷으면 아직 입혀지지
+    // 않은 남서쪽이 도면 바탕 없이 비어 보이므로 끝난 뒤에 한다. 각도 표기도 이때는 모두 걷혀 있으므로 숨긴다.
+    if (fadeT >= 1.0 && container && !container.classList.contains('is-textured')) {
+      container.classList.add('is-textured');
+      if (graticuleLabels) graticuleLabels.visible = false;
+    }
+
+    // 입혀지는 동안 선은 그대로 둔다(입혀진 곳은 텍스처가 선을 덮는다). 다 입혀지면 은은한 정밀 HUD(0.18)로,
+    // 착지 시 0으로 페이드
+    const targetGridOpacity = isLanded ? 0.0 : (fadeT >= 1.0 ? 0.18 : GRATICULE_OPACITY);
     graticuleMesh.material.uniforms.uOpacity.value = THREE.MathUtils.lerp(
       graticuleMesh.material.uniforms.uOpacity.value,
       targetGridOpacity,
       0.1
     );
-
-    // 페이드 완료 후 차폐 다크 구체는 숨겨 렌더링 최적화
-    if (fadeT >= 1.0 && coreSphereMesh && coreSphereMesh.visible) {
-      coreSphereMesh.visible = false;
-    }
   } else {
-    // 텍스처 로딩 중: 뼈대 선만 보이고 국기/언어 아이콘은 숨김
+    // 도면 단계(텍스처 로딩 중이거나 GRID_MIN_SOLO_MS 전): 흰 점선만 떠오르고 국기/언어 아이콘은 숨김
     currentTextureFade = 0;
-    const targetGridOpacity = isLanded ? 0.0 : 0.75;
+    const targetGridOpacity = isLanded ? 0.0 : GRATICULE_OPACITY;
     graticuleMesh.material.uniforms.uOpacity.value = THREE.MathUtils.lerp(
       graticuleMesh.material.uniforms.uOpacity.value,
       targetGridOpacity,
       0.1
     );
   }
+  updateGraticuleLabels(graticuleMesh.material.uniforms.uOpacity.value);
 }
 
 function onResize() {
