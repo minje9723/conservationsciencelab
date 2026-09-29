@@ -32,7 +32,7 @@ const HERO_GLOBE_PLACES = {
 };
 
 // 국기 없이 언어만 정해졌을 때(상단 언어 드롭다운 등) 착지할 기본 장소
-const DEFAULT_PLACE_BY_LANG = { ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'sa' };
+const DEFAULT_PLACE_BY_LANG = { ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'eg' };
 
 const EARTH_AXIAL_TILT_DEG = 23.4; // 실제 지구 자전축 기울기
 const CAMERA_FOV_DEG = 32;
@@ -45,6 +45,17 @@ const CAMERA_Z_DEFAULT = 3.55;
 // 계산식: d = 1 + lonWidthDeg * (π/180) / (0.8 * 2 * tan(FOV/2))
 //   (나라 경도 폭이 프레임의 약 80%를 채우도록 하는 카메라 거리, 최소 1.75로 clamp)
 const TRAVEL_MS = 1600;      // 이동(자전축 회전) 소요 시간
+
+// 다른 배너/메뉴에 있다가 상단바 홈버튼으로 돌아오거나, 뒤로가기로 홈에 복귀했을 때
+// 위도·경도 인트로 애니메이션을 건너뛰고 바로 월드맵 이미지를 띄워야 하는지 판별
+function shouldSkipIntro() {
+  const isLanded = document.documentElement.classList.contains('hero-landed');
+  let introDone = false;
+  try {
+    introDone = sessionStorage.getItem('hero-intro-done') === '1';
+  } catch (e) {}
+  return isLanded || introDone;
+}
 const ZOOM_MS = 900;         // 확대 소요 시간
 const IDLE_SPIN_PER_MS = 0.00007; // 아무 언어도 선택되지 않은 초기 상태의 유휴 자전 속도(rad/ms). 완전히 한 바퀴 도는 데 약 90초
 const RESUME_SPIN_AFTER_LANDING_MS = 2500; // 착지한 나라에 이만큼(2.5초) 머문 뒤 다시 천천히 자전한다(모든 언어 공통)
@@ -83,7 +94,7 @@ let nightTextureLoaded = false;
 let textureFadeStart = null;
 let currentTextureFade = 0; // 0: 뼈대만 표시, 0 -> 1: 텍스처 및 언어/국기 아이콘 동시 페이드인
 let gridFormationStart = 0;
-const TEXTURE_FADE_MS = 1000;
+const TEXTURE_FADE_MS = 1400;
 const GRID_MIN_SOLO_MS = 900;
 const GRID_FORMATION_MS = 1400;
 let container = null;
@@ -313,7 +324,10 @@ function init() {
   } catch (error) {
     gl = null;
   }
-  if (!gl) return; // WebGL 미지원: 기존 평면 폴백을 그대로 둔다
+  if (!gl) {
+    document.documentElement.classList.remove('has-webgl');
+    return; // WebGL 미지원: 기존 평면 폴백을 그대로 둔다
+  }
 
   const size = container.clientWidth || 640;
 
@@ -341,11 +355,29 @@ function init() {
   spinGroup = new THREE.Group();
   framingGroup.add(spinGroup);
 
+  const skipIntro = shouldSkipIntro();
+  if (skipIntro) {
+    flagsActive = false;
+    currentTextureFade = 1.0;
+    textureFadeStart = performance.now();
+    idleSpin = true;
+    spinResumed = true;
+    spinRampStart = null;
+    landedDragEnabled = true;
+    camera.position.z = CAMERA_Z_DEFAULT;
+  }
+
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   const loader = new THREE.TextureLoader();
   const dayTexture = loader.load(
     'assets/earth-texture.jpg',
-    () => { dayTextureLoaded = true; },
+    () => {
+      dayTextureLoaded = true;
+      if (shouldSkipIntro() && globeMaterial) {
+        globeMaterial.opacity = 1.0;
+        currentTextureFade = 1.0;
+      }
+    },
     undefined,
     (error) => console.warn('[hero-globe-3d] 지구(주간) 텍스처 로드 실패, 평면 폴백을 유지합니다', error)
   );
@@ -366,22 +398,28 @@ function init() {
   const coreSphereGeo = new THREE.SphereGeometry(0.997, 48, 48);
   const coreSphereMat = new THREE.MeshBasicMaterial({ color: 0x050e19 });
   coreSphereMesh = new THREE.Mesh(coreSphereGeo, coreSphereMat);
-  spinGroup.add(coreSphereMesh);
+  if (!skipIntro) {
+    spinGroup.add(coreSphereMesh);
+  }
 
   // 초기 로딩 딜레이 동안 지구본의 뼈대를 형성하는 위도·경도 격자(Graticule)
   graticuleMesh = createGraticuleMesh();
-  spinGroup.add(graticuleMesh);
-  gridFormationStart = performance.now();
+  if (!skipIntro) {
+    spinGroup.add(graticuleMesh);
+    gridFormationStart = performance.now();
+  } else {
+    graticuleMesh.visible = false;
+    graticuleMesh.material.uniforms.uProgress.value = 1.0;
+    graticuleMesh.material.uniforms.uOpacity.value = 0.0;
+  }
 
   // 낮/밤 텍스처를 실시간 태양 방향(worldNormal·sunDirection)에 따라 섞는 커스텀
   // 셰이더. MeshBasicMaterial(무광원)을 베이스로 onBeforeCompile로 map_fragment
-  // 단계만 가로채, 기존 색공간/톤매핑 파이프라인은 그대로 유지한다(애플 지구
-  // 배경화면처럼 야간 반구에는 도시 불빛 텍스처가, 주간 반구에는 실제 위성사진이
-  // 표시되고 그 사이가 부드럽게 전환된다).
+  // 단계만 가로채, 기존 색공간/톤매핑 파이프라인은 그대로 유지한다.
   globeMaterial = new THREE.MeshBasicMaterial({
     map: dayTexture,
     transparent: true,
-    opacity: 0,
+    opacity: skipIntro ? 1.0 : 0, // 홈 복귀/재방문 시 위도경도 애니메이션 없이 즉시 100% 월드맵 표시
     depthWrite: true,
     depthTest: true
   });
@@ -449,9 +487,9 @@ function init() {
   requestAnimationFrame(animate);
 
   if (pendingMove) {
-    const { lang, place } = pendingMove;
+    const { lang, place, userSelected } = pendingMove;
     pendingMove = null;
-    moveToLanguage(lang, place);
+    moveToLanguage(lang, place, userSelected);
   }
 }
 
@@ -471,6 +509,15 @@ function setCapitalMarkerScale(scale) {
 function setupFlags() {
   flagsLayer = document.querySelector('.hero-globe-flags');
   if (!flagsLayer) return;
+
+  if (shouldSkipIntro()) {
+    flagsActive = false;
+    flagsLayer.style.display = 'none';
+    flagsLayer.style.opacity = '0';
+    flagsLayer.style.pointerEvents = 'none';
+    return;
+  }
+
   // 초기 위도·경도 뼈대 형성 중에는 국기/언어 아이콘을 숨겨두고, 텍스처와 함께 동경 국가부터 순차 페이드인
   flagsLayer.style.opacity = '0';
   flagsLayer.style.pointerEvents = 'none';
@@ -515,7 +562,7 @@ function updateFlags() {
   const reducedMotion = prefersReducedMotion();
 
   if (flagsLayer) {
-    flagsLayer.style.opacity = hasFadeStarted ? '1' : '0';
+    flagsLayer.style.opacity = hasFadeStarted ? flagsFade.toFixed(3) : '0';
     flagsLayer.style.pointerEvents = flagsFade > 0.1 ? 'auto' : 'none';
   }
 
@@ -527,8 +574,9 @@ function updateFlags() {
     return;
   }
 
-  const STAGGER_DELAY_MS = 85;   // 각 국가별 등장 간격 (동경부터 차례로)
-  const APPEAR_DURATION_MS = 380; // 각 핀이 부드럽게 팝업되는 시간
+  const INITIAL_FLAG_DELAY_MS = 150; // 월드맵 이미지가 페이드인되기 시작하면서 국기들과 함께 호흡을 맞추는 초기 딜레이
+  const STAGGER_DELAY_MS = 280;      // 각 국가별 등장 간격 (기존 180ms -> 280ms로 순차적 등장 딜레이를 더 여유롭게 부여)
+  const APPEAR_DURATION_MS = 600;    // 각 핀이 부드럽게 팝업되는 시간
 
   camera.updateMatrixWorld();
   for (const { el, local, eastRank } of flagEntries) {
@@ -548,7 +596,7 @@ function updateFlags() {
     let itemPop = 1.0;
 
     if (!reducedMotion) {
-      const itemStart = (eastRank ?? 0) * STAGGER_DELAY_MS;
+      const itemStart = INITIAL_FLAG_DELAY_MS + (eastRank ?? 0) * STAGGER_DELAY_MS;
       const itemElapsed = elapsedSinceFade - itemStart;
       if (itemElapsed <= 0) {
         itemAlpha = 0;
@@ -1317,6 +1365,19 @@ function createGraticuleMesh() {
 function updateGraticuleAndTextures(now) {
   if (!graticuleMesh || !globeMaterial) return;
 
+  if (shouldSkipIntro() || (!flagsActive && currentTextureFade >= 1.0)) {
+    // 홈 복귀/재방문: 위도와 경도 애니메이션을 완전히 빼고 바로 월드맵 이미지 즉시 표시
+    graticuleMesh.material.uniforms.uProgress.value = 1.0;
+    graticuleMesh.material.uniforms.uOpacity.value = 0.0;
+    if (graticuleMesh.visible) graticuleMesh.visible = false;
+    if (coreSphereMesh && coreSphereMesh.visible) coreSphereMesh.visible = false;
+    if (dayTextureLoaded) {
+      globeMaterial.opacity = 1.0;
+      currentTextureFade = 1.0;
+    }
+    return;
+  }
+
   const reducedMotion = prefersReducedMotion();
 
   // 1. 위경도 선 드로잉 형성 (uProgress: 0 -> 1)
@@ -1334,7 +1395,8 @@ function updateGraticuleAndTextures(now) {
   if (dayTextureLoaded && (formElapsed >= GRID_MIN_SOLO_MS || reducedMotion)) {
     if (textureFadeStart === null) textureFadeStart = now;
     const fadeT = reducedMotion ? 1.0 : Math.min(1.0, (now - textureFadeStart) / TEXTURE_FADE_MS);
-    const easedFade = easeInOutCubic(fadeT);
+    // 초반 dead-zone 없이 시작부터 부드럽게 살아나는 사인 곡선으로 국기와 동시 표현 극대화
+    const easedFade = reducedMotion ? 1.0 : (1 - Math.cos(fadeT * Math.PI)) / 2;
     currentTextureFade = easedFade;
 
     // 지구본 텍스처 페이드인 (언어/국기 아이콘도 updateFlags에서 이 수치와 동기화되어 함께 페이드인)
@@ -1405,9 +1467,9 @@ function animate(now) {
   updateCardOrbit(delta);
   scene.updateMatrixWorld(); // 드래그·관성으로 바뀐 회전까지 반영한 뒤 태양 방향·국기 위치를 계산
   updateSunLight(now);
-  updateFlags();
+  updateGraticuleAndTextures(now); // 텍스처 페이드인 수치를 먼저 갱신
+  updateFlags();                   // 갱신된 수치를 기반으로 국기 레이어 동기화
   updateMoon(now, delta);
-  updateGraticuleAndTextures(now);
   if (capitalMarkerRing && !prefersReducedMotion()) {
     const pulse = 1 + 0.35 * (0.5 + 0.5 * Math.sin(now * 0.0035));
     capitalMarkerRing.scale.setScalar(pulse);
@@ -1418,14 +1480,39 @@ function animate(now) {
 
 // lang: 선택된 언어, place: 착지할 장소 키(국기로 골랐을 때). place가 없으면 그 언어의
 // 기본 장소로 간다.
-function moveToLanguage(lang, place) {
+function moveToLanguage(lang, place, userSelected = true) {
   if (!ready) {
-    pendingMove = { lang, place };
+    pendingMove = { lang, place, userSelected };
     return;
   }
-  const placeKey = HERO_GLOBE_PLACES[place] ? place : (DEFAULT_PLACE_BY_LANG[lang] || 'kr');
+  const placeKey = HERO_GLOBE_PLACES[place] ? place : (DEFAULT_PLACE_BY_LANG[lang] || 'eg');
   const target = HERO_GLOBE_PLACES[placeKey];
   const isKorea = placeKey === 'kr';
+
+  // 뒤로가기나 상단바의 홈버튼으로 돌아올 땐(!userSelected && shouldSkipIntro()):
+  // 착지 모션(줌인·회전)을 건너뛰고, 바로 기본 거리에서 여유롭게 자전하고 있는 시점으로 표시
+  if (!userSelected && shouldSkipIntro()) {
+    currentPlace = placeKey;
+    flagsActive = false;
+    idleSpin = true;
+    spinResumed = true;
+    spinRampStart = null;
+    window.clearTimeout(resumeSpinTimer);
+    landedDragEnabled = true;
+    cardGrab = null;
+    dragState = null;
+    pinchState = null;
+    activePointers.clear();
+    stopFling();
+    shrinkFrameBack();
+    camera.position.z = CAMERA_Z_DEFAULT;
+    setCapitalMarkerScale(1);
+    if (capitalMarker) capitalMarker.visible = false;
+    hideKoreaVideo();
+    announceLanded(lang);
+    return;
+  }
+
   if (currentPlace === placeKey && !spinResumed) {
     // 그 나라로 이동 중이거나 착지해 머무는 중에 같은 장소를 다시 고른 경우: 이동할 필요는
     // 없고, 한국이면 영상만 (혹시 멈춰 있었다면) 다시 보여준다. (착지 후 다시 자전하기

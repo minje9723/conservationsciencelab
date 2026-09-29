@@ -98,11 +98,15 @@
   }
 }
 
-/* hero-globe-3d.js가 WebGL 렌더링에 성공하면 이 클래스를 붙이고 캔버스를
-   추가한다. 이때는 평면(background-position) 폴백 레이어를 숨기고, 실제
-   3D 구체 위에 ::before(주야간/구름)·::after(대기광) 오버레이만 장식으로
-   남긴다. WebGL이 없거나 스크립트가 실패하면 이 클래스가 붙지 않으므로
-   기존 평면 애니메이션이 그대로 동작한다. */
+/* WebGL 환경에서는 hero-globe-3d.js가 초기화되기 전에 평면(2D) 폴백 레이어와
+   조명, 핀이 화면에 번쩍 노출되었다가 사라지는 깜빡임(FOUC)을 사전에 차단한다.
+   구체 바탕색을 3D 다크 코어 구체(#050e19)와 일치시켜 초기 진입 시 일관된 비주얼을 제공한다. */
+html.has-webgl .hero-globe {
+  background-color: #050e19;
+}
+
+html.has-webgl .hero-globe-surface,
+html.has-webgl .hero-globe-pin,
 .hero-globe.hero-globe-3d-active .hero-globe-surface {
   display: none;
 }
@@ -222,7 +226,9 @@
 }
 
 /* 3D 지구본은 셰이더가 실제 태양 위치로 픽셀마다 주야간을 계산하므로, 평면 폴백용
-   근사 명암 막과 흰 구름 얼룩을 겹치면 표면이 뿌옇게 흐려질 뿐이다 */
+   근사 명암 막과 흰 구름 얼룩을 겹치면 표면이 뿌옇게 흐려질 뿐이다.
+   WebGL 환경에서는 초기 진입 시에도 평면용 막이 번쩍이지 않도록 미리 숨긴다. */
+html.has-webgl .hero-globe::before,
 .hero-globe.hero-globe-3d-active::before {
   display: none;
 }
@@ -469,6 +475,22 @@ html.hero-landed .hero-side-panel {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* 3D 지구본 초기 진입 시 위도경도 라인 형성 및 텍스처 로딩 전까지 국기 아이콘 레이어를 숨겨
+   첫 페인트 시 국기가 번쩍 튀어나왔다 사라지는 깜빡임 증상을 방지한다.
+   hero-globe-3d.js에서 3D 투영 준비가 끝나면 .is-projected가 부여되고,
+   updateFlags()에서 위도경도 라인이 형성된 후 동경 순으로 부드럽게 팝업 등장한다 */
+html.has-webgl .hero-globe-flags:not(.is-projected) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+
+html.has-webgl .hero-globe-flags:not(.is-projected) .hero-globe-flag {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .hero-globe-flags img {
   -webkit-user-drag: none;
   pointer-events: none; /* 누름·드래그는 이미지가 아니라 국기 버튼이 받는다 */
@@ -478,6 +500,7 @@ html.hero-landed .hero-side-panel {
 .hero-globe-flags.is-projected {
   cursor: grab;
   touch-action: none; /* 언어 선택 전에는 페이지 스크롤이 잠겨 있으므로 가로·세로 드래그 모두 지구본 회전에 쓴다 */
+  transition: none;   /* 3D 투영 중에는 JS가 매 프레임 월드맵 텍스처와 완벽히 동기화하여 투명도를 제어한다 */
 }
 
 .hero-globe-flags.is-dragging {
@@ -801,6 +824,15 @@ html.hero-landed .hero-globe-card-ring.is-draggable.is-dragging {
     order: -1;
     padding-top: calc(var(--hero-stage-pad) + var(--hero-globe-size) + 1rem);
   }
+
+  /* 세로로 쌓이는 화면(가로 900px 부근 등): 포디움 오버뷰가 식단 오버뷰보다 먼저 오도록 배치 */
+  .research-league-overview {
+    order: 1;
+  }
+
+  .daily-menu-overview {
+    order: 2;
+  }
 }
 
 @media (min-width: 1000px) and (max-width: 1400px) and (orientation: landscape) {
@@ -810,10 +842,18 @@ html.hero-landed .hero-globe-card-ring.is-draggable.is-dragging {
     justify-content: center;
   }
 
+  .daily-menu-overview {
+    order: 1;
+  }
+
   .hero-main {
     order: 2;
     padding-top: 0;
     max-width: calc(var(--hero-globe-size) * 0.9);
+  }
+
+  .research-league-overview {
+    order: 3;
   }
 
   .hero-main .hero-title {

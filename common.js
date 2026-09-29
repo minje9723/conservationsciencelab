@@ -340,6 +340,13 @@ function initCommon() {
         e.preventDefault();
         const targetId = href.substring(1);
         smoothScrollToElement(targetId);
+      } else if (href === 'index.html' || href === './index.html' || href === '/') {
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        if (currentPage === 'index.html' || currentPage === '') {
+          // 이미 홈 페이지의 다른 섹션/배너에 있는 상태에서 홈 버튼을 누르면 상단 홈 배너로 부드럽게 스크롤
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       }
       // For other links, let default behavior handle it
     });

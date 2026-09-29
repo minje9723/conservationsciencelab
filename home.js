@@ -255,7 +255,7 @@ const HERO_GLOBE_PLACE_POSITIONS = {
 
 // 장소별 언어, 그리고 국기 없이 언어만 정해졌을 때(상단 언어 드롭다운 등) 갈 기본 장소
 const HERO_GLOBE_PLACE_LANG = { kr: 'ko', us: 'en', gb: 'en', jp: 'ja', uz: 'uz', fr: 'fr', sa: 'ar', eg: 'ar' };
-const HERO_GLOBE_DEFAULT_PLACE = { ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'sa' };
+const HERO_GLOBE_DEFAULT_PLACE = { ko: 'kr', en: 'us', ja: 'jp', uz: 'uz', fr: 'fr', ar: 'eg' };
 
 // 장소별 수도 좌표(위도, 경도) — hero-globe-3d.js의 HERO_GLOBE_PLACES와
 // 같은 나라를 가리킨다. renderHeroGlobeSky()가 "그 나라가 지금 실제로 낮인지 밤인지"를
@@ -412,7 +412,7 @@ function moveHeroGlobeToLanguage(lang, userSelected = false) {
   // window.HeroGlobe3D 자체가 없으므로 아래 평면 폴백만 동작한다)
   const place = resolveHeroGlobePlace(lang);
   if (window.HeroGlobe3D) {
-    window.HeroGlobe3D.moveToLanguage(lang, place);
+    window.HeroGlobe3D.moveToLanguage(lang, place, userSelected);
   }
 
   const surface = document.querySelector('.hero-globe-surface');
