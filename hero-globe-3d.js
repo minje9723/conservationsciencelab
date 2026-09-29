@@ -94,6 +94,7 @@ const NIGHT_TEXTURE_URL = 'assets/earth-lights.jpg';
 const NIGHT_TEXTURE_HD_URL = 'assets/earth-lights-8k.jpg';
 const HD_TEXTURE_SIZE = 8192;
 const HD_TEXTURE_MIN_MEMORY_GB = 4; // navigator.deviceMemory가 이보다 작은 기기는 저해상도판 유지
+const HD_SWAP_GAP_MS = 800;         // 두 고해상도 텍스처의 GPU 업로드 끊김이 겹치지 않도록 두는 간격
 const HERO_GLOBE_MARKER_COLOR = 0x39ff14; // 형광 녹색(neon green)
 const HERO_GLOBE_MARKER_OPACITY = 0.7; // 핀포인트(코어 점) 투명도
 const MARKER_LANDED_SCALE = 0.6; // 착지(확대) 시 마커가 작아지는 배율 — 카메라가 가까워져 원근감으로도 커 보이므로, 마커 자체는 반비례로 줄여 균형을 맞춘다
@@ -115,6 +116,9 @@ let dayTextureLoaded = false;
 let nightTextureLoaded = false;
 let activeNightTexture = null;     // 셰이더의 nightMap이 가리키는 텍스처(고해상도판이 오면 교체된다)
 let hdTextureUpgradeStarted = false;
+const pendingHdSwaps = [];         // 디코딩까지 끝나 교체를 기다리는 고해상도 텍스처 { img, swapIn }
+let lastHdSwapAt = -Infinity;
+let travelling = false;            // 나라로 이동·착지·다시 줌아웃하는 애니메이션 중(이때는 텍스처 교체를 미룬다)
 let textureFadeStart = null;
 let currentTextureFade = 0; // 0: 뼈대만 표시, 0 -> 1: 텍스처 및 언어/국기 아이콘 동시 페이드인
 let gridFormationStart = 0;
@@ -336,42 +340,75 @@ function latLonToLocalPosition(lat, lon, radius) {
   );
 }
 
-// 주간·야간 텍스처가 모두 뜬 뒤(첫 화면 로딩과 대역폭을 다투지 않게) 브라우저가 한가할 때
-// 고해상도판을 받아 바꿔 끼우고(주간은 material.map, 야경은 셰이더의 nightMap) 저해상도판은
-// GPU 메모리에서 내린다. 8K 텍스처를 못 올리는 기기나 메모리가 적은 기기(deviceMemory는
-// 크롬 계열만 제공)는 그대로 둔다. 하나가 실패해도 다른 하나는 따로 교체된다.
+// 이미지를 받아 브라우저의 백그라운드 스레드에서 미리 디코딩(img.decode)해 둔다. 그냥 두면 큰
+// JPEG의 디코딩이 GPU에 올리는 순간 메인 스레드에서 한꺼번에 일어나 애니메이션이 끊긴다.
+function loadDecodedImage(url) {
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = url;
+  return img.decode().then(() => img);
+}
+
+// THREE.TextureLoader처럼 빈 텍스처를 먼저 돌려주고 이미지가 준비되면 채우되, 디코딩까지 끝난 뒤에 채운다
+function loadDecodedTexture(url, onLoad, onError) {
+  const texture = new THREE.Texture();
+  loadDecodedImage(url).then((img) => {
+    texture.image = img;
+    texture.needsUpdate = true;
+    if (onLoad) onLoad(texture);
+  }, onError);
+  return texture;
+}
+
+// 주간·야간 텍스처가 모두 뜬 뒤(첫 화면 로딩과 대역폭을 다투지 않게) 고해상도판을 받아 백그라운드에서
+// 디코딩해 두고, GPU 업로드와 교체(주간은 material.map, 야경은 셰이더의 nightMap)는 animate()가
+// 지구본이 한가할 때 하나씩 처리한다(processHdTextureSwap). 8K 텍스처를 못 올리는 기기나 메모리가
+// 적은 기기(deviceMemory는 크롬 계열만 제공)는 그대로 둔다. 하나가 실패해도 다른 하나는 따로 교체된다.
 function maybeUpgradeGlobeTextures() {
   if (hdTextureUpgradeStarted || !dayTextureLoaded || !nightTextureLoaded) return;
   hdTextureUpgradeStarted = true;
   if (renderer.capabilities.maxTextureSize < HD_TEXTURE_SIZE) return;
   if (navigator.deviceMemory && navigator.deviceMemory < HD_TEXTURE_MIN_MEMORY_GB) return;
 
-  const loadHd = (url, label, swapIn) => new THREE.TextureLoader().load(
-    url,
-    (hdTexture) => {
-      if ('colorSpace' in hdTexture) hdTexture.colorSpace = THREE.SRGBColorSpace;
-      hdTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-      swapIn(hdTexture);
-    },
-    undefined,
+  const queueHd = (url, label, swapIn) => loadDecodedImage(url).then(
+    (img) => { pendingHdSwaps.push({ img, swapIn }); },
     (error) => console.warn(`[hero-globe-3d] 고해상도 ${label} 텍스처 로드 실패, 저해상도판을 계속 씁니다`, error)
   );
-  const start = () => {
-    loadHd(NIGHT_TEXTURE_HD_URL, '야경', (hdTexture) => {
-      const previous = activeNightTexture;
-      activeNightTexture = hdTexture;
-      if (globeShaderUniforms) globeShaderUniforms.nightMap.value = hdTexture;
-      if (previous) previous.dispose();
-    });
-    loadHd(DAY_TEXTURE_HD_URL, '주간', (hdTexture) => {
-      if (!globeMaterial) return;
-      const previous = globeMaterial.map;
-      globeMaterial.map = hdTexture;
-      if (previous) previous.dispose();
-    });
-  };
-  if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout: 3000 });
-  else window.setTimeout(start, 1000);
+  queueHd(NIGHT_TEXTURE_HD_URL, '야경', (hdTexture) => {
+    const previous = activeNightTexture;
+    activeNightTexture = hdTexture;
+    if (globeShaderUniforms) globeShaderUniforms.nightMap.value = hdTexture;
+    if (previous) previous.dispose();
+  });
+  queueHd(DAY_TEXTURE_HD_URL, '주간', (hdTexture) => {
+    if (!globeMaterial) return;
+    const previous = globeMaterial.map;
+    globeMaterial.map = hdTexture;
+    if (previous) previous.dispose();
+  });
+}
+
+// 인트로(위경도선 형성·텍스처 페이드인), 나라 이동 애니메이션, 사용자의 드래그·확대·관성 회전 중에는
+// 8K 텍스처를 GPU에 올리는 순간의 끊김이 눈에 띄므로, 이런 움직임이 없을 때만 교체한다.
+function isGlobeCalm() {
+  if (currentTextureFade < 1 || travelling) return false;
+  if (dragState || pinchState || cardGrab || activePointers.size) return false;
+  if (flingVelocity.yaw || flingVelocity.pitch) return false;
+  return Math.abs(zoomTargetMag - zoomMag) < 1e-3;
+}
+
+// 한가한 프레임에 대기 중인 고해상도 텍스처 하나를 GPU에 올리고 바꿔 끼운다. 두 장이 한 번에
+// 올라가 끊김이 겹치지 않도록 HD_SWAP_GAP_MS만큼 간격을 둔다.
+function processHdTextureSwap(now) {
+  if (!pendingHdSwaps.length || now - lastHdSwapAt < HD_SWAP_GAP_MS || !isGlobeCalm()) return;
+  const { img, swapIn } = pendingHdSwaps.shift();
+  const texture = new THREE.Texture(img);
+  if ('colorSpace' in texture) texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  texture.needsUpdate = true;
+  renderer.initTexture(texture); // 렌더 도중이 아니라 지금 올려 둔다
+  swapIn(texture);
+  lastHdSwapAt = now;
 }
 
 function init() {
@@ -430,8 +467,8 @@ function init() {
   }
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
-  const loader = new THREE.TextureLoader();
-  const dayTexture = loader.load(
+  // 위경도선 형성 애니메이션 도중에 올라가는 텍스처라, 디코딩을 백그라운드에서 끝낸 뒤 넘겨받는다
+  const dayTexture = loadDecodedTexture(
     DAY_TEXTURE_URL,
     () => {
       dayTextureLoaded = true;
@@ -441,16 +478,14 @@ function init() {
       }
       maybeUpgradeGlobeTextures();
     },
-    undefined,
     (error) => console.warn('[hero-globe-3d] 지구(주간) 텍스처 로드 실패, 평면 폴백을 유지합니다', error)
   );
-  const nightTexture = loader.load(
+  const nightTexture = loadDecodedTexture(
     NIGHT_TEXTURE_URL,
     () => {
       nightTextureLoaded = true;
       maybeUpgradeGlobeTextures();
     },
-    undefined,
     (error) => console.warn('[hero-globe-3d] 지구(야간) 텍스처 로드 실패, 야경 표현 없이 진행합니다', error)
   );
   activeNightTexture = nightTexture;
@@ -1218,6 +1253,7 @@ function resumeSpinAfterLanding(token) {
     camera.position.z = zoomFrom + (CAMERA_Z_DEFAULT - zoomFrom) * eased;
     setCapitalMarkerScale(markerScaleFrom + (1 - markerScaleFrom) * eased);
     if (t < 1) requestAnimationFrame(step);
+    else travelling = false;
   }
   requestAnimationFrame(step);
 
@@ -1536,6 +1572,7 @@ function animate(now) {
   updateSunLight(now);
   updateGraticuleAndTextures(now); // 텍스처 페이드인 수치를 먼저 갱신
   updateFlags();                   // 갱신된 수치를 기반으로 국기 레이어 동기화
+  processHdTextureSwap(now);       // 한가한 프레임이면 고해상도 텍스처를 하나 교체
   updateMoon(now, delta);
   if (capitalMarkerRing && !prefersReducedMotion()) {
     const pulse = 1 + 0.35 * (0.5 + 0.5 * Math.sin(now * 0.0035));
@@ -1565,6 +1602,7 @@ function moveToLanguage(lang, place, userSelected = true) {
     spinResumed = true;
     spinRampStart = null;
     window.clearTimeout(resumeSpinTimer);
+    travelling = false; // 착지 모션 없이 곧바로 자전 상태로 두므로 이동 중 표시도 푼다
     landedDragEnabled = true;
     cardGrab = null;
     dragState = null;
@@ -1610,6 +1648,7 @@ function moveToLanguage(lang, place, userSelected = true) {
   placeCapitalMarker(target.lat, target.lon);
 
   const myToken = ++travelToken;
+  travelling = true; // 착지 후 다시 줌아웃(resumeSpinAfterLanding)이 끝날 때까지 텍스처 교체를 미룬다
 
   const yawFrom = THREE.MathUtils.radToDeg(spinGroup.rotation.y);
   const yawDelta = shortestDelta(yawFrom, lonToYawDeg(target.lon));
@@ -1626,6 +1665,7 @@ function moveToLanguage(lang, place, userSelected = true) {
     setCapitalMarkerScale(MARKER_LANDED_SCALE);
     if (isKorea) showKoreaVideo();
     announceLanded(lang);
+    travelling = false;
     return; // 움직임 줄이기 설정에서는 착지 후 다시 자전하지 않고 그대로 머문다
   }
 
