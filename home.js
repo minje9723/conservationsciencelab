@@ -533,6 +533,9 @@ function initHeroGlobeFlags() {
       if (!option) return;
       heroGlobeRequestedPlace = flag.dataset.place; // 같은 언어라도 누른 국기의 나라(예: 영국)로 착지하도록
       option.click();
+      // 언어 버튼의 국기도 누른 나라 것으로(영어는 드롭다운 기본이 미국 국기라 영국을 누르면 바꿔 준다)
+      const currentFlag = document.querySelector('.current-lang .lang-flag');
+      if (currentFlag) currentFlag.src = `assets/flags/${flag.dataset.place}.svg`;
     });
   });
 }

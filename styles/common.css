@@ -417,71 +417,30 @@ header.transparent-header::before {
   justify-self: end;
 }
 
+/* 언어 버튼: 상자·배경·그림자 없이 현재 언어의 국기 아이콘만 보여준다 */
 .lang-globe-btn {
-  /* Liquid Glass Base */
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 8px 32px 0 rgba(31, 38, 135, 0.15),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.5),
-    0 1px 0 0 rgba(255, 255, 255, 0.25);
-  
-  color: #2c3e50;
-  padding: 0.6rem 1.2rem;
+  background: none;
+  border: none;
+  padding: 0.25rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-  border-radius: 0;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: relative;
-  overflow: hidden;
+  border-radius: 50%;
 }
 
-.lang-globe-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.4), 
-    transparent
-  );
-  transition: left 0.5s ease;
+.lang-globe-btn:focus-visible {
+  outline: 2px solid #00D2BE;
+  outline-offset: 2px;
 }
 
-.lang-globe-btn:hover::before {
-  left: 100%;
+.lang-globe-btn .lang-flag {
+  width: 26px;
+  height: 26px;
+  transition: transform 0.3s ease;
 }
 
-.lang-globe-btn:hover {
-  background: rgba(0, 210, 190, 0.15);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border-color: rgba(0, 210, 190, 0.5);
-  box-shadow: 
-    0 12px 48px 0 rgba(0, 210, 190, 0.25),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.6),
-    0 2px 4px 0 rgba(0, 210, 190, 0.2);
-  color: #00D2BE;
-  transform: translateY(-2px) scale(1.02);
-}
-
-.lang-globe-btn svg {
-  width: 20px;
-  height: 20px;
-  transition: transform 0.4s ease;
-}
-
-.lang-globe-btn:hover svg {
-  transform: rotate(180deg);
+.lang-globe-btn:hover .lang-flag {
+  transform: scale(1.1);
 }
 
 .current-lang {
@@ -596,23 +555,27 @@ header.transparent-header::before {
 }
 
 .lang-code {
-  color: #5c6bc0;
-  font-size: 0.85rem;
-  padding: 0.2rem 0.5rem;
-  background: rgba(92, 107, 192, 0.1);
-  border-radius: 0;
-  transition: all 0.3s ease;
+  display: inline-flex;
+  flex-shrink: 0;
 }
 
-.lang-option:hover .lang-code {
-  background: rgba(0, 210, 190, 0.15);
-  color: #00D2BE;
+/* 지구본의 국기 배지와 같은 둥근 국기(드롭다운 항목과 언어 버튼에 공통) */
+.lang-flag {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(44, 62, 80, 0.18);
+  transition: box-shadow 0.3s ease;
 }
 
-.lang-option.active .lang-code {
-  background: rgba(0, 210, 190, 0.2);
-  color: #00D2BE;
-  font-weight: 600;
+.lang-option:hover .lang-flag {
+  box-shadow: 0 0 0 2px rgba(0, 210, 190, 0.45);
+}
+
+.lang-option.active .lang-flag {
+  box-shadow: 0 0 0 2px #00D2BE;
 }
 
 @keyframes fadeIn {
@@ -731,58 +694,26 @@ header.transparent-header::before {
   /* ?�어 ?�택 버튼 - ?�이콘만 ?�시 */
   .lang-globe-btn {
     padding: clamp(0.4rem, 1.5vw, 0.6rem);
-    padding-right: clamp(0.4rem, 1.5vw, 0.6rem);
-    padding-left: clamp(0.4rem, 1.5vw, 0.6rem);
-    min-width: auto;
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
     margin-right: 0;
   }
-  
+
   .lang-switcher {
     margin-right: 0;
   }
-  
-  .lang-globe-btn::before {
-    display: none;
-  }
-  
-  .lang-globe-btn:hover {
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: none;
-    box-shadow: none;
-    transform: none;
-    color: #4DD0E1;
-  }
-  
-  .lang-globe-btn:hover svg {
-    transform: none;
-  }
-  
-  .lang-globe-btn .lang-text,
-  .lang-globe-btn .current-lang {
-    display: none;
-  }
-  
-  .lang-globe-btn svg {
+
+  .lang-globe-btn .lang-flag {
     width: clamp(20px, 4.5vw, 24px);
     height: clamp(20px, 4.5vw, 24px);
-    margin: 0;
+  }
+
+  /* 터치 화면에서는 탭 후 hover 확대가 남지 않게 */
+  .lang-globe-btn:hover .lang-flag {
+    transform: none;
   }
   
   .lang-option {
     padding: 0.65rem 0.9rem;
     font-size: 0.9rem;
-  }
-
-  .lang-code {
-    font-size: 0.8rem;
   }
 }
 
@@ -821,45 +752,14 @@ header.transparent-header::before {
   
   .lang-globe-btn {
     padding: clamp(0.3rem, 1vw, 0.4rem);
-    padding-right: clamp(0.3rem, 1vw, 0.4rem);
-    padding-left: clamp(0.3rem, 1vw, 0.4rem);
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
     margin-right: 0;
   }
-  
+
   .lang-switcher {
     margin-right: 0;
   }
-  
-  .lang-globe-btn::before {
-    display: none;
-  }
-  
-  .lang-globe-btn:hover {
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: none;
-    box-shadow: none;
-    transform: none;
-    color: #4DD0E1;
-  }
-  
-  .lang-globe-btn:hover svg {
-    transform: none;
-  }
-  
-  .lang-globe-btn .lang-text,
-  .lang-globe-btn .current-lang {
-    display: none;
-  }
-  
-  .lang-globe-btn svg {
+
+  .lang-globe-btn .lang-flag {
     width: clamp(18px, 4vw, 20px);
     height: clamp(18px, 4vw, 20px);
   }

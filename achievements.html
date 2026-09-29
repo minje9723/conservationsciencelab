@@ -26,7 +26,7 @@
 
   <link rel="stylesheet" href="styles/variables.css">
   <link rel="stylesheet" href="styles/variables.css">
-  <link rel="stylesheet" href="styles/common.css?v=20260929-32">
+  <link rel="stylesheet" href="styles/common.css?v=20260929-35">
   <link rel="stylesheet" href="styles/achievements.css">
 </head>
 <body>
@@ -334,65 +334,60 @@
       </ul>
       <div class="lang-switcher">
         <button id="langToggle" class="lang-globe-btn" aria-label="Change Language">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-          </svg>
-          <span class="lang-text current-lang">ENG</span>
+          <span class="lang-text current-lang"><img class="lang-flag" src="assets/flags/us.svg" alt="" width="20" height="20"></span>
         </button>
         <div id="langDropdown" class="lang-dropdown">
           <button id="lang-en" class="lang-option active" data-lang="en" aria-label="Switch to English">
             <span class="lang-name">English</span>
-            <span class="lang-code">ENG</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/us.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-ko" class="lang-option" data-lang="ko" aria-label="한국어로 전환">
             <span class="lang-name">한국어</span>
-            <span class="lang-code">KOR</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/kr.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-ja" class="lang-option" data-lang="ja" aria-label="日本語に切り替え">
             <span class="lang-name">日本語</span>
-            <span class="lang-code">JPN</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/jp.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-uz" class="lang-option" data-lang="uz" aria-label="O'zbek tiliga o'tish">
             <span class="lang-name">O'zbek</span>
-            <span class="lang-code">UZB</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/uz.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-fr" class="lang-option" data-lang="fr" aria-label="Passer au français">
             <span class="lang-name">Français</span>
-            <span class="lang-code">FRA</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/fr.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-ar" class="lang-option" data-lang="ar" aria-label="التبديل إلى العربية">
             <span class="lang-name">العربية</span>
-            <span class="lang-code">ARA</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/eg.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-it" class="lang-option" data-lang="it" aria-label="Passa all'italiano">
             <span class="lang-name">Italiano</span>
-            <span class="lang-code">ITA</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/it.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-de" class="lang-option" data-lang="de" aria-label="Zu Deutsch wechseln">
             <span class="lang-name">Deutsch</span>
-            <span class="lang-code">DEU</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/de.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-es" class="lang-option" data-lang="es" aria-label="Cambiar a español">
             <span class="lang-name">Español</span>
-            <span class="lang-code">ESP</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/es.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-el" class="lang-option" data-lang="el" aria-label="Αλλαγή σε Ελληνικά">
             <span class="lang-name">Ελληνικά</span>
-            <span class="lang-code">ELL</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/gr.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-nl" class="lang-option" data-lang="nl" aria-label="Overschakelen naar Nederlands">
             <span class="lang-name">Nederlands</span>
-            <span class="lang-code">NLD</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/nl.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-sv" class="lang-option" data-lang="sv" aria-label="Växla till svenska">
             <span class="lang-name">Svenska</span>
-            <span class="lang-code">SWE</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/se.svg" alt="" width="20" height="20"></span>
           </button>
           <button id="lang-zh" class="lang-option" data-lang="zh" aria-label="切换至简体中文">
             <span class="lang-name">简体中文</span>
-            <span class="lang-code">CHN</span>
+            <span class="lang-code"><img class="lang-flag" src="assets/flags/cn.svg" alt="" width="20" height="20"></span>
           </button>
         </div>
       </div>
@@ -630,7 +625,7 @@
 
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="common.js?v=20260929-26"></script>
+  <script src="common.js?v=20260929-27"></script>
   <script src="achievements.js?v=20260929-24"></script>
 </body>
 </html>

@@ -36,6 +36,12 @@ async function detectCountryAndSetLanguage() {
   return 'ko';
 }
 
+// 드롭다운 항목의 국기를 언어 버튼(현재 언어 표시)에 그대로 옮긴다
+function showCurrentLangFlag(currentLangEl, optionBtn) {
+  const flag = optionBtn && optionBtn.querySelector('.lang-flag');
+  if (currentLangEl && flag) currentLangEl.replaceChildren(flag.cloneNode(true));
+}
+
 // Language switching functionality
 function setLang(lang, userSelected = false) {
   // Set document language
@@ -448,7 +454,7 @@ function initCommon() {
         const lang = btn.getAttribute('data-lang');
         document.querySelectorAll('.lang-option').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentLang.textContent = btn.querySelector('.lang-code').textContent;
+        showCurrentLangFlag(currentLang, btn);
         langDropdown.classList.remove('show');
         // 언어 변경 (사용자가 직접 선택)
         setLang(lang, true);
@@ -551,10 +557,7 @@ function initCommon() {
     const langBtn = document.getElementById(`lang-${savedLang}`);
     if (langBtn) {
       langBtn.classList.add('active');
-      const langCode = langBtn.querySelector('.lang-code');
-      if (langCode && currentLang) {
-        currentLang.textContent = langCode.textContent;
-      }
+      showCurrentLangFlag(currentLang, langBtn);
     }
     
     // 다른 버튼 비활성화
@@ -578,10 +581,7 @@ function initCommon() {
       const langBtn = document.getElementById(`lang-${finalLang}`);
       if (langBtn) {
         langBtn.classList.add('active');
-        const langCode = langBtn.querySelector('.lang-code');
-        if (langCode && currentLang) {
-          currentLang.textContent = langCode.textContent;
-        }
+        showCurrentLangFlag(currentLang, langBtn);
       }
       
       // 다른 버튼 비활성화
