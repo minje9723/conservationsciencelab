@@ -411,14 +411,26 @@ function initCommon() {
   // 뒤로 가기나 상단바 홈 버튼으로 돌아올 때는 이 표시가 없어 바로 착지 화면이 열린다(index.html <head>).
   const logo = document.querySelector('.logo');
   if (logo) {
+    logo.style.cursor = 'pointer';
     logo.addEventListener('click', (e) => {
       e.preventDefault();
       try {
         sessionStorage.setItem('hero-intro-requested', '1');
+        sessionStorage.removeItem('hero-intro-done');
+        sessionStorage.removeItem('hero-globe-place');
       } catch (error) {
         // 저장소를 쓸 수 없으면(사생활 보호 모드 등) 첫 방문처럼 언어 선택 화면이 뜬다
       }
-      window.location.href = 'index.html';
+      const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+      if (currentPage === 'index.html' || currentPage === '') {
+        // 이미 홈에 있는 경우 URL 해시 제거 후 새로고침하여 언어 선택 화면(지구본 + 국기)으로 리셋
+        if (window.location.hash) {
+          history.replaceState(null, '', window.location.pathname);
+        }
+        window.location.reload();
+      } else {
+        window.location.href = 'index.html';
+      }
     });
   }
 

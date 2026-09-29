@@ -167,6 +167,7 @@ header.transparent-header::before {
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
 }
 
 .logo img {
@@ -174,6 +175,7 @@ header.transparent-header::before {
   width: auto;
   display: block;
   transition: height 0.3s ease;
+  cursor: pointer;
 }
 
 .nav-links {

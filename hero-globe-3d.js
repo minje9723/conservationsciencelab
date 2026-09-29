@@ -55,12 +55,17 @@ const TRAVEL_MS = 1600;      // 이동(자전축 회전) 소요 시간
 // 다른 배너/메뉴에 있다가 상단바 홈버튼으로 돌아오거나, 뒤로가기로 홈에 복귀했을 때
 // 위도·경도 인트로 애니메이션을 건너뛰고 바로 월드맵 이미지를 띄워야 하는지 판별
 function shouldSkipIntro() {
+  try {
+    if (sessionStorage.getItem('hero-intro-requested') === '1') {
+      return false;
+    }
+  } catch (e) {}
   const isLanded = document.documentElement.classList.contains('hero-landed');
   let introDone = false;
   try {
     introDone = sessionStorage.getItem('hero-intro-done') === '1';
   } catch (e) {}
-  return isLanded || introDone;
+  return isLanded && introDone;
 }
 const ZOOM_MS = 900;         // 확대 소요 시간
 const IDLE_SPIN_PER_MS = 0.00007; // 아무 언어도 선택되지 않은 초기 상태의 유휴 자전 속도(rad/ms). 완전히 한 바퀴 도는 데 약 90초
@@ -1532,6 +1537,7 @@ function moveToLanguage(lang, place, userSelected = true) {
   spinRampStart = null;
   window.clearTimeout(resumeSpinTimer);
   flagsActive = false; // 언어가 정해졌으므로 국기 선택 화면(투영·드래그·줌·관성)은 더 이상 쓰지 않는다
+  try { sessionStorage.removeItem('hero-intro-requested'); } catch (e) {}
   landedDragEnabled = false; // 새 나라로 이동하는 동안에는 카드 링 드래그도 막는다(착지하면 다시 켠다)
   cardGrab = null;           // 잡고 있던 카드는 놓는다(돌던 카드는 궤도 흐름이 멈춘 만큼 서서히 선다)
   dragState = null;

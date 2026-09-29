@@ -370,6 +370,7 @@ function markHeroLanded() {
   // 이 탭에서는 언어를 골랐으니, 로고를 누르지 않는 한 다음부터는 바로 착지 화면으로 연다
   try {
     sessionStorage.setItem('hero-intro-done', '1');
+    sessionStorage.removeItem('hero-intro-requested');
     if (heroGlobeCurrentPlace) sessionStorage.setItem('hero-globe-place', heroGlobeCurrentPlace);
   } catch (error) {
     // 저장소를 쓸 수 없으면 홈에 올 때마다 언어 선택 화면이 뜬다
