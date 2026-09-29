@@ -1382,7 +1382,9 @@ function renderResearchLeague() {
         // 2022년까지의 이상옥 교수 실적은 공동저자로 반영하되, 순위표에서는
         // 교신저자 전환 이후(2023~)의 이상옥과 구분되도록 별도 표기로 보여준다.
         const isEarlySangOkLee = normalizeName(koName) === normalizeName('이상옥') && Number(achievement.year) <= 2022;
-        const displayName = isEarlySangOkLee ? '07 이상옥' : (displayNames[index] || koName);
+        const displayName = isEarlySangOkLee
+          ? (lang === 'ko' ? '07 이상옥' : (displayNames[index] || 'Sang-Ok Lee'))
+          : (displayNames[index] || koName);
         if (!people.has(koName)) people.set(koName, { count: 0, displayNameCounts: new Map(), records: [] });
         const person = people.get(koName);
         person.count += 1;
