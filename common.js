@@ -246,14 +246,14 @@ function updateNavTooltips(lang) {
       'members': 'Membri',
       'projects': 'Progetti',
       'achievements': 'Risultati',
-      'facilities': 'Strumenti e attrezzature'
+      'facilities': 'Strumentazione'
     },
     'de': {
       'home': 'Startseite',
       'members': 'Team',
       'projects': 'Projekte',
-      'achievements': 'Leistungen',
-      'facilities': 'Ausstattung'
+      'achievements': 'Ergebnisse',
+      'facilities': 'Labore & Geräte'
     },
     'es': {
       'home': 'Inicio',
@@ -280,7 +280,7 @@ function updateNavTooltips(lang) {
       'home': 'Hem',
       'members': 'Medlemmar',
       'projects': 'Projekt',
-      'achievements': 'Prestationer',
+      'achievements': 'Resultat',
       'facilities': 'Faciliteter'
     },
     'zh': {
