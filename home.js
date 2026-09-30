@@ -1266,8 +1266,8 @@ let researchPodiumAwardRecords = [];
 // 모듈 스코프로 공유한다.
 const RESEARCH_PODIUM_TYPE_LABELS = {
   publication: { en: 'Publications', ko: '논문 분야', ja: '論文分野', uz: 'Nashrlar', fr: 'Publications', ar: 'المنشورات', it: 'Pubblicazioni', de: 'Publikationen', es: 'Publicaciones', el: 'Δημοσιεύσεις', nl: 'Publicaties', sv: 'Publikationer', zh: '学术论文' },
-  conference: { en: 'Presentations', ko: '발표 분야', ja: '発表分野', uz: 'Taqdimotlar', fr: 'Présentations', ar: 'العروض', it: 'Contributi a convegni', de: 'Vorträge', es: 'Ponencias', el: 'Ανακοινώσεις σε συνέδρια', nl: 'Congresbijdragen', sv: 'Konferensbidrag', zh: '学术报告' },
-  award: { en: 'Awards', ko: '수상 분야', ja: '受賞分野', uz: 'Mukofotlar', fr: 'Distinctions', ar: 'الجوائز', it: 'Premi', de: 'Auszeichnungen', es: 'Premios', el: 'Βραβεία', nl: 'Onderscheidingen', sv: 'Utmärkelser', zh: '学术荣誉' }
+  conference: { en: 'Presentations', ko: '발표 분야', ja: '発表分野', uz: 'Taqdimotlar', fr: 'Présentations', ar: 'العروض', it: 'Contributi a convegni', de: 'Vorträge', es: 'Ponencias', el: 'Ανακοινώσεις σε συνέδρια', nl: 'Congresbijdragen', sv: 'Konferensbidrag', zh: '会议报告' },
+  award: { en: 'Awards', ko: '수상 분야', ja: '受賞分野', uz: 'Mukofotlar', fr: 'Distinctions', ar: 'الجوائز', it: 'Premi', de: 'Auszeichnungen', es: 'Premios', el: 'Βραβεία', nl: 'Onderscheidingen', sv: 'Utmärkelser', zh: '荣誉奖项' }
 };
 const RESEARCH_PODIUM_COUNT_LABELS = { en: 'records', ko: '건', ja: '件', uz: 'ta yozuv', fr: 'entrées', ar: 'سجلات', it: 'voci', de: 'Einträge', es: 'registros', el: 'εγγραφές', nl: 'vermeldingen', sv: 'poster', zh: '项' };
 
