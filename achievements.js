@@ -3997,7 +3997,7 @@ function renderAchievements() {
         <h3 class="notice-title lang lang-el" style="display:none;">Αιτήσεις διπλωμάτων ευρεσιτεχνίας σε εξέλιξη</h3>
         <h3 class="notice-title lang lang-nl" style="display:none;">Octrooiaanvragen in behandeling</h3>
         <h3 class="notice-title lang lang-sv" style="display:none;">Patentansökningar pågår</h3>
-        <h3 class="notice-title lang lang-zh" style="display:none;">发明专利申请进行中</h3>
+        <h3 class="notice-title lang lang-zh" style="display:none;">科研专利申请进行中</h3>
         <p class="notice-description lang lang-en">Patent applications for our innovative conservation technologies and methodologies are currently in progress.</p>
         <p class="notice-description lang lang-ko" style="display:none;">혁신적인 보존 기술 및 방법론에 대한 특허 출원이 진행 중입니다.</p>
         <p class="notice-description lang lang-ja" style="display:none;">革新的な保存技術と方法論に関する特許出願を進めています。</p>
