@@ -95,6 +95,9 @@ const NIGHT_TEXTURE_HD_URL = 'assets/earth-lights-8k.jpg';
 const HD_TEXTURE_SIZE = 8192;
 const HD_TEXTURE_MIN_MEMORY_GB = 4; // navigator.deviceMemory가 이보다 작은 기기는 저해상도판 유지
 const HD_SWAP_GAP_MS = 800;         // 두 고해상도 텍스처의 GPU 업로드 끊김이 겹치지 않도록 두는 간격
+// 8K 텍스처를 한 번에 GPU에 올리면 메인 스레드가 약 250ms 멈춘다. 이 높이의 가로 띠로 나눠 한 프레임에
+// 한 띠씩(띠 하나 약 4ms) 올리면 16프레임에 걸쳐 끊김 없이 올라간다.
+const HD_UPLOAD_STRIP_ROWS = 256;
 const HERO_GLOBE_MARKER_COLOR = 0x39ff14; // 형광 녹색(neon green)
 const HERO_GLOBE_MARKER_OPACITY = 0.7; // 핀포인트(코어 점) 투명도
 const MARKER_LANDED_SCALE = 0.6; // 착지(확대) 시 마커가 작아지는 배율 — 카메라가 가까워져 원근감으로도 커 보이므로, 마커 자체는 반비례로 줄여 균형을 맞춘다
@@ -116,15 +119,25 @@ let nightTextureLoaded = false;
 let activeNightTexture = null;     // 셰이더의 nightMap이 가리키는 텍스처(고해상도판이 오면 교체된다)
 let hdTextureUpgradeStarted = false;
 const pendingHdSwaps = [];         // 디코딩까지 끝나 교체를 기다리는 고해상도 텍스처 { img, swapIn }
+let hdUpload = null;               // 띠 단위로 올리는 중인 고해상도 텍스처 { img, swapIn, texture, row, strip, failed }
+const hdStripOffset = new THREE.Vector2();
 let lastHdSwapAt = -Infinity;
 let travelling = false;            // 나라로 이동·착지·다시 줌아웃하는 애니메이션 중(이때는 텍스처 교체를 미룬다)
 let textureFadeStart = null;
 let currentTextureFade = 0; // 0: 뼈대만 표시, 0 -> 1: 텍스처 및 언어/국기 아이콘 동시 페이드인
 let gridFormationStart = 0; // 인트로 시작 시각(흰 점선 도면이 나타난 때)
 const TEXTURE_FADE_MS = 2400;  // 위성 텍스처가 북동쪽부터 남서쪽으로 대각선을 따라 차례로 입혀지는 시간
-const GRID_MIN_SOLO_MS = 900;  // 텍스처를 입히기 전 도면(투명 지구본의 흰 점선 위경도선)만 보여 주는 최소 시간
+const GLOBE_SEED_MS = 250;     // 인트로: 지구본 중심에 빛점이 맺히는 시간
+const GLOBE_GROW_MS = 1100;    // 빛점에서 투명 지구본(위경도선)이 원래 크기로 펼쳐지는 시간
+const GLOBE_GROW_FROM = 0.02;  // 펼쳐지기 시작할 때의 크기(원래 지름의 2%)
+const GLOBE_GROW_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'; // 처음엔 빠르게 퍼지다 끝에서 사뿐히 멈춘다
+let globeGrownAt = 0;          // 지구본이 다 펼쳐지는 시각(performance.now). 달은 그 뒤에 나타난다
+// 텍스처를 입히기 전 도면(투명 지구본의 흰 점선 위경도선)만 보여 주는 최소 시간: 다 펼쳐지자마자 입힌다
+const GRID_MIN_SOLO_MS = GLOBE_SEED_MS + GLOBE_GROW_MS;
 const REVEAL_EDGE = 0.3;       // 입히기 경계(빛 띠)의 폭 — 북동 방향 투영값(-1~1) 기준, 약 17°
 const FLAGS_START_COAT = 0.98; // 텍스처가 이만큼(눈으로 보기에 다) 입혀지는 순간 국기가 나오기 시작한다
+const FLAG_STAGGER_MS = 160;   // 각 국가별 등장 간격(14개국이 약 2.7초 안에 모두 나타난다)
+const FLAG_APPEAR_MS = 600;    // 각 핀이 부드럽게 팝업되는 시간
 let flagsStartTime = null;     // 국기가 나오기 시작한 시각(performance.now)
 const globeReveal = { value: 0 }; // 텍스처가 입혀진 정도(0~1). 지구본 셰이더의 uReveal과 같은 객체라 값만 바꾸면 된다
 const GRATICULE_OPACITY = 0.9; // 인트로(블루프린트)에서 흰 점선 위경도선의 불투명도
@@ -396,6 +409,7 @@ function maybeUpgradeGlobeTextures() {
   hdTextureUpgradeStarted = true;
   if (renderer.capabilities.maxTextureSize < HD_TEXTURE_SIZE) return;
   if (navigator.deviceMemory && navigator.deviceMemory < HD_TEXTURE_MIN_MEMORY_GB) return;
+  detectFlippedBitmapSupport().then((supported) => { flippedBitmapSupported = supported; });
 
   const queueHd = (url, label, swapIn) => loadDecodedImage(url).then(
     (img) => { pendingHdSwaps.push({ img, swapIn }); },
@@ -415,27 +429,140 @@ function maybeUpgradeGlobeTextures() {
   });
 }
 
-// 인트로(위경도선 형성·텍스처 페이드인), 나라 이동 애니메이션, 사용자의 드래그·확대·관성 회전 중에는
-// 8K 텍스처를 GPU에 올리는 순간의 끊김이 눈에 띄므로, 이런 움직임이 없을 때만 교체한다.
-function isGlobeCalm() {
+// 인트로(위경도선 형성·텍스처 페이드인·국기 순차 등장), 나라 이동 애니메이션, 사용자의 드래그·확대·관성
+// 회전 중에는 텍스처를 올리는 부담이 눈에 띄므로, 이런 움직임이 없을 때만 올린다.
+function isGlobeCalm(now) {
   if (currentTextureFade < 1 || travelling) return false;
+  // 국기는 텍스처가 다 입혀진 뒤에도 약 2.7초 동안 하나씩 튀어나오므로, 마지막 국기가 다 나올 때까지 기다린다
+  if (flagsActive && flagEntries.length && (flagsStartTime === null
+    || now - flagsStartTime < (flagEntries.length - 1) * FLAG_STAGGER_MS + FLAG_APPEAR_MS)) return false;
   if (dragState || pinchState || cardGrab || activePointers.size) return false;
   if (flingVelocity.yaw || flingVelocity.pitch) return false;
   return Math.abs(zoomTargetMag - zoomMag) < 1e-3;
 }
 
-// 한가한 프레임에 대기 중인 고해상도 텍스처 하나를 GPU에 올리고 바꿔 끼운다. 두 장이 한 번에
-// 올라가 끊김이 겹치지 않도록 HD_SWAP_GAP_MS만큼 간격을 둔다.
+// 띠는 createImageBitmap이 메인 스레드 밖에서 잘라 위아래를 뒤집어 둔다(ImageBitmap은 WebGL의 FLIP_Y를
+// 무시하므로). 이 옵션을 무시하는 브라우저에서는 띠가 뒤섞여 보이므로, 1×2px 그림으로 먼저 확인해 두고
+// 지원하지 않으면 한 번에 올리는 방식을 쓴다.
+let flippedBitmapSupported = null;
+function detectFlippedBitmapSupport() {
+  if (typeof createImageBitmap !== 'function') return Promise.resolve(false);
+  const probe = document.createElement('canvas');
+  probe.width = 1;
+  probe.height = 2;
+  const probeCtx = probe.getContext('2d');
+  probeCtx.fillStyle = '#f00';
+  probeCtx.fillRect(0, 0, 1, 1);
+  probeCtx.fillStyle = '#00f';
+  probeCtx.fillRect(0, 1, 1, 1);
+  return createImageBitmap(probe, { imageOrientation: 'flipY' }).then((bitmap) => {
+    const check = document.createElement('canvas');
+    check.width = 1;
+    check.height = 2;
+    const checkCtx = check.getContext('2d');
+    checkCtx.drawImage(bitmap, 0, 0);
+    bitmap.close();
+    return checkCtx.getImageData(0, 0, 1, 1).data[2] > 128; // 뒤집혔으면 맨 윗줄이 파랑
+  }).catch(() => false);
+}
+
+// 한가한 프레임에 대기 중인 고해상도 텍스처를 가로 띠(HD_UPLOAD_STRIP_ROWS)로 나눠 한 프레임에 한 띠씩
+// GPU에 올리고, 다 올라가면 바꿔 끼운다. 저장 공간은 처음에 한 번만 잡고, 밉맵은 마지막 띠에서 한 번만 만든다.
+// 두 장이 연달아 올라가지 않도록 HD_SWAP_GAP_MS만큼 간격을 둔다.
 function processHdTextureSwap(now) {
-  if (!pendingHdSwaps.length || now - lastHdSwapAt < HD_SWAP_GAP_MS || !isGlobeCalm()) return;
+  if (!hdUpload && !pendingHdSwaps.length) return;
+  if (!isGlobeCalm(now)) return;
+  if (hdUpload) {
+    uploadNextHdStrip();
+    return;
+  }
+  if (now - lastHdSwapAt < HD_SWAP_GAP_MS || flippedBitmapSupported === null) return;
   const { img, swapIn } = pendingHdSwaps.shift();
+  if (!flippedBitmapSupported) {
+    swapInWholeHdTexture(img, swapIn);
+    return;
+  }
+  const texture = new THREE.DataTexture(null, img.naturalWidth, img.naturalHeight);
+  texture.source.dataReady = false; // 저장 공간만 잡아 두고 픽셀은 띠마다 채운다
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.flipY = false; // 띠를 만들 때 이미 뒤집었다
+  texture.unpackAlignment = 4;
+  texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  texture.generateMipmaps = true; // 할당할 때 밉맵 단계까지 자리를 잡도록 켰다가
+  texture.needsUpdate = true;
+  renderer.initTexture(texture);
+  texture.generateMipmaps = false; // 띠마다 밉맵을 다시 만들지 않도록 끈다(마지막 띠에서 다시 켠다)
+  hdUpload = { img, swapIn, texture, row: 0, strip: null, failed: false };
+  cropNextHdStrip(hdUpload);
+}
+
+function cropNextHdStrip(job) {
+  const rows = Math.min(HD_UPLOAD_STRIP_ROWS, job.img.naturalHeight - job.row);
+  createImageBitmap(job.img, 0, job.row, job.img.naturalWidth, rows, { imageOrientation: 'flipY', premultiplyAlpha: 'none' })
+    .then((bitmap) => { job.strip = bitmap; }, () => { job.failed = true; });
+}
+
+function uploadNextHdStrip() {
+  const job = hdUpload;
+  if (job.failed) {
+    // 띠를 만들지 못하면(메모리 부족 등) 한 번에 올리는 방식으로 되돌린다
+    job.texture.dispose();
+    hdUpload = null;
+    swapInWholeHdTexture(job.img, job.swapIn);
+    return;
+  }
+  if (!job.strip) return; // 다음 띠를 아직 자르는 중이면 다음 프레임에
+  const { img, texture, strip } = job;
+  const rows = strip.height;
+  const isLast = job.row + rows >= img.naturalHeight;
+  texture.generateMipmaps = isLast; // copyTextureToTexture는 generateMipmaps가 켜져 있을 때만 밉맵을 만든다
+  // 원본의 위쪽 띠일수록 텍스처(아래가 v=0)의 위쪽에 들어간다
+  renderer.copyTextureToTexture(new THREE.Texture(strip), texture, null, hdStripOffset.set(0, img.naturalHeight - job.row - rows));
+  strip.close();
+  job.strip = null;
+  job.row += rows;
+  if (isLast) {
+    hdUpload = null;
+    job.swapIn(texture);
+    lastHdSwapAt = performance.now();
+    return;
+  }
+  cropNextHdStrip(job);
+}
+
+function swapInWholeHdTexture(img, swapIn) {
   const texture = new THREE.Texture(img);
-  if ('colorSpace' in texture) texture.colorSpace = THREE.SRGBColorSpace;
+  texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
   texture.needsUpdate = true;
   renderer.initTexture(texture); // 렌더 도중이 아니라 지금 올려 둔다
   swapIn(texture);
-  lastHdSwapAt = now;
+  lastHdSwapAt = performance.now();
+}
+
+// 인트로: 지구본 중심에 빛점(.hero-globe-seed)이 맺혔다가, 그 점에서 투명 지구본(위경도선)이 원래 크기로
+// 펼쳐진다. CSS는 .is-grown이 붙기 전까지 지구본을 0 크기로 숨겨 두므로, 인트로가 아니어도 붙인다.
+function growGlobeFromSeed(playIntro) {
+  container.classList.add('is-grown');
+  if (!playIntro || prefersReducedMotion()) return;
+  const base = 'translate(-50%, -50%)';
+  container.animate(
+    [{ transform: `${base} scale(${GLOBE_GROW_FROM})` }, { transform: `${base} scale(1)` }],
+    { duration: GLOBE_GROW_MS, delay: GLOBE_SEED_MS, easing: GLOBE_GROW_EASING, fill: 'backwards' }
+  );
+  globeGrownAt = performance.now() + GLOBE_SEED_MS + GLOBE_GROW_MS;
+
+  const seed = document.querySelector('.hero-globe-seed');
+  if (!seed) return;
+  const seedTotal = GLOBE_SEED_MS + 450; // 지구본이 퍼지기 시작한 뒤 0.45초에 걸쳐 빛점이 번지며 사라진다
+  seed.animate([
+    { transform: `${base} scale(0)`, opacity: 0 },
+    { transform: `${base} scale(1.3)`, opacity: 1, offset: (GLOBE_SEED_MS * 0.7) / seedTotal },
+    { transform: `${base} scale(1)`, opacity: 1, offset: GLOBE_SEED_MS / seedTotal },
+    { transform: `${base} scale(2.4)`, opacity: 0 }
+  ], { duration: seedTotal, easing: 'ease-out' });
 }
 
 function init() {
@@ -524,13 +651,14 @@ function init() {
   nightTexture.anisotropy = maxAnisotropy;
 
   // 인트로 도면: 처음부터 다 그려진 흰 점선 위도·경도 격자(Graticule). 구 자체는 칠하지 않고
-  // (반투명 청색 도면 바탕은 CSS ::before), 위성 텍스처가 모두 입혀지면 .is-textured로 원래 음영을 되살린다.
+  // (투명한 구의 흰 윤곽선은 CSS ::before), 위성 텍스처가 모두 입혀지면 .is-textured로 원래 음영을 되살린다.
   if (skipIntro) {
     container.classList.add('is-textured');
     globeReveal.value = 1.0;
   }
   graticuleMesh = createGraticuleMesh();
   if (!skipIntro) {
+    graticuleMesh.material.uniforms.uOpacity.value = GRATICULE_OPACITY; // 페이드인 없이 첫 프레임부터 바로 보인다
     spinGroup.add(graticuleMesh);
     graticuleLabels = createGraticuleLabels();
     spinGroup.add(graticuleLabels);
@@ -538,6 +666,7 @@ function init() {
   } else {
     graticuleMesh.visible = false;
   }
+  growGlobeFromSeed(!skipIntro);
 
   // 낮/밤 텍스처를 실시간 태양 방향(worldNormal·sunDirection)에 따라 섞는 커스텀
   // 셰이더. MeshBasicMaterial(무광원)을 베이스로 onBeforeCompile로 map_fragment
@@ -722,9 +851,6 @@ function updateFlags() {
     return;
   }
 
-  const STAGGER_DELAY_MS = 160;   // 각 국가별 등장 간격(14개국이 약 2.7초 안에 모두 나타난다)
-  const APPEAR_DURATION_MS = 600; // 각 핀이 부드럽게 팝업되는 시간
-
   camera.updateMatrixWorld();
   if (!flagAppearOrderSet) setFlagAppearOrder();
   for (const { el, local, appearRank } of flagEntries) {
@@ -744,13 +870,13 @@ function updateFlags() {
     let itemPop = 1.0;
 
     if (!reducedMotion) {
-      const itemStart = (appearRank ?? 0) * STAGGER_DELAY_MS;
+      const itemStart = (appearRank ?? 0) * FLAG_STAGGER_MS;
       const itemElapsed = elapsedSinceFlagsStart - itemStart;
       if (itemElapsed <= 0) {
         itemAlpha = 0;
         itemPop = 0;
       } else {
-        const itemT = Math.min(1.0, itemElapsed / APPEAR_DURATION_MS);
+        const itemT = Math.min(1.0, itemElapsed / FLAG_APPEAR_MS);
         itemAlpha = easeOutCubic(itemT);
         itemPop = easeOutBack(itemT);
       }
@@ -1352,11 +1478,11 @@ function resizeMoon() {
   moonRenderer.setSize(size, size);
 }
 
-// 언어 선택 화면(국기 표시 중)이고 확대하지 않았을 때만 보인다. 언어를 고르거나 지구본을
+// 언어 선택 화면(국기 표시 중)이고 확대하지 않았을 때, 인트로에서 지구본이 다 펼쳐진 뒤에만 보인다. 언어를 고르거나 지구본을
 // 확대하면 서서히 사라지고, 완전히 사라진 뒤에는 그리지 않는다.
 function updateMoon(now, delta) {
   if (!moonRenderer) return;
-  const wantVisible = flagsActive && zoomMag < 1.03;
+  const wantVisible = flagsActive && zoomMag < 1.03 && now >= globeGrownAt;
   const step = Math.min(delta, 100) / MOON_FADE_MS;
   moonOpacity = THREE.MathUtils.clamp(moonOpacity + (wantVisible ? step : -step), 0, 1);
   if (moonOpacity === 0) {
@@ -1395,8 +1521,8 @@ function updateMoon(now, delta) {
 //   12개로 24개 경선을 모두 그린다(0°~345° 대원 24개를 그리면 같은 원이 두 번 겹쳐, 점선의 빈칸이 서로 메워져 실선처럼 보인다)
 // - 흰 점선. 적도·본초자오선은 도면의 중심선처럼 일점쇄선(긴 선–짧은 점)
 // - aDist(원을 따라 잰 호의 길이)로 점선 간격을 위도와 상관없이 일정하게 맞춘다
-// - 뒤쪽 반구의 선은 도면의 숨은선처럼 옅게 비친다(반투명 청색 바탕은 styles/hero-globe.css의 ::before)
-// - 인트로 처음부터 다 그려진 채로 나타나고(uOpacity 0 -> GRATICULE_OPACITY), 그 위로 위성 텍스처가 입혀진다
+// - 뒤쪽 반구의 선은 도면의 숨은선처럼 옅게 비친다(구는 투명하고, 흰 윤곽선은 styles/hero-globe.css의 ::before)
+// - 인트로 첫 프레임부터 다 그려진 채 GRATICULE_OPACITY로 바로 나타나고, 그 위로 위성 텍스처가 입혀진다
 function createGraticuleMesh() {
   const positions = [];
   const distList = [];
@@ -1474,7 +1600,7 @@ function createGraticuleMesh() {
     depthTest: true,
     depthWrite: false,
     uniforms: {
-      uOpacity: { value: 0.0 }, // updateGraticuleAndTextures()가 GRATICULE_OPACITY까지 부드럽게 올린다
+      uOpacity: { value: 0.0 }, // 인트로를 보여 줄 때는 생성 직후 GRATICULE_OPACITY로 바로 올린다
       uColor: { value: new THREE.Color(0xffffff) },
       uDashSize: { value: 0.05 } // 점선 한 주기(선+빈칸)의 길이 — 반지름 1 기준(지름 640px 지구본에서 약 16px)
     },
@@ -1659,8 +1785,8 @@ function updateGraticuleAndTextures(now) {
     // 위성 텍스처를 북동쪽부터 입힌다 (국기 아이콘은 눈으로 보기에 다 입혀지는 순간부터 updateFlags에서 하나씩 나타난다)
     globeReveal.value = easedFade;
 
-    // 다 입혀지면 청색 도면 바탕을 걷고 입체 음영을 되살린다(CSS 1.4s). 도중에 걷으면 아직 입혀지지
-    // 않은 남서쪽이 도면 바탕 없이 비어 보이므로 끝난 뒤에 한다. 각도 표기도 이때는 모두 걷혀 있으므로 숨긴다.
+    // 다 입혀지면 흰 윤곽선을 걷고 다크 바탕과 입체 음영을 되살린다(CSS 1.4s). 도중에 하면 아직 입혀지지
+    // 않은 투명한 남서쪽이 어둡게 칠해지므로 끝난 뒤에 한다. 각도 표기도 이때는 모두 걷혀 있으므로 숨긴다.
     if (fadeT >= 1.0 && container && !container.classList.contains('is-textured')) {
       container.classList.add('is-textured');
       if (graticuleLabels) graticuleLabels.visible = false;
