@@ -43,26 +43,10 @@
   z-index: 3;
 }
 
-/* 인트로: hero-globe-3d.js가 빛점에서 펼치기 시작할 때(.is-grown)까지 지구본을 0 크기로 숨겨 둔다.
+/* 인트로: hero-globe-3d.js가 점 크기에서 펼치기 시작할 때(.is-grown)까지 지구본을 0 크기로 숨겨 둔다.
    WebGL이 없으면 has-webgl이 빠지므로 평면 폴백은 원래 크기로 보인다. */
 html.has-webgl:not(.hero-landed) .hero-globe:not(.is-grown) {
   transform: translate(-50%, -50%) scale(0);
-}
-
-/* 인트로에서 지구본이 펼쳐지기 전 중심에 맺히는 빛점(애니메이션은 hero-globe-3d.js) */
-.hero-globe-seed {
-  position: absolute;
-  top: var(--hero-globe-top);
-  left: 50%;
-  z-index: 4;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.85), 0 0 30px 10px rgba(120, 200, 220, 0.5);
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0);
-  pointer-events: none;
 }
 
 .hero-globe-surface {

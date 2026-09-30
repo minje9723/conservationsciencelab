@@ -127,13 +127,12 @@ let textureFadeStart = null;
 let currentTextureFade = 0; // 0: 뼈대만 표시, 0 -> 1: 텍스처 및 언어/국기 아이콘 동시 페이드인
 let gridFormationStart = 0; // 인트로 시작 시각(흰 점선 도면이 나타난 때)
 const TEXTURE_FADE_MS = 2400;  // 위성 텍스처가 북동쪽부터 남서쪽으로 대각선을 따라 차례로 입혀지는 시간
-const GLOBE_SEED_MS = 250;     // 인트로: 지구본 중심에 빛점이 맺히는 시간
-const GLOBE_GROW_MS = 1100;    // 빛점에서 투명 지구본(위경도선)이 원래 크기로 펼쳐지는 시간
+const GLOBE_GROW_MS = 1100;    // 인트로: 투명 지구본(위경도선)이 점 크기에서 원래 크기로 펼쳐지는 시간
 const GLOBE_GROW_FROM = 0.02;  // 펼쳐지기 시작할 때의 크기(원래 지름의 2%)
 const GLOBE_GROW_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'; // 처음엔 빠르게 퍼지다 끝에서 사뿐히 멈춘다
 let globeGrownAt = 0;          // 지구본이 다 펼쳐지는 시각(performance.now). 달은 그 뒤에 나타난다
 // 텍스처를 입히기 전 도면(투명 지구본의 흰 점선 위경도선)만 보여 주는 최소 시간: 다 펼쳐지자마자 입힌다
-const GRID_MIN_SOLO_MS = GLOBE_SEED_MS + GLOBE_GROW_MS;
+const GRID_MIN_SOLO_MS = GLOBE_GROW_MS;
 const REVEAL_EDGE = 0.3;       // 입히기 경계(빛 띠)의 폭 — 북동 방향 투영값(-1~1) 기준, 약 17°
 const FLAGS_START_COAT = 0.98; // 텍스처가 이만큼(눈으로 보기에 다) 입혀지는 순간 국기가 나오기 시작한다
 const FLAG_STAGGER_MS = 160;   // 각 국가별 등장 간격(14개국이 약 2.7초 안에 모두 나타난다)
@@ -542,27 +541,17 @@ function swapInWholeHdTexture(img, swapIn) {
   lastHdSwapAt = performance.now();
 }
 
-// 인트로: 지구본 중심에 빛점(.hero-globe-seed)이 맺혔다가, 그 점에서 투명 지구본(위경도선)이 원래 크기로
-// 펼쳐진다. CSS는 .is-grown이 붙기 전까지 지구본을 0 크기로 숨겨 두므로, 인트로가 아니어도 붙인다.
-function growGlobeFromSeed(playIntro) {
+// 인트로: 투명 지구본(위경도선)이 중심의 점 크기에서 원래 크기로 펼쳐진다. CSS는 .is-grown이 붙기
+// 전까지 지구본을 0 크기로 숨겨 두므로, 인트로가 아니어도 붙인다.
+function growGlobe(playIntro) {
   container.classList.add('is-grown');
   if (!playIntro || prefersReducedMotion()) return;
   const base = 'translate(-50%, -50%)';
   container.animate(
     [{ transform: `${base} scale(${GLOBE_GROW_FROM})` }, { transform: `${base} scale(1)` }],
-    { duration: GLOBE_GROW_MS, delay: GLOBE_SEED_MS, easing: GLOBE_GROW_EASING, fill: 'backwards' }
+    { duration: GLOBE_GROW_MS, easing: GLOBE_GROW_EASING }
   );
-  globeGrownAt = performance.now() + GLOBE_SEED_MS + GLOBE_GROW_MS;
-
-  const seed = document.querySelector('.hero-globe-seed');
-  if (!seed) return;
-  const seedTotal = GLOBE_SEED_MS + 450; // 지구본이 퍼지기 시작한 뒤 0.45초에 걸쳐 빛점이 번지며 사라진다
-  seed.animate([
-    { transform: `${base} scale(0)`, opacity: 0 },
-    { transform: `${base} scale(1.3)`, opacity: 1, offset: (GLOBE_SEED_MS * 0.7) / seedTotal },
-    { transform: `${base} scale(1)`, opacity: 1, offset: GLOBE_SEED_MS / seedTotal },
-    { transform: `${base} scale(2.4)`, opacity: 0 }
-  ], { duration: seedTotal, easing: 'ease-out' });
+  globeGrownAt = performance.now() + GLOBE_GROW_MS;
 }
 
 function init() {
@@ -666,7 +655,7 @@ function init() {
   } else {
     graticuleMesh.visible = false;
   }
-  growGlobeFromSeed(!skipIntro);
+  growGlobe(!skipIntro);
 
   // 낮/밤 텍스처를 실시간 태양 방향(worldNormal·sunDirection)에 따라 섞는 커스텀
   // 셰이더. MeshBasicMaterial(무광원)을 베이스로 onBeforeCompile로 map_fragment
