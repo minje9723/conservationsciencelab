@@ -130,7 +130,6 @@ const TEXTURE_FADE_MS = 2400;  // 위성 텍스처가 북동쪽부터 남서쪽�
 const GLOBE_GROW_MS = 1100;    // 인트로: 투명 지구본(위경도선)이 점 크기에서 원래 크기로 펼쳐지는 시간
 const GLOBE_GROW_FROM = 0.02;  // 펼쳐지기 시작할 때의 크기(원래 지름의 2%)
 const GLOBE_GROW_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'; // 처음엔 빠르게 퍼지다 끝에서 사뿐히 멈춘다
-let globeGrownAt = 0;          // 지구본이 다 펼쳐지는 시각(performance.now). 달은 그 뒤에 나타난다
 // 텍스처를 입히기 전 도면(투명 지구본의 흰 점선 위경도선)만 보여 주는 최소 시간: 다 펼쳐지자마자 입힌다
 const GRID_MIN_SOLO_MS = GLOBE_GROW_MS;
 const REVEAL_EDGE = 0.3;       // 입히기 경계(빛 띠)의 폭 — 북동 방향 투영값(-1~1) 기준, 약 17°
@@ -551,7 +550,6 @@ function growGlobe(playIntro) {
     [{ transform: `${base} scale(${GLOBE_GROW_FROM})` }, { transform: `${base} scale(1)` }],
     { duration: GLOBE_GROW_MS, easing: GLOBE_GROW_EASING }
   );
-  globeGrownAt = performance.now() + GLOBE_GROW_MS;
 }
 
 function init() {
@@ -1467,11 +1465,11 @@ function resizeMoon() {
   moonRenderer.setSize(size, size);
 }
 
-// 언어 선택 화면(국기 표시 중)이고 확대하지 않았을 때, 인트로에서 지구본이 다 펼쳐진 뒤에만 보인다. 언어를 고르거나 지구본을
+// 언어 선택 화면(국기 표시 중)이고 확대하지 않았을 때, 인트로에서 지구본에 텍스처가 다 입혀진 뒤에만 보인다. 언어를 고르거나 지구본을
 // 확대하면 서서히 사라지고, 완전히 사라진 뒤에는 그리지 않는다.
 function updateMoon(now, delta) {
   if (!moonRenderer) return;
-  const wantVisible = flagsActive && zoomMag < 1.03 && now >= globeGrownAt;
+  const wantVisible = flagsActive && zoomMag < 1.03 && currentTextureFade >= 1;
   const step = Math.min(delta, 100) / MOON_FADE_MS;
   moonOpacity = THREE.MathUtils.clamp(moonOpacity + (wantVisible ? step : -step), 0, 1);
   if (moonOpacity === 0) {
